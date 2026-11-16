@@ -1,0 +1,204 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/logo';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border-right: 1px solid #e4e7ec;
+    z-index: 100;
+
+    // ---------- Brand ----------
+
+    &__brand {
+        height: 72px;
+        min-height: 72px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 16px;
+        border-bottom: 1px solid #f0f2f5;
+
+        &-mark {
+            width: 38px;
+            height: 38px;
+            flex: 0 0 auto;
+            object-fit: contain;
+        }
+
+        &-content {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+
+            strong {
+                color: #172033;
+                font-size: 15px;
+                white-space: nowrap;
+            }
+
+            span {
+                margin-top: 2px;
+                color: #667085;
+                font-size: 11px;
+            }
+        }
+    }
+
+    // ---------- Navigation ----------
+
+    &__nav {
+        flex: 1;
+        min-height: 0;
+        padding: 16px 12px;
+        overflow-y: auto;
+    }
+
+    &__section-title {
+        margin: 0 0 8px;
+        padding: 0 8px;
+        color: #98a2b3;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    &__menu {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    &__link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        color: #475467;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background 0.15s ease, color 0.15s ease;
+
+        svg {
+            flex-shrink: 0;
+        }
+
+        span {
+            white-space: nowrap;
+        }
+
+        &:hover {
+            background: #f8fafc;
+            color: #0b3b60;
+        }
+
+        &--active {
+            background: rgba(11, 59, 96, 0.08);
+            color: #0b3b60;
+            font-weight: 600;
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(11, 59, 96, 0.2);
+            outline-offset: 2px;
+        }
+    }
+
+    // ---------- Footer ----------
+
+    &__footer {
+        padding: 16px;
+        border-top: 1px solid #f0f2f5;
+    }
+
+    &__company {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px;
+        border-radius: 8px;
+
+        >div:not(.avatar) {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+
+            strong {
+                color: #172033;
+                font-size: 13px;
+            }
+
+            span {
+                color: #667085;
+                font-size: 11px;
+            }
+        }
+    }
+}
+
+// ---------- Mobile drawer ----------
+
+.sidebar--mobile {
+    width: 280px;
+    max-width: calc(100vw - 48px);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+
+    &.sidebar--open {
+        transform: translateX(0);
+    }
+}
+
+// ---------- Close button ----------
+
+.sidebar__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 36px;
+    height: 36px;
+
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #475467;
+    cursor: pointer;
+
+    &:hover {
+        background: #f8fafc;
+    }
+
+    &:focus-visible {
+        outline: 3px solid rgba(11, 59, 96, 0.2);
+        outline-offset: 2px;
+    }
+}
+
+@media (max-width: 900px) {
+    .sidebar--mobile {
+        display: flex;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sidebar--mobile {
+        transition: none;
+    }
+}

@@ -1,0 +1,97 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/logo';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+
+.company-table {
+    background: $white;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 980px;
+    }
+
+    thead {
+        background: #f8fafc;
+
+        th {
+            text-align: left;
+            @include heading(0.8rem);
+            text-transform: uppercase;
+            color: #475569;
+        }
+    }
+
+
+    tbody {
+        tr {
+            border-top: 1px solid #f1f5f9;
+
+            &:hover {
+                background: #f8fafc;
+            }
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            vertical-align: middle;
+        }
+    }
+
+    &__name {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 150px;
+    }
+
+    &__legalName,
+    &__registrationNumber,
+    &__city,
+    &__taxId,
+    &__date {
+        min-width: 200px;
+    }
+
+    &__status {
+        // min-width: 120px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 26px;
+        padding: 5px 10px;
+
+        border: 1px solid transparent;
+        border-radius: 999px;
+
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1;
+        white-space: nowrap;
+
+        &--active {
+            background: #eef4ff;
+            border-color: #dbe7ff;
+            color: #2563eb;
+        }
+
+        &--inactive {
+            background: #fff7e6;
+            border-color: #fde7b0;
+            color: #b77900;
+        }
+
+        &--suspended {
+            background: #fdecec;
+            border-color: #f8d5d5;
+            color: #c92a2a;
+        }
+    }
+}

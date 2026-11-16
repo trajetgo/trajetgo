@@ -1,0 +1,126 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+
+.trip-table {
+    background: $white;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 980px;
+    }
+
+    thead {
+        background: #f8fafc;
+
+        th {
+            text-align: left;
+            padding: 1rem 1.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            color: #475569;
+        }
+
+    }
+
+
+    tbody {
+        tr {
+            border-top: 1px solid #f1f5f9;
+
+            &:hover {
+                background: #f8fafc;
+            }
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            vertical-align: middle;
+        }
+    }
+
+    &__route {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 200px;
+    }
+
+    &__date {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 180px;
+    }
+
+    &__bus {
+        display: flex;
+        flex-direction: column;
+        min-width: 150px;
+    }
+
+    &__badge {
+        display: inline-flex;
+        align-items: center;
+
+        padding: 4px 10px;
+        border-radius: 999px;
+
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+
+        white-space: nowrap;
+    }
+
+    &__badge--scheduled {
+        background: rgba(59, 130, 246, 0.12);
+        color: #1d4ed8;
+    }
+
+    &__badge--boarding {
+        background: rgba(245, 158, 11, 0.12);
+        color: #b45309;
+    }
+
+    &__badge--departed {
+        background: rgba(99, 102, 241, 0.12);
+        color: #4338ca;
+    }
+
+    &__badge--arrived {
+        background: rgba(16, 185, 129, 0.12);
+        color: #047857;
+    }
+
+    &__badge--cancelled {
+        background: rgba(220, 38, 38, 0.12);
+        color: #b91c1c;
+    }
+
+    &__badge--unknown {
+        background: rgba(107, 114, 128, 0.12);
+        color: #4b5563;
+    }
+}
+
+.trip-cell {
+    display: flex;
+    align-items: stretch;
+    gap: .5rem;
+
+    &__route {
+        display: flex;
+        align-items: center;
+        gap: .25rem;
+    }
+}

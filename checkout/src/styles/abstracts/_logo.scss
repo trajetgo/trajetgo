@@ -1,0 +1,224 @@
+// Trajet Go — Logo Color System
+// Base logo colors extracted/approximated from the provided logo.
+//
+// IMPORTANT:
+// - These variables work directly if the logo is an SVG and its fills/strokes
+//   use CSS variables.
+// - A PNG/JPG cannot be recolored reliably with SCSS alone.
+// - The palettes below are intended for the Trajet Go brand system.
+
+:root {
+  // ============================================================
+  // 01. ORIGINAL — logo fourni
+  // ============================================================
+  --tg-logo-blue: #002D74;
+  --tg-logo-orange: #FC8302;
+  --tg-logo-sun: #FFB300;
+  --tg-logo-white: #FFFFFF;
+
+  // ============================================================
+  // 02. BRAND — palette principale recommandée
+  // ============================================================
+  --tg-brand-primary: #0B3B60;
+  --tg-brand-primary-dark: #082C48;
+  --tg-brand-primary-light: #E8F2F8;
+
+  --tg-brand-green: #16A36A;
+  --tg-brand-green-dark: #0F7A4E;
+  --tg-brand-green-light: #E8F7F0;
+
+  --tg-brand-orange: #F59E0B;
+  --tg-brand-orange-dark: #D97706;
+  --tg-brand-orange-light: #FFF4D6;
+
+  // ============================================================
+  // 03. BLEU — version institutionnelle
+  // ============================================================
+  --tg-logo-blue-900: #001F52;
+  --tg-logo-blue-800: #002D74;
+  --tg-logo-blue-700: #0647A5;
+  --tg-logo-blue-600: #1261C9;
+  --tg-logo-blue-500: #2878DF;
+  --tg-logo-blue-100: #E8F1FC;
+
+  // ============================================================
+  // 04. ORANGE — version dynamique
+  // ============================================================
+  --tg-logo-orange-900: #9A4B00;
+  --tg-logo-orange-800: #C46200;
+  --tg-logo-orange-700: #E87500;
+  --tg-logo-orange-600: #FC8302;
+  --tg-logo-orange-500: #FF9D1A;
+  --tg-logo-orange-400: #FFB300;
+  --tg-logo-orange-100: #FFF1DD;
+
+  // ============================================================
+  // 05. VERT — version mobilité / disponibilité
+  // ============================================================
+  --tg-logo-green-900: #075A39;
+  --tg-logo-green-800: #0B7549;
+  --tg-logo-green-700: #0F8F59;
+  --tg-logo-green-600: #16A36A;
+  --tg-logo-green-500: #24B77B;
+  --tg-logo-green-100: #E7F7F0;
+
+  // ============================================================
+  // 06. IVOIRIEN — inspiration Côte d'Ivoire
+  // ============================================================
+  --tg-ci-orange: #F77F00;
+  --tg-ci-white: #FFFFFF;
+  --tg-ci-green: #009E60;
+
+  // ============================================================
+  // 07. MONOCHROME
+  // ============================================================
+  --tg-logo-black: #101828;
+  --tg-logo-dark: #172033;
+  --tg-logo-gray: #667085;
+  --tg-logo-light: #D0D5DD;
+  --tg-logo-white-pure: #FFFFFF;
+}
+
+// ================================================================
+// SCSS PALETTES
+// ================================================================
+
+$logo-original: (
+  blue: #002D74,
+  orange: #FC8302,
+  sun: #FFB300,
+  white: #FFFFFF
+);
+
+$logo-brand: (
+  blue: #0B3B60,
+  green: #16A36A,
+  orange: #F59E0B,
+  white: #FFFFFF
+);
+
+$logo-blue: (
+  primary: #002D74,
+  secondary: #1261C9,
+  accent: #16A36A,
+  background: #E8F1FC
+);
+
+$logo-orange: (
+  primary: #FC8302,
+  secondary: #FFB300,
+  accent: #002D74,
+  background: #FFF1DD
+);
+
+$logo-green: (
+  primary: #16A36A,
+  secondary: #24B77B,
+  accent: #002D74,
+  background: #E7F7F0
+);
+
+$logo-ci: (
+  orange: #F77F00,
+  white: #FFFFFF,
+  green: #009E60,
+  blue: #002D74
+);
+
+$logo-monochrome: (
+  primary: #101828,
+  secondary: #344054,
+  light: #D0D5DD,
+  white: #FFFFFF
+);
+
+// ================================================================
+// MIXINS
+// ================================================================
+
+// À utiliser pour un SVG dont les éléments utilisent currentColor.
+@mixin logo-monochrome($color: #101828) {
+  color: $color;
+}
+
+// Variante avec fond circulaire / carré pour avatar ou app icon.
+@mixin logo-background($background, $foreground: #FFFFFF) {
+  background: $background;
+  color: $foreground;
+}
+
+// ================================================================
+// EXEMPLES DE VARIATIONS
+// ================================================================
+
+// Logo original
+.logo--original {
+  --logo-primary: var(--tg-logo-blue);
+  --logo-secondary: var(--tg-logo-orange);
+  --logo-accent: var(--tg-logo-sun);
+}
+
+// Logo institutionnel
+.logo--institutional {
+  --logo-primary: #0B3B60;
+  --logo-secondary: #16A36A;
+  --logo-accent: #F59E0B;
+}
+
+// Logo principalement bleu
+.logo--blue {
+  --logo-primary: #002D74;
+  --logo-secondary: #1261C9;
+  --logo-accent: #16A36A;
+}
+
+// Logo principalement orange
+.logo--orange {
+  --logo-primary: #FC8302;
+  --logo-secondary: #FFB300;
+  --logo-accent: #002D74;
+}
+
+// Logo principalement vert
+.logo--green {
+  --logo-primary: #16A36A;
+  --logo-secondary: #24B77B;
+  --logo-accent: #002D74;
+}
+
+// Inspiration Côte d'Ivoire
+.logo--ci {
+  --logo-primary: #F77F00;
+  --logo-secondary: #FFFFFF;
+  --logo-accent: #009E60;
+}
+
+// Monochrome clair
+.logo--white {
+  --logo-primary: #FFFFFF;
+  --logo-secondary: #FFFFFF;
+  --logo-accent: #FFFFFF;
+}
+
+// Monochrome sombre
+.logo--black {
+  --logo-primary: #101828;
+  --logo-secondary: #101828;
+  --logo-accent: #101828;
+}
+
+// ================================================================
+// RECOMMANDATION TRAJET GO
+// ================================================================
+//
+// Pour la marque principale :
+//   Bleu profond  -> confiance / transport / infrastructure
+//   Orange        -> mouvement / énergie / destination
+//   Blanc         -> lisibilité
+//
+// Pour les interfaces :
+//   Bleu  = identité principale
+//   Vert  = disponible / confirmé / succès
+//   Orange = action / départ / attention
+//
+// Le orange doit rester un accent et non remplir toute l'interface.

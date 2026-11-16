@@ -1,0 +1,392 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/logo';
+@import '@shared/styles/abstracts/variables';
+
+/* =========================================================
+   PAGE TRIPS
+   ========================================================= */
+
+.trips {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+    box-sizing: border-box;
+
+    /* =====================================================
+       HEADER
+       ===================================================== */
+
+    &__header {
+        margin-bottom: 28px;
+        padding: 16px 20px;
+        border-radius: 15px;
+        background: #ffffff;
+        box-shadow: 0 1px 3px rgba(8, 44, 72, 0.04);
+    }
+
+    &__title {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+
+        margin: 0 0 8px;
+
+        color: var(--tg-text, #172033);
+        font-size: clamp(22px, 3vw, 32px);
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+    }
+
+    &__arrow {
+        color: var(--tg-brand-orange, #f59e0b);
+        font-weight: 400;
+    }
+
+    &__meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        margin: 0;
+
+        color: var(--tg-text-light, #667085);
+        font-size: 14px;
+    }
+
+    /* =====================================================
+       TOOLBAR
+       ===================================================== */
+
+    &__toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    &__results-count {
+        color: var(--tg-text, #fff);
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+    &__results-total {
+        color: var(--tg-text-light, #667085);
+        font-weight: 400;
+    }
+
+    /* =====================================================
+       BOUTON FILTRES
+       ===================================================== */
+
+    &__filter-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+
+        min-height: 40px;
+        padding: 0 14px;
+
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: 10px;
+        background: #ffffff;
+        color: var(--tg-text, #172033);
+
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+
+        cursor: pointer;
+        transition:
+            border-color 0.15s ease,
+            background 0.15s ease,
+            color 0.15s ease;
+
+        svg {
+            flex: 0 0 auto;
+            color: var(--tg-text-light, #667085);
+            transition: color 0.15s ease;
+        }
+
+        &:hover {
+            border-color: rgba(11, 59, 96, 0.4);
+            background: #fbfcfd;
+
+            svg {
+                color: var(--tg-primary, #0b3b60);
+            }
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(11, 59, 96, 0.2);
+            outline-offset: 2px;
+        }
+
+        &--active {
+            border-color: var(--tg-primary, #0b3b60);
+            background: rgba(11, 59, 96, 0.04);
+            color: var(--tg-primary, #0b3b60);
+
+            svg {
+                color: var(--tg-primary, #0b3b60);
+            }
+
+            &:hover {
+                background: rgba(11, 59, 96, 0.08);
+            }
+        }
+
+        &-label {
+            white-space: nowrap;
+
+            @media (max-width: 520px) {
+                display: none;
+            }
+        }
+    }
+
+    &__filter-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 20px;
+        height: 20px;
+        padding: 0 6px;
+
+        border-radius: 999px;
+        background: var(--tg-primary, #0b3b60);
+        color: #ffffff;
+
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1;
+
+        animation: badgePop 0.2s ease-out;
+    }
+
+    /* =====================================================
+       RÉSULTATS
+       ===================================================== */
+
+    &__results {
+        min-height: 200px;
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        width: 100%;
+
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+    /* =====================================================
+       ÉTATS
+       ===================================================== */
+
+    &__error {
+        margin: 0;
+        padding: 16px 20px;
+
+        border-radius: var(--tg-radius-md, 10px);
+        background: rgba(220, 38, 38, 0.08);
+        color: #b91c1c;
+
+        font-size: 14px;
+    }
+
+    &__empty {
+        width: 100%;
+        box-sizing: border-box;
+
+        padding: 48px 24px;
+
+        border: 1px dashed var(--tg-border, #e4e7ec);
+        border-radius: var(--tg-radius-lg, 16px);
+        background: #f9fafb;
+
+        text-align: center;
+
+        p {
+            margin: 0;
+            color: var(--tg-text, #172033);
+            font-size: 16px;
+            font-weight: 500;
+        }
+    }
+
+    &__empty-hint {
+        margin-top: 8px;
+
+        color: var(--tg-text-light, #667085);
+        font-size: 14px;
+        font-weight: 400;
+    }
+
+    &__reset-filters {
+        margin-top: 16px;
+        padding: 10px 18px;
+
+        border: 1px solid var(--tg-primary, #0b3b60);
+        border-radius: 10px;
+        background: transparent;
+        color: var(--tg-primary, #0b3b60);
+
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s;
+
+        &:hover {
+            background: var(--tg-primary, #0b3b60);
+            color: #ffffff;
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(11, 59, 96, 0.2);
+            outline-offset: 2px;
+        }
+    }
+
+    /* =====================================================
+       MODIFICATEUR : ÉTAT VIDE GLOBAL
+       ===================================================== */
+
+    &--empty {
+        max-width: 640px;
+        margin: 80px auto;
+        padding: 48px 24px;
+        text-align: center;
+
+        h1 {
+            margin: 0 0 12px;
+            color: var(--tg-text, #172033);
+            font-size: 24px;
+        }
+
+        p {
+            margin: 0;
+            color: var(--tg-text-light, #667085);
+            font-size: 15px;
+        }
+    }
+}
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes badgePop {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .trips__filter-badge {
+        animation: none;
+    }
+}
+
+/* =========================================================
+   TABLETTE
+   ========================================================= */
+
+@media (max-width: 1024px) {
+    .trips {
+        padding: 28px 20px 56px;
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .trips {
+        padding: 24px 16px 48px;
+
+        &__header {
+            margin-bottom: 20px;
+            padding: 12px 16px;
+        }
+
+        &__title {
+            gap: 7px;
+            font-size: 22px;
+        }
+
+        &__meta {
+            font-size: 13px;
+        }
+
+        &__toolbar {
+            gap: 10px;
+        }
+
+        &__list {
+            gap: 12px;
+        }
+
+        &__empty {
+            padding: 32px 16px;
+        }
+    }
+}
+
+/* =========================================================
+   PETITS MOBILES
+   ========================================================= */
+
+@media (max-width: 480px) {
+    .trips {
+        padding: 20px 12px 40px;
+
+        &__title {
+            font-size: 20px;
+        }
+
+        &__meta {
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        &__empty {
+            padding: 28px 14px;
+
+            p {
+                font-size: 14px;
+            }
+        }
+
+        &__empty-hint {
+            font-size: 13px;
+        }
+    }
+}

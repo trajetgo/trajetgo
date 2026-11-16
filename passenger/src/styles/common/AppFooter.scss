@@ -1,0 +1,245 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/logo';
+
+/* =========================================================
+   APP FOOTER
+   ========================================================= */
+
+.app-footer {
+    font-family: $font-body;
+    margin-top: 64px;
+    padding: 56px 24px 24px;
+    background: #0b3b60; // ✅ fond bleu foncé
+    color: rgba(255, 255, 255, 0.85);
+
+    /* =====================================================
+       CONTAINER
+       ===================================================== */
+
+    &__container {
+        max-width: 1180px;
+        margin: 0 auto;
+
+        display: grid;
+        grid-template-columns: minmax(260px, 1fr) 2fr;
+        gap: 48px;
+
+        @media (max-width: 900px) {
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+    }
+
+    /* =====================================================
+       MARQUE
+       ===================================================== */
+
+    &__brand {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    &__logo {
+        display: inline-block;
+        align-self: flex-start;
+
+        img {
+            height: 42px;
+            width: auto;
+        }
+    }
+
+    &__tagline {
+        margin: 0;
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+
+    &__description {
+        margin: 0;
+        max-width: 380px;
+
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    /* ---------- Réseaux sociaux ---------- */
+
+    &__socials {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 8px;
+
+        a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            width: 36px;
+            height: 36px;
+
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.85);
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                transform 0.15s ease;
+
+            &:hover {
+                background: var(--tg-brand-orange, #f59e0b);
+                color: #ffffff;
+                transform: translateY(-2px);
+            }
+
+            &:focus-visible {
+                outline: 3px solid rgba(245, 158, 11, 0.4);
+                outline-offset: 2px;
+            }
+        }
+    }
+
+    /* =====================================================
+       COLONNES DE LIENS
+       ===================================================== */
+
+    &__sections {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 32px;
+
+        @media (max-width: 900px) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media (max-width: 480px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__column {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        h4 {
+            @include heading(14px);
+
+            margin: 0 0 4px;
+            color: #ffffff;
+        }
+
+        a {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            line-height: 1.5;
+            text-decoration: none;
+
+            transition: color 0.15s ease;
+
+            &:hover {
+                color: var(--tg-brand-orange, #f59e0b);
+            }
+        }
+    }
+
+    /* =====================================================
+       MENTIONS LÉGALES
+       ===================================================== */
+
+    &__legal {
+        grid-column: 1 / -1;
+
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+
+        margin-top: 24px;
+        padding-top: 24px;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+
+        a {
+            color: rgba(255, 255, 255, 0.65);
+            @include body-text(11px);
+            text-decoration: none;
+            transition: color 0.15s ease;
+
+            &:hover {
+                color: #ffffff;
+            }
+        }
+    }
+
+    &__legal-separator {
+        margin: 0 8px;
+        color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* =====================================================
+       BAS DE PAGE
+       ===================================================== */
+
+    &__bottom {
+        grid-column: 1 / -1;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+
+        margin-top: 16px;
+
+        p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 12px;
+        }
+
+        @media (max-width: 640px) {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    &__made-with {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    &__heart {
+        display: inline-block;
+        animation: heartbeat 1.5s ease-in-out infinite;
+    }
+}
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes heartbeat {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .app-footer__heart {
+        animation: none;
+    }
+}

@@ -1,0 +1,155 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/logo';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+
+/* =========================================================
+   TRIP STATUS MODAL
+   ========================================================= */
+
+.trip-status-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 4px 0;
+
+    /* =====================================================
+       ICÔNE D'EN-TÊTE
+       ===================================================== */
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 64px;
+        height: 64px;
+        margin: 0 auto;
+        border-radius: 50%;
+        background: rgba(11, 59, 96, 0.08);
+        color: var(--tg-primary, #0b3b60);
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    /* =====================================================
+       DESCRIPTION
+       ===================================================== */
+
+    &__description {
+        margin: 0;
+        text-align: center;
+        color: var(--tg-text-light, #475467);
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    /* =====================================================
+       RÉCAPITULATIF DU VOYAGE
+       ===================================================== */
+
+    &__trip {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 16px;
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: var(--tg-radius-md, 10px);
+        background: #fbfcfd;
+    }
+
+    &__trip-route {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        color: var(--tg-text, #172033);
+        font-size: 15px;
+        text-align: center;
+
+        strong {
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        span {
+            color: var(--tg-brand-orange, #f59e0b);
+            font-weight: 400;
+        }
+    }
+
+    &__trip-date {
+        margin: 0;
+        text-align: center;
+        color: var(--tg-text-light, #667085);
+        font-size: 13px;
+    }
+
+    /* =====================================================
+       ACTIONS
+       ===================================================== */
+
+    &__actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        padding-top: 4px;
+
+        @media (max-width: 480px) {
+            flex-direction: column-reverse;
+
+            button {
+                width: 100%;
+            }
+        }
+    }
+
+    /* =====================================================
+       VARIANTE DANGER (annulation)
+       ===================================================== */
+
+    &--danger {
+        .trip-status-modal__icon {
+            background: rgba(220, 38, 38, 0.08);
+            color: #b91c1c;
+        }
+
+        .trip-status-modal__trip {
+            border-color: rgba(220, 38, 38, 0.2);
+            background: rgba(220, 38, 38, 0.03);
+        }
+    }
+
+    /* =====================================================
+       VARIANTE PRIMARY (défaut bleu)
+       ===================================================== */
+
+    &--primary {
+        .trip-status-modal__icon {
+            background: rgba(11, 59, 96, 0.08);
+            color: var(--tg-primary, #0b3b60);
+        }
+    }
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 520px) {
+    .trip-status-modal {
+        gap: 16px;
+
+        &__icon {
+            width: 56px;
+            height: 56px;
+        }
+
+        &__description {
+            font-size: 14px;
+        }
+
+        &__trip-route {
+            font-size: 14px;
+        }
+    }
+}

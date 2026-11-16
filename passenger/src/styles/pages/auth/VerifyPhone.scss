@@ -1,0 +1,30 @@
+@import '../../abstracts/animations';
+@import '../../abstracts/colors';
+@import '../../abstracts/logo';
+
+.verify-phone {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--tg-logo-blue);
+    padding: 20px;
+
+    &__card {
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        max-width: 420px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    }
+
+    &__badge {
+        display: flex;
+        align-items: center;
+
+        svg {
+            color: var(--tg-logo-blue);
+        }
+    }
+}

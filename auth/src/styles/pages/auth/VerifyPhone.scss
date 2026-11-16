@@ -1,0 +1,46 @@
+@import '@shared/styles/abstracts/animations';
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/logo';
+
+.verify-phone-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.verify-phone-container {
+    background: $white;
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.verify-phone-header {
+    text-align: center;
+    margin-bottom: 32px;
+
+    .verify-phone-badge {
+        display: flex;
+        align-items: center;
+
+        svg {
+            color: var(--tg-logo-blue);
+        }
+    }
+
+    h1 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 8px;
+    }
+
+    p {
+        color: #6b7280;
+        font-size: 14px;
+    }
+}

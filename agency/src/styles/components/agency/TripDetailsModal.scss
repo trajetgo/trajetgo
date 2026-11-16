@@ -1,0 +1,225 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/logo';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+
+/* =========================================================
+   TRIP DETAILS MODAL
+   ========================================================= */
+
+.trip-details {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 4px 0 8px;
+
+    /* =====================================================
+       EN-TÊTE (route + statut)
+       ===================================================== */
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--tg-border, #e4e7ec);
+
+        @media (max-width: 520px) {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+    }
+
+    &__route {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        color: var(--tg-text, #172033);
+        font-size: 16px;
+
+        svg {
+            flex: 0 0 auto;
+            color: var(--tg-primary, #0b3b60);
+        }
+
+        strong {
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        span {
+            color: var(--tg-brand-orange, #f59e0b);
+            font-weight: 400;
+        }
+    }
+
+    /* =====================================================
+       SECTIONS
+       ===================================================== */
+
+    &__section {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    &__section-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+        color: var(--tg-text-light, #98a2b3);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+
+        svg {
+            flex: 0 0 auto;
+            color: var(--tg-text-light, #98a2b3);
+        }
+    }
+
+    /* =====================================================
+       GRILLE D'INFOS
+       ===================================================== */
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+    }
+
+    &__item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 12px 14px;
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: var(--tg-radius-md, 10px);
+        background: #fbfcfd;
+    }
+
+    &__item-label {
+        color: var(--tg-text-light, #98a2b3);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    &__item-value {
+        color: var(--tg-text, #172033);
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.4;
+    }
+
+    /* =====================================================
+       OCCUPATION (barre de progression)
+       ===================================================== */
+
+    &__occupancy {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px;
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: var(--tg-radius-md, 10px);
+        background: #fbfcfd;
+    }
+
+    &__occupancy-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--tg-text, #172033);
+        font-size: 14px;
+
+        span:last-child {
+            color: var(--tg-text-light, #667085);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        strong {
+            color: var(--tg-primary, #0b3b60);
+            font-weight: 700;
+        }
+    }
+
+    &__occupancy-bar {
+        position: relative;
+        width: 100%;
+        height: 8px;
+        border-radius: 999px;
+        background: #eef2f6;
+        overflow: hidden;
+    }
+
+    &__occupancy-fill {
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg,
+                var(--tg-primary, #0b3b60) 0%,
+                var(--tg-primary-dark, #082c48) 100%);
+        transition: width 0.35s ease;
+    }
+
+    /* Couleur dynamique selon le taux (optionnel, à ajouter au JSX) */
+    &__occupancy--high &__occupancy-fill {
+        background: linear-gradient(90deg, #f59e0b, #e87500);
+    }
+
+    &__occupancy--full &__occupancy-fill {
+        background: linear-gradient(90deg, #dc2626, #b91c1c);
+    }
+
+    &__occupancy-available {
+        margin: 0;
+        color: var(--tg-text-light, #667085);
+        font-size: 13px;
+    }
+
+    /* =====================================================
+       TARIF
+       ===================================================== */
+
+    &__price {
+        margin: 0;
+        color: var(--tg-primary, #0b3b60);
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 600px) {
+    .trip-details {
+        gap: 22px;
+
+        &__header {
+            padding-bottom: 16px;
+        }
+
+        &__route {
+            font-size: 15px;
+        }
+
+        &__grid {
+            grid-template-columns: 1fr;
+        }
+
+        &__price {
+            font-size: 22px;
+        }
+    }
+}

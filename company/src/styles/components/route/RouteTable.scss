@@ -1,0 +1,154 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+
+.route-table {
+    background: $white;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 980px;
+    }
+
+    thead {
+        background: #f8fafc;
+
+        th {
+            text-align: left;
+            padding: 1rem 1.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            color: #475569;
+        }
+
+    }
+
+    tbody {
+        tr {
+            border-top: 1px solid #f1f5f9;
+
+            &:hover {
+                background: #f8fafc;
+            }
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            vertical-align: middle;
+        }
+    }
+
+    &__route {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+    }
+
+    &__route-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+
+        width: 32px;
+        height: 32px;
+
+        border-radius: 8px;
+        background: rgba(11, 59, 96, 0.08);
+        color: var(--tg-primary, #0b3b60);
+    }
+
+    &__route-info {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-width: 0;
+
+        strong {
+            color: var(--tg-text, #172033);
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+
+            /* Surcharge du HighlightText */
+            mark {
+                background: rgba(245, 158, 11, 0.25);
+                color: inherit;
+                border-radius: 2px;
+                padding: 0 2px;
+            }
+        }
+    }
+
+    &__route-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        color: var(--tg-brand-orange, #f59e0b);
+    }
+
+    /* =====================================================
+       VALEURS (distance, durée)
+       ===================================================== */
+
+    &__value {
+        color: var(--tg-text, #172033);
+        font-size: 14px;
+    }
+
+    &__empty {
+        color: var(--tg-text-light, #98a2b3);
+        font-style: italic;
+    }
+
+    /* =====================================================
+       PRIX
+       ===================================================== */
+
+    &__price {
+        color: var(--tg-text, #172033);
+        font-size: 14px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    /* =====================================================
+       STATUT
+       ===================================================== */
+
+    &__status {
+        display: inline-flex;
+        align-items: center;
+
+        padding: 4px 10px;
+        border-radius: 999px;
+
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+
+        white-space: nowrap;
+
+        &--active {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+        }
+
+        &--inactive {
+            background: rgba(107, 114, 128, 0.15);
+            color: #4b5563;
+        }
+    }
+}

@@ -1,0 +1,68 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+@import '@shared/styles/abstracts/logo';
+
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+    background: #f8fafc;
+    position: relative;
+    font-family: $font-body;
+
+    &__main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        margin-left: 250px;
+        transition: margin-left 0.25s ease;
+    }
+
+    &--collapsed &__main {
+        margin-left: 72px;
+    }
+
+    &__content {
+        flex: 1;
+        padding: 24px;
+    }
+
+    /* Overlay mobile */
+    &__overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 99; // sous la sidebar (z-index: 100)
+        animation: overlayFadeIn 0.2s ease;
+    }
+}
+
+@keyframes overlayFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 900px) {
+    .app-layout {
+
+        /* Pas de marge : la sidebar flotte en overlay */
+        &__main,
+        &--collapsed &__main {
+            margin-left: 0;
+        }
+
+        &__content {
+            padding: 16px;
+        }
+    }
+}

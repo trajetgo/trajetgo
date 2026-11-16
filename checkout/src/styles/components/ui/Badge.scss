@@ -1,0 +1,218 @@
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    border: 1px solid transparent;
+
+    // Tailles
+    &.badge-small {
+        padding: 2px 8px;
+        font-size: 10px;
+        border-radius: 3px;
+    }
+
+    &.badge-medium {
+        padding: 4px 12px;
+        font-size: 12px;
+        border-radius: 4px;
+    }
+
+    &.badge-large {
+        padding: 6px 16px;
+        font-size: 14px;
+        border-radius: 6px;
+    }
+
+    // Variants
+    &.badge-primary {
+        background: #6c63ff;
+        color: white;
+        border-color: #6c63ff;
+    }
+
+    &.badge-secondary {
+        background: #6b7280;
+        color: white;
+        border-color: #6b7280;
+    }
+
+    &.badge-success {
+        background: #28a745;
+        color: white;
+        border-color: #28a745;
+    }
+
+    &.badge-danger {
+        background: #dc3545;
+        color: white;
+        border-color: #dc3545;
+    }
+
+    &.badge-warning {
+        background: #ffc107;
+        color: #1f2937;
+        border-color: #ffc107;
+    }
+
+    &.badge-info {
+        background: #17a2b8;
+        color: white;
+        border-color: #17a2b8;
+    }
+
+    &.badge-dark {
+        background: #1f2937;
+        color: white;
+        border-color: #1f2937;
+    }
+
+    &.badge-light {
+        background: #f3f4f6;
+        color: #1f2937;
+        border-color: #e5e7eb;
+    }
+
+    // Outline
+    &.badge-outline {
+        background: transparent;
+
+        &.badge-primary {
+            color: #6c63ff;
+            border-color: #6c63ff;
+        }
+
+        &.badge-secondary {
+            color: #6b7280;
+            border-color: #6b7280;
+        }
+
+        &.badge-success {
+            color: #28a745;
+            border-color: #28a745;
+        }
+
+        &.badge-danger {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        &.badge-warning {
+            color: #d97706;
+            border-color: #ffc107;
+        }
+
+        &.badge-info {
+            color: #0c899b;
+            border-color: #17a2b8;
+        }
+
+        &.badge-dark {
+            color: #1f2937;
+            border-color: #1f2937;
+        }
+
+        &.badge-light {
+            color: #6b7280;
+            border-color: #d1d5db;
+        }
+    }
+
+    // Rounded (pill)
+    &.badge-rounded {
+        border-radius: 9999px;
+    }
+
+    // Dot
+    &.badge-dot {
+        padding-left: 8px;
+        position: relative;
+
+        .badge-dot-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.8;
+            flex-shrink: 0;
+            animation: dotPulse 2s ease-in-out infinite;
+        }
+
+        &.badge-small .badge-dot-indicator {
+            width: 6px;
+            height: 6px;
+        }
+
+        &.badge-large .badge-dot-indicator {
+            width: 10px;
+            height: 10px;
+        }
+    }
+
+    // Icon
+    .badge-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+
+        svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .badge-small & svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .badge-large & svg {
+            width: 16px;
+            height: 16px;
+        }
+    }
+
+    // Clickable
+    &.badge-clickable {
+        cursor: pointer;
+        user-select: none;
+
+        &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+
+        &:focus-visible {
+            outline: 2px solid #6c63ff;
+            outline-offset: 2px;
+        }
+    }
+}
+
+// Animation du dot
+@keyframes dotPulse {
+
+    0%,
+    100% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: scale(0.8);
+    }
+}

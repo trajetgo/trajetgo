@@ -1,0 +1,85 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/logo';
+@import '@shared/styles/abstracts/variables';
+
+.home {
+    font-family: $font-body;
+    min-height: 100vh;
+    // background: var(--tg-background);
+    color: var(--tg-text);
+}
+
+/* =========================================================
+   SERVICES / INTRO
+   ========================================================= */
+
+.home-services {
+    padding: 80px 24px;
+    background: $white;
+
+    &__header {
+        max-width: 720px;
+        margin: 0 auto;
+        text-align: center;
+
+        span {
+            @include eyebrow;
+            display: inline-block;
+            margin-bottom: 12px;
+            color: var(--tg-brand-orange, #f59e0b);
+            // font-weight: 700;
+            // letter-spacing: 0.12em;
+        }
+
+        h2 {
+            @include heading ($font-size-2xl);
+            margin: 0;
+            color: var(--tg-text, #172033);
+            letter-spacing: -0.025em;
+        }
+
+        p {
+            max-width: 580px;
+            margin: 16px auto 0;
+            color: var(--tg-text-muted, #667085);
+            font-size: 16px;
+            line-height: 1.7;
+        }
+    }
+}
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .home-services {
+        padding: 56px 20px;
+    }
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+    .home-hero {
+        padding-top: 40px;
+
+        &__eyebrow {
+            font-size: 11px;
+        }
+
+        &__title {
+            font-size: 32px;
+        }
+    }
+
+    .trip-search {
+        &__swap {
+            top: 114px;
+            right: 24px;
+        }
+    }
+}

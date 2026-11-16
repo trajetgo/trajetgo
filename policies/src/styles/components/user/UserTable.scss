@@ -1,0 +1,213 @@
+@import '../../abstracts/variables';
+
+/* =========================================================
+   USER TABLE
+   ========================================================= */
+
+.user-table {
+    background: #ffffff;
+    border: 1px solid var(--tg-border, #e4e7ec);
+    border-radius: 16px;
+
+    /* Pas de overflow: hidden pour laisser sortir les menus */
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px;
+    }
+
+    thead {
+        background: #f8fafc;
+
+        th {
+            text-align: left;
+            padding: 1rem 1.25rem;
+
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #475569;
+
+            white-space: nowrap;
+        }
+    }
+
+    tbody {
+        tr {
+            border-top: 1px solid #f1f5f9;
+            transition: background 0.15s ease;
+
+            &:hover {
+                background: #f8fafc;
+            }
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            vertical-align: middle;
+        }
+    }
+
+    /* =====================================================
+       CELLULE MEMBRE (avatar + nom + contact)
+       ===================================================== */
+
+    &__user {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 200px;
+    }
+
+    &__user-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    &__user-info strong {
+        color: #172033;
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__user-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+
+        font-size: 12px;
+        color: #667085;
+
+        span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+
+            max-width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        svg {
+            flex: 0 0 auto;
+            opacity: 0.7;
+        }
+    }
+
+    /* =====================================================
+       BADGES
+       ===================================================== */
+
+    &__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 4px 10px;
+        border-radius: 999px;
+
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+
+        white-space: nowrap;
+
+        /* ---------- Statuts ---------- */
+
+        &--status-active {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+        }
+
+        &--status-inactive {
+            background: rgba(107, 114, 128, 0.15);
+            color: #4b5563;
+        }
+
+        &--status-suspended {
+            background: rgba(220, 38, 38, 0.12);
+            color: #b91c1c;
+        }
+
+        &--status-invited {
+            background: rgba(59, 130, 246, 0.12);
+            color: #1d4ed8;
+        }
+
+        &--status-unknown {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
+        }
+
+        /* ---------- Rôles ---------- */
+
+        &--role-super-admin {
+            background: rgba(168, 85, 247, 0.12);
+            color: #7e22ce;
+        }
+
+        &--role-company-admin {
+            background: rgba(11, 59, 96, 0.1);
+            color: var(--tg-primary, #0b3b60);
+        }
+
+        &--role-agency-agent {
+            background: rgba(59, 130, 246, 0.12);
+            color: #1d4ed8;
+        }
+
+        &--role-controller {
+            background: rgba(245, 158, 11, 0.12);
+            color: #b45309;
+        }
+
+        &--role-unknown {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
+        }
+    }
+
+    &__badge-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+        flex: 0 0 auto;
+    }
+
+    /* =====================================================
+       AGENCE
+       ===================================================== */
+
+    &__agency {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: #475467;
+        font-size: 13px;
+
+        svg {
+            color: var(--tg-primary, #0b3b60);
+            flex: 0 0 auto;
+        }
+    }
+
+    /* =====================================================
+       DIVERS
+       ===================================================== */
+
+    &__empty {
+        color: #98a2b3;
+        font-style: italic;
+    }
+}

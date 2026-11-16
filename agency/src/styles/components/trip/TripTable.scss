@@ -1,0 +1,85 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/logo';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+
+.trip-table {
+    background: $white;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 980px;
+    }
+
+    thead {
+        background: #f8fafc;
+
+        th {
+            text-align: left;
+            padding: 1rem 1.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            color: #475569;
+        }
+
+    }
+
+
+    tbody {
+        tr {
+            border-top: 1px solid #f1f5f9;
+
+            &:hover {
+                background: #f8fafc;
+            }
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            vertical-align: middle;
+        }
+    }
+
+    &__route {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 200px;
+    }
+
+    &__date {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 200px;
+    }
+
+    &__bus {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        // gap: 12px;
+        min-width: 150px;
+    }
+}
+
+.trip-cell {
+    display: flex;
+    align-items: stretch;
+    gap: .5rem;
+
+    &__route {
+        display: flex;
+        align-items: center;
+        gap: .25rem;
+    }
+}
+

@@ -1,0 +1,178 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/logo';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+
+
+.step-seat {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+
+    &__loading,
+    &__hint,
+    &__error,
+    &__field-error {
+        font-size: 0.875rem;
+        text-align: center;
+    }
+
+    &__error,
+    &__field-error {
+        color: var(--color-danger, #dc2626);
+    }
+
+    /* ---------- Légende ---------- */
+
+    &__legend {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        font-size: 0.8rem;
+        color: var(--color-text-muted, #6b7280);
+    }
+
+    &__legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    &__legend-dot {
+        display: inline-block;
+        width: 0.75rem;
+        height: 0.75rem;
+        border-radius: 0.25rem;
+        border: 1px solid var(--color-border, #d1d5db);
+    }
+
+    &__legend-item--free,
+    &__legend-dot {
+        background: #f3f4f6;
+    }
+
+    &__legend-item--taken,
+    &__legend-dot {
+        background: #e5e7eb;
+        opacity: 0.5;
+    }
+
+    &__legend-item--selected,
+    &__legend-dot {
+        background: var(--color-primary, #2563eb);
+        border-color: var(--color-primary, #2563eb);
+    }
+
+    /* ---------- Plan ---------- */
+
+    &__bus {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1rem;
+        border: 2px solid var(--color-border, #d1d5db);
+        border-radius: 1rem 1rem 1.5rem 1.5rem;
+        background: #fff;
+    }
+
+    &__front,
+    &__back {
+        display: flex;
+        justify-content: center;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text-muted, #9ca3af);
+    }
+
+    &__front {
+        padding-bottom: 0.5rem;
+        border-bottom: 1px dashed var(--color-border, #e5e7eb);
+    }
+
+    &__back {
+        padding-top: 0.5rem;
+        border-top: 1px dashed var(--color-border, #e5e7eb);
+    }
+
+    &__row {
+        display: flex;
+        gap: 0.4rem;
+        justify-content: center;
+        align-items: center;
+
+        /* Allée : ajoute un espace après la N-ième colonne */
+        &::after {
+            content: none;
+        }
+    }
+
+    /* ✅ Allée visuelle : on ajoute une marge sur le siège qui suit l'allée */
+    &__row {
+        display: flex;
+        gap: 0.4rem;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* ✅ L'allée devient un vrai élément flex */
+    &__aisle {
+        width: 1rem;
+        flex-shrink: 0;
+    }
+
+    /* ---------- Siège ---------- */
+
+    &__seat {
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 0.375rem 0.375rem 0.625rem 0.625rem;
+        border: 1px solid var(--color-border, #d1d5db);
+        background: #f3f4f6;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--color-text, #111827);
+        cursor: pointer;
+        transition: transform 0.1s ease, background 0.15s ease,
+            border-color 0.15s ease;
+
+        &:hover:not(:disabled) {
+            border-color: var(--color-primary, #2563eb);
+            transform: translateY(-1px);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--color-primary, #2563eb);
+            outline-offset: 2px;
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+        }
+    }
+
+    &__seat--taken {
+        background: #e5e7eb;
+        color: #9ca3af;
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+
+    &__seat--selected {
+        background: var(--color-primary, #2563eb);
+        border-color: var(--color-primary, #2563eb);
+        color: #fff;
+    }
+
+    /* ---------- Récap ---------- */
+
+    &__selected {
+        font-size: 0.875rem;
+        color: var(--color-text-muted, #6b7280);
+
+        strong {
+            color: var(--color-text, #111827);
+        }
+    }
+}

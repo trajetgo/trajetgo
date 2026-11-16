@@ -1,0 +1,251 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/logo';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+
+.agency-status-modal {
+
+    &__icon {
+        width: 48px;
+        height: 48px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 16px;
+
+        border-radius: 12px;
+
+        &--success {
+            background: #e8f7ef;
+            color: #138a58;
+        }
+
+        &--warning {
+            background: #fff4db;
+            color: #b77900;
+        }
+
+        &--danger {
+            background: #fdecec;
+            color: #c92a2a;
+        }
+    }
+
+    &__content {
+
+        h3 {
+            margin: 0 0 8px;
+
+            color: #172033;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        >p {
+            margin: 0;
+
+            color: #667085;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    }
+
+    &__agency {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+
+        margin-top: 16px;
+        padding: 12px 14px;
+
+        border-radius: 10px;
+
+        background: #f8fafc;
+
+        strong {
+            color: #172033;
+            font-size: 14px;
+        }
+
+        span {
+            color: #667085;
+            font-size: 12px;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+
+        margin-top: 24px;
+    }
+}
+
+
+.agency-details {
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 16px;
+
+        padding-bottom: 20px;
+
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+    &__identity {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        min-width: 0;
+    }
+
+    &__icon {
+        width: 46px;
+        height: 46px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 11px;
+
+        background: #e8f2f8;
+        color: #0b3b60;
+    }
+
+    &__identity h2 {
+        margin: 0;
+
+        color: #172033;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    &__identity span {
+        display: block;
+
+        margin-top: 3px;
+
+        color: #667085;
+        font-size: 12px;
+    }
+
+    &__section {
+        padding: 20px 0;
+
+        border-bottom: 1px solid #f0f2f5;
+
+        &:last-child {
+            border-bottom: 0;
+        }
+
+        h3 {
+            margin: 0 0 16px;
+
+            color: #344054;
+            font-size: 14px;
+            font-weight: 700;
+        }
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    &__item {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 10px;
+
+        min-width: 0;
+    }
+
+    &__item-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 32px;
+        height: 32px;
+
+        flex-shrink: 0;
+
+        border-radius: 8px;
+
+        background: #f2f4f7;
+        color: #667085;
+    }
+
+    &__item>div {
+        min-width: 0;
+
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    &__item>div>span {
+        color: #98a2b3;
+        font-size: 11px;
+    }
+
+    &__item strong {
+        overflow-wrap: anywhere;
+
+        color: #344054;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    &__description {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 10px;
+
+        padding: 12px 14px;
+
+        border-radius: 10px;
+
+        background: #f8fafc;
+
+        color: #667085;
+
+        svg {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        p {
+            margin: 0;
+
+            font-size: 13px;
+            line-height: 1.6;
+        }
+    }
+
+    @media (max-width: 600px) {
+
+        &__header {
+            align-items: flex-start;
+        }
+
+        &__grid {
+            grid-template-columns: 1fr;
+        }
+    }
+}

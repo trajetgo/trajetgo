@@ -1,0 +1,56 @@
+@import "../../abstracts/fonts";
+@import "../../abstracts/colors";
+
+.payment-methods {
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.5rem;
+    }
+
+    &__option {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        background-color: $white;
+        transition: border 0.2s, border 0.2s;
+
+        &--selected {
+            border: 2px solid #4caf50;
+        }
+    }
+
+    &__label {
+        // font-size: 0.875rem;
+        // font-weight: 500;
+
+        @include body-text(0.75rem);
+    }
+
+    &__icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 999px;
+    }
+
+    &__checkmark {
+        font-weight: bold;
+        margin-left: auto;
+        color: #4caf50;
+    }
+
+    &__hint {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 2px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        background: rgba(11, 59, 96, 0.04);
+        border: 1px solid rgba(11, 59, 96, 0.08);
+        line-height: 1.5;
+    }
+}

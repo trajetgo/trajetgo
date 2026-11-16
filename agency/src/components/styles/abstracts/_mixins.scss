@@ -1,0 +1,13 @@
+@import './variables';
+
+@mixin respond-md {
+    @media (min-width: $breakpoint-md) {
+        @content;
+    }
+}
+
+@mixin respond-lg {
+    @media (min-width: $breakpoint-lg) {
+        @content;
+    }
+}

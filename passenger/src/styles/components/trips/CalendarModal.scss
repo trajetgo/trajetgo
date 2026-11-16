@@ -1,0 +1,52 @@
+@import '@shared/styles/abstracts/variables';
+
+.calendar-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    /* Centre le datepicker */
+    .react-datepicker {
+        align-self: center;
+
+        font-family: inherit;
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(8, 44, 72, 0.08);
+    }
+
+    .react-datepicker__header {
+        background: var(--tg-primary, #0b3b60);
+        border-bottom: 0;
+        border-radius: 12px 12px 0 0;
+        padding-top: 12px;
+    }
+
+    .react-datepicker__current-month,
+    .react-datepicker__day-name {
+        color: #ffffff;
+    }
+
+    .react-datepicker__navigation-icon::before {
+        border-color: #ffffff;
+    }
+
+    .react-datepicker__day--selected,
+    .react-datepicker__day--keyboard-selected {
+        background: var(--tg-brand-orange, #f59e0b);
+        border-radius: 50%;
+    }
+
+    .react-datepicker__day:hover {
+        border-radius: 50%;
+    }
+
+    /* Actions */
+    &__actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        padding-top: 8px;
+        border-top: 1px solid var(--tg-border, #e4e7ec);
+    }
+}

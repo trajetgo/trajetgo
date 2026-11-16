@@ -1,0 +1,356 @@
+@import '@shared/styles/abstracts/logo';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.home-hero {
+    position: relative;
+    padding: 80px 24px 100px;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 85% 20%,
+            rgba(245, 158, 11, 0.14),
+            transparent 30%),
+        linear-gradient(135deg,
+            var(--tg-primary, #0b3b60) 0%,
+            var(--tg-primary-dark, #082c48) 100%);
+
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    &::before {
+        width: 420px;
+        height: 420px;
+        right: -140px;
+        top: -180px;
+    }
+
+    &::after {
+        width: 300px;
+        height: 300px;
+        left: -160px;
+        bottom: -180px;
+        border-color: rgba(255, 255, 255, 0.06);
+    }
+
+    /* ---------- Contenu ---------- */
+
+    &__content {
+        position: relative;
+        z-index: 2;
+        max-width: 900px;
+        margin: 0 auto 48px;
+        text-align: center;
+    }
+
+    &__eyebrow {
+        @include eyebrow;
+
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 18px;
+        padding: 7px 14px;
+        border-radius: var(--tg-radius-full, 9999px);
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+
+    &__title {
+        @include heading(clamp(36px, 5vw, 58px));
+      
+        margin: 0;
+        color: #fff;
+
+        span {
+            margin-left: 0.5rem;
+            color: var(--tg-logo-orange);
+        }
+    }
+
+    &__description {
+        max-width: 620px;
+        margin: 24px auto 0;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 17px;
+        line-height: 1.7;
+    }
+}
+
+/* =========================================================
+   TRIP SEARCH
+   ========================================================= */
+
+.trip-search {
+    position: relative;
+    z-index: 3;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid rgba(16, 24, 40, 0.06);
+    border-radius: var(--tg-radius-xl, 20px);
+    box-shadow: 0 20px 50px rgba(8, 44, 72, 0.18);
+
+    /* ---------- Grille des champs ---------- */
+
+    &__fields {
+        display: grid;
+        grid-template-columns:
+            minmax(180px, 1fr) 44px
+            minmax(180px, 1fr) minmax(170px, 0.8fr)
+            minmax(150px, 0.7fr);
+        align-items: center;   /* ✅ centrage vertical propre */
+        gap: 12px;
+    }
+
+    /* ---------- Champ cliquable ---------- */
+
+    &__field {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+        min-height: 52px;
+        padding: 0 14px;
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: var(--tg-radius-md, 10px);
+        background: #fff;
+        font-family: inherit;
+        text-align: left;
+        cursor: pointer;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+            border-color: rgba(11, 59, 96, 0.35);
+        }
+
+        &:focus-visible {
+            outline: 0;
+            border-color: var(--tg-primary, #0b3b60);
+            box-shadow: 0 0 0 3px rgba(11, 59, 96, 0.12);
+        }
+    }
+
+    &__icon {
+        flex: 0 0 auto;
+        color: var(--tg-primary, #0b3b60);
+    }
+
+    &__field-body {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;         /* ✅ autorise l'ellipsis */
+        flex: 1;
+    }
+
+    &__field-label {
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1.2;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--tg-text-light, #98a2b3);
+    }
+
+    &__field-value {
+        margin-top: 2px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.3;
+        color: var(--tg-text, #172033);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &--placeholder {
+            color: var(--tg-text-light, #98a2b3);
+            font-weight: 400;
+        }
+    }
+
+    /* ---------- Bouton d'inversion ---------- */
+
+    &__swap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: 50%;
+        background: #fff;
+        color: var(--tg-primary, #0b3b60);
+        cursor: pointer;
+        transition:
+            background 0.2s ease,
+            color 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
+
+        &:hover {
+            border-color: var(--tg-primary, #0b3b60);
+            background: var(--tg-primary, #0b3b60);
+            color: #fff;
+            transform: rotate(180deg);
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(11, 59, 96, 0.2);
+            outline-offset: 2px;
+        }
+    }
+
+    /* ---------- Bouton rechercher ---------- */
+
+    &__submit {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        width: 100%;
+        min-height: 54px;
+        margin-top: 16px;
+        padding: 0 24px;
+        border: 0;
+        border-radius: var(--tg-radius-md, 10px);
+        background: var(--tg-brand-orange, #f59e0b);
+        color: #fff;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+            background 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+
+        &:hover:not(:disabled) {
+            background: var(--tg-logo-orange-700, #e87500);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.25);
+            transform: translateY(-1px);
+        }
+
+        &:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(245, 158, 11, 0.25);
+            outline-offset: 2px;
+        }
+
+        &:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+    }
+
+    /* ---------- Erreur serveur ---------- */
+
+    &__error {
+        margin: 12px 0 0;
+        padding: 10px 14px;
+        border-radius: var(--tg-radius-md, 10px);
+        background: rgba(220, 38, 38, 0.08);
+        color: #b91c1c;
+        font-size: 13px;
+        text-align: center;
+    }
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+    .home-hero {
+        padding-top: 64px;
+    }
+
+    .trip-search {
+        &__fields {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        /* Le swap sort du flux, centré entre les deux colonnes */
+        &__swap {
+            position: absolute;
+            top: 46px;
+            left: 50%;
+            z-index: 2;
+            margin: 0;
+            transform: translateX(-50%);
+
+            &:hover {
+                transform: translateX(-50%) rotate(180deg);
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .home-hero {
+        padding: 52px 16px 64px;
+
+        &__content {
+            margin-bottom: 32px;
+        }
+
+        &__title {
+            font-size: 38px;
+
+            br {
+                display: none;
+            }
+        }
+
+        &__description {
+            font-size: 15px;
+        }
+    }
+
+    .trip-search {
+        padding: 16px;
+        border-radius: 16px;
+
+        /* ✅ Empilement vertical : le swap reste DANS le flux */
+        &__fields {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        &__field {
+            width: 100%;
+            min-height: 50px;
+        }
+
+        /* Swap entre les deux champs, plus de position absolue fragile */
+        &__swap {
+            position: static;
+            position: absolute;
+            align-self: center;
+            width: 38px;
+            height: 38px;
+            margin: -2px 0;
+            transform: none;
+
+            &:hover {
+                transform: rotate(180deg);
+            }
+        }
+
+        &__submit {
+            margin-top: 18px;
+        }
+    }
+}

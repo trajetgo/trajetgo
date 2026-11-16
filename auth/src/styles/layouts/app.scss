@@ -1,0 +1,300 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/logo';
+
+.app-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    // background: #f8fafc;
+
+    &__header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+
+        background: var(--tg-logo-blue);
+        border-bottom: 1px solid #ececec;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, .04);
+
+        .home-header__container {
+            width: min(1200px, calc(100% - 2rem));
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            height: 72px;
+        }
+
+        .home-header__brand {
+            display: flex;
+            align-items: center;
+            gap: .15rem;
+
+            text-decoration: none;
+            // color: $white;
+            font-size: 1.8rem;
+            font-weight: 700;
+
+            #kilo {
+                color: $white;
+            }
+
+            #go {
+                color: #FC8302;
+                font-style: italic;
+            }
+        }
+
+        .home-header__nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+
+            a {
+                display: flex;
+                align-items: center;
+                gap: .5rem;
+
+                color: $white;
+                text-decoration: none;
+                font-weight: 500;
+                transition: .25s;
+
+                &:hover {
+                    color: #2563eb;
+                }
+            }
+        }
+
+        .home-header__actions {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+
+            a {
+                text-decoration: none;
+            }
+
+            .login-btn {
+                display: flex;
+                align-items: center;
+                gap: .25rem;
+                border: 2px solid #ffffff;
+                border-radius: 999px;
+                background: none;
+                padding: 5px;
+                color: white;
+                cursor: pointer;
+
+            }
+        }
+
+        &__menu {
+            display: none;
+            border: none;
+            color: $white;
+            background: transparent;
+            cursor: pointer;
+        }
+    }
+
+    @media (max-width: 900px) {
+
+        .app-layout__header {
+
+            .home-header__nav {
+                display: none;
+            }
+
+            .home-header__menu {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    }
+
+
+    .app-layout__footer {
+        background: var(--tg-logo-blue);
+        color: #e2e8f0;
+        padding-top: 5rem;
+
+        .home-footer__container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem;
+
+            display: grid;
+            grid-template-columns: 1.3fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .home-footer__logo {
+            display: inline-flex;
+            align-items: center;
+            gap: .6rem;
+
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+
+            img {
+                width: 100px;
+            }
+        }
+
+        .home-footer__tagline {
+            color: #93c5fd;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .home-footer__description {
+            color: #94a3b8;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            max-width: 360px;
+        }
+
+        .home-footer__socials {
+            display: flex;
+            gap: 1rem;
+
+            a {
+                width: 40px;
+                height: 40px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                border-radius: 50%;
+                background: rgba(255, 255, 255, .06);
+
+                color: #e2e8f0;
+
+                transition: .25s ease;
+
+                &:hover {
+                    background: $kg-secondary;
+                    color: $white;
+                    transform: translateY(-2px);
+                }
+            }
+        }
+
+        .home-footer__links {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .home-footer__contact {
+            h4 {
+                color: $kg-secondary;
+                margin-bottom: 1.2rem;
+            }
+        }
+
+        .footer-column {
+            display: flex;
+            flex-direction: column;
+            gap: .85rem;
+
+            h4 {
+                color: $kg-secondary;
+                margin-bottom: .5rem;
+                font-size: 1rem;
+            }
+
+            a {
+                color: #94a3b8;
+                text-decoration: none;
+                transition: color .2s ease;
+
+                &:hover {
+                    color: #ffffff;
+                }
+            }
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            margin-bottom: 1rem;
+            color: #94a3b8;
+
+            svg {
+                color: #60a5fa;
+                flex-shrink: 0;
+            }
+        }
+
+        .home-footer__bottom {
+            border-top: 1px solid rgba(255, 255, 255, .08);
+            padding: 1.25rem 1.5rem;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+
+            max-width: 1200px;
+            margin: 0 auto;
+
+            p {
+                margin: 0;
+                color: #94a3b8;
+                font-size: .92rem;
+            }
+        }
+    }
+
+    @media (max-width: 992px) {
+
+        .app-layout__footer {
+
+            .home-footer__container {
+                grid-template-columns: 1fr;
+            }
+
+            .home-footer__links {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .home-footer__bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+    }
+
+    @media (max-width: 640px) {
+
+        .app-layout__footer {
+
+            padding-top: 4rem;
+
+            .home-footer__container {
+                padding: 0 1rem 2.5rem;
+            }
+
+            .home-footer__links {
+                grid-template-columns: 1fr;
+            }
+
+            .home-footer__socials {
+                justify-content: flex-start;
+            }
+        }
+
+    }
+}

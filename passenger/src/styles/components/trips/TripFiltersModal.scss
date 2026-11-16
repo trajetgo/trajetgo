@@ -1,0 +1,220 @@
+@import '@shared/styles/abstracts/variables';
+
+.trip-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    /* ---------- Sections ---------- */
+
+    &__section {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    &__section-title {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin: 0;
+
+        color: #667085;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+
+        svg {
+            color: #98a2b3;
+        }
+    }
+
+    /* ---------- Liste tri ---------- */
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    &__option {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+
+        width: 100%;
+        padding: 12px 14px;
+
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: 12px;
+        background: #ffffff;
+        color: var(--tg-text, #172033);
+
+        font-family: inherit;
+        text-align: left;
+        cursor: pointer;
+
+        transition:
+            border-color 0.15s ease,
+            background 0.15s ease;
+
+        &:hover:not(&--active) {
+            background: #fbfcfd;
+            border-color: rgba(11, 59, 96, 0.3);
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(11, 59, 96, 0.2);
+            outline-offset: 2px;
+        }
+
+        &--active {
+            border-color: var(--tg-primary, #0b3b60);
+            background: rgba(11, 59, 96, 0.04);
+        }
+
+        &-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+
+            width: 36px;
+            height: 36px;
+
+            border-radius: 10px;
+            background: #f1f5f9;
+            color: #667085;
+
+            transition: background 0.15s, color 0.15s;
+        }
+
+        &--active &-icon {
+            background: rgba(11, 59, 96, 0.1);
+            color: var(--tg-primary, #0b3b60);
+        }
+
+        &-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+            min-width: 0;
+
+            strong {
+                color: #172033;
+                font-size: 14px;
+                font-weight: 600;
+            }
+
+            span {
+                color: #667085;
+                font-size: 12px;
+            }
+        }
+
+        &-check {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+
+            width: 22px;
+            height: 22px;
+
+            border-radius: 50%;
+            background: transparent;
+            color: transparent;
+
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        &--active &-check {
+            background: var(--tg-primary, #0b3b60);
+            color: #ffffff;
+        }
+    }
+
+    /* ---------- Plage de prix ---------- */
+
+    &__price-row {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 8px;
+    }
+
+    &__price-separator {
+        color: #98a2b3;
+        font-weight: 600;
+    }
+
+    /* ---------- Actions ---------- */
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+
+        padding-top: 16px;
+        border-top: 1px solid var(--tg-border, #e4e7ec);
+    }
+
+    &__reset {
+        padding: 8px 14px;
+
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: 8px;
+        background: transparent;
+        color: #667085;
+
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 500;
+
+        cursor: pointer;
+        transition: color 0.15s, border-color 0.15s;
+
+        &:hover:not(:disabled) {
+            color: var(--tg-primary, #0b3b60);
+            border-color: rgba(11, 59, 96, 0.3);
+        }
+
+        &:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+    }
+
+    &__apply {
+        padding: 10px 20px;
+
+        border: 0;
+        border-radius: 10px;
+        background: var(--tg-brand-orange, #f59e0b);
+        color: #ffffff;
+
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
+
+        &:hover {
+            background: var(--tg-logo-orange-700, #e87500);
+            transform: translateY(-1px);
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(245, 158, 11, 0.25);
+            outline-offset: 2px;
+        }
+    }
+}

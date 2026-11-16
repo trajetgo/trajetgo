@@ -1,0 +1,199 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+
+/* =========================================================
+   TICKET ACTIONS
+   ========================================================= */
+
+.ticket-actions {
+    position: relative;
+    display: inline-block;
+
+    /* =====================================================
+       BOUTON TRIGGER (•••)
+       ===================================================== */
+
+    &__trigger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: 8px;
+        background: #ffffff;
+        color: var(--tg-text-light, #667085);
+        cursor: pointer;
+        transition:
+            background 0.15s ease,
+            color 0.15s ease,
+            border-color 0.15s ease;
+
+        svg {
+            flex: 0 0 auto;
+        }
+
+        &:hover {
+            background: #f8fafc;
+            color: var(--tg-primary, #0b3b60);
+            border-color: rgba(11, 59, 96, 0.3);
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(11, 59, 96, 0.2);
+            outline-offset: 2px;
+        }
+
+        /* État ouvert */
+        &[aria-expanded="true"] {
+            background: rgba(11, 59, 96, 0.08);
+            color: var(--tg-primary, #0b3b60);
+            border-color: rgba(11, 59, 96, 0.3);
+        }
+    }
+
+    /* =====================================================
+       MENU DÉROULANT
+       ===================================================== */
+
+    &__menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        z-index: 50;
+
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        min-width: 180px;
+        padding: 6px;
+
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: var(--tg-radius-md, 10px);
+        background: #ffffff;
+        box-shadow:
+            0 8px 24px rgba(8, 44, 72, 0.12),
+            0 2px 6px rgba(8, 44, 72, 0.06);
+
+        animation: ticketActionsMenuIn 0.15s ease-out;
+    }
+
+    /* =====================================================
+       BOUTON D'ACTION (dans le menu)
+       ===================================================== */
+
+    &__btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
+
+        width: 100%;
+        padding: 8px 10px;
+
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+
+        color: var(--tg-text, #172033);
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 500;
+        text-align: left;
+        cursor: pointer;
+        transition:
+            background 0.15s ease,
+            color 0.15s ease;
+
+        svg {
+            flex: 0 0 auto;
+            color: var(--tg-text-light, #667085);
+            transition: color 0.15s ease;
+        }
+
+        /* Le texte du bouton est optionnel : la classe + icône suffit */
+        &:hover:not(:disabled) {
+            background: #f8fafc;
+            color: var(--tg-primary, #0b3b60);
+
+            svg {
+                color: var(--tg-primary, #0b3b60);
+            }
+        }
+
+        &:focus-visible {
+            outline: 2px solid rgba(11, 59, 96, 0.3);
+            outline-offset: -2px;
+        }
+
+        &:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* ---------- Variantes ---------- */
+
+        &--neutral {
+            /* couleur par défaut */
+        }
+
+        &--success {
+            &:hover:not(:disabled) {
+                background: rgba(16, 185, 129, 0.08);
+                color: #047857;
+
+                svg {
+                    color: #047857;
+                }
+            }
+        }
+
+        &--danger {
+            &:hover:not(:disabled) {
+                background: rgba(220, 38, 38, 0.08);
+                color: #b91c1c;
+
+                svg {
+                    color: #b91c1c;
+                }
+            }
+        }
+
+        &--warning {
+            &:hover:not(:disabled) {
+                background: rgba(245, 158, 11, 0.08);
+                color: #b45309;
+
+                svg {
+                    color: #b45309;
+                }
+            }
+        }
+    }
+}
+
+/* =========================================================
+   ANIMATION D'OUVERTURE
+   ========================================================= */
+
+@keyframes ticketActionsMenuIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Respect des préférences utilisateur */
+@media (prefers-reduced-motion: reduce) {
+    .ticket-actions__menu {
+        animation: none;
+    }
+}

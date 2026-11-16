@@ -1,0 +1,303 @@
+@import '../../abstracts/variables';
+
+/* =========================================================
+   USER DETAILS MODAL
+   ========================================================= */
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 4px 0;
+
+    /* =====================================================
+       EN-TÊTE (avatar + nom + badges)
+       ===================================================== */
+
+    &__header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--tg-border, #e4e7ec);
+    }
+
+    &__avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+
+        width: 64px;
+        height: 64px;
+
+        border-radius: 50%;
+        background: rgba(11, 59, 96, 0.1);
+        color: var(--tg-primary, #0b3b60);
+
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+
+        overflow: hidden;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &__identity {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 0;
+    }
+
+    &__name {
+        margin: 0;
+        color: #172033;
+        font-size: 18px;
+        font-weight: 700;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* ---------- Badges ---------- */
+
+    &__badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    &__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 4px 10px;
+        border-radius: 999px;
+
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+
+        white-space: nowrap;
+
+        /* ---------- Rôles ---------- */
+
+        &--role-super-admin {
+            background: rgba(168, 85, 247, 0.12);
+            color: #7e22ce;
+        }
+
+        &--role-company-admin {
+            background: rgba(11, 59, 96, 0.1);
+            color: var(--tg-primary, #0b3b60);
+        }
+
+        &--role-agency-agent {
+            background: rgba(59, 130, 246, 0.12);
+            color: #1d4ed8;
+        }
+
+        &--role-controller {
+            background: rgba(245, 158, 11, 0.12);
+            color: #b45309;
+        }
+
+        &--role-unknown {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
+        }
+
+        /* ---------- Statuts ---------- */
+
+        &--status-active {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+        }
+
+        &--status-inactive {
+            background: rgba(107, 114, 128, 0.15);
+            color: #4b5563;
+        }
+
+        &--status-suspended {
+            background: rgba(220, 38, 38, 0.12);
+            color: #b91c1c;
+        }
+
+        &--status-invited {
+            background: rgba(59, 130, 246, 0.12);
+            color: #1d4ed8;
+        }
+
+        &--status-unknown {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
+        }
+    }
+
+    &__badge-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+        flex: 0 0 auto;
+    }
+
+    /* =====================================================
+       ONGLETS
+       ===================================================== */
+
+    &__tabs {
+        display: flex;
+        gap: 4px;
+
+        padding: 4px;
+        border-radius: var(--tg-radius-md, 10px);
+        background: #f8fafc;
+
+        overflow-x: auto;
+    }
+
+    &__tab {
+        flex: 1;
+        padding: 8px 12px;
+
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+
+        color: #667085;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+
+        cursor: pointer;
+        white-space: nowrap;
+
+        transition: background 0.15s, color 0.15s;
+
+        &:hover {
+            color: var(--tg-primary, #0b3b60);
+        }
+
+        &--active {
+            background: #ffffff;
+            color: var(--tg-primary, #0b3b60);
+            box-shadow: 0 1px 3px rgba(8, 44, 72, 0.08);
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(11, 59, 96, 0.2);
+            outline-offset: 2px;
+        }
+    }
+
+    /* =====================================================
+       CONTENU
+       ===================================================== */
+
+    &__content {
+        min-height: 180px;
+    }
+
+    /* ---------- Grille d'infos ---------- */
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+    }
+
+    &__item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        padding: 12px 14px;
+
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: var(--tg-radius-md, 10px);
+        background: #fbfcfd;
+    }
+
+    &__item-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+
+        width: 32px;
+        height: 32px;
+
+        border-radius: 8px;
+        background: rgba(11, 59, 96, 0.08);
+        color: var(--tg-primary, #0b3b60);
+    }
+
+    &__item-body {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    &__item-label {
+        color: #98a2b3;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    &__item-value {
+        color: #172033;
+        font-size: 14px;
+        font-weight: 500;
+
+        word-break: break-word;
+    }
+
+    /* ---------- ID interne ---------- */
+
+    &__id {
+        padding: 2px 6px;
+
+        border-radius: 4px;
+        background: #f1f5f9;
+        color: #475467;
+
+        font-family: monospace;
+        font-size: 12px;
+    }
+
+    /* =====================================================
+       ACTIONS
+       ===================================================== */
+
+    &__actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+
+        padding-top: 16px;
+        border-top: 1px solid var(--tg-border, #e4e7ec);
+
+        @media (max-width: 480px) {
+            flex-direction: column-reverse;
+
+            button {
+                width: 100%;
+            }
+        }
+    }
+}

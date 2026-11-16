@@ -1,0 +1,198 @@
+// À adapter à vos variables de thème (couleurs, rayons) si vous en avez.
+.tgtl-resolution {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+    &__heading {
+        h3 {
+            margin: 0 0 .25rem;
+            font-size: 1.1rem;
+        }
+
+        p {
+            margin: 0;
+            color: #64748b;
+            font-size: .92rem;
+        }
+    }
+
+    &__steps {
+        margin: 0;
+        padding: .9rem 1rem .9rem 2rem;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: .9rem;
+        color: #334155;
+
+        li+li {
+            margin-top: .3rem;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .75rem;
+    }
+
+    &__primary,
+    &__secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .65rem 1rem;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: .9rem;
+        cursor: pointer;
+    }
+
+    &__primary {
+        background: #1d4ed8;
+        color: #fff;
+        border: 0;
+    }
+
+    &__secondary {
+        background: #fff;
+        color: #1e293b;
+        border: 1px solid #cbd5e1;
+    }
+
+    &__groups {
+        display: flex;
+        flex-direction: column;
+        gap: .75rem;
+    }
+
+    &__group {
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        overflow: hidden;
+
+        &-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            padding: .8rem 1rem;
+            background: #f8fafc;
+            border: 0;
+            cursor: pointer;
+            text-align: left;
+
+            span {
+                margin-left: auto;
+                min-width: 1.5rem;
+                padding: 0 .5rem;
+                border-radius: 999px;
+                background: #e2e8f0;
+                font-size: .78rem;
+                text-align: center;
+            }
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            gap: .7rem;
+            padding: .8rem 1rem;
+            border-top: 1px solid #e2e8f0;
+            font-size: .88rem;
+
+            &.is-error svg {
+                color: #dc2626;
+            }
+
+            &.is-warning svg {
+                color: #d97706;
+            }
+
+            svg {
+                flex-shrink: 0;
+                margin-top: .15rem;
+            }
+
+            div {
+                display: flex;
+                flex-direction: column;
+                gap: .2rem;
+            }
+
+            small {
+                color: #64748b;
+            }
+        }
+    }
+
+    &__hint {
+        display: flex;
+        align-items: flex-start;
+        gap: .35rem;
+        margin: .15rem 0 0;
+        color: #475569;
+        font-size: .82rem;
+
+        svg {
+            margin-top: .15rem;
+            color: #ca8a04;
+        }
+    }
+
+    &__acknowledge {
+        display: flex;
+        gap: .6rem;
+        align-items: flex-start;
+        padding: .9rem 1rem;
+        border: 1px solid #fcd34d;
+        background: #fffbeb;
+        border-radius: 12px;
+        font-size: .9rem;
+        cursor: pointer;
+    }
+
+    &__clear {
+        display: flex;
+        gap: .8rem;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 12px;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+
+        svg {
+            color: #16a34a;
+        }
+
+        p {
+            margin: 0;
+            font-size: .88rem;
+            color: #166534;
+        }
+    }
+
+    &__notice {
+        display: flex;
+        gap: .6rem;
+        align-items: center;
+        color: #64748b;
+        font-size: .85rem;
+
+        p {
+            margin: 0;
+        }
+    }
+
+    &__empty {
+        text-align: center;
+        padding: 2rem 1rem;
+        color: #64748b;
+    }
+}

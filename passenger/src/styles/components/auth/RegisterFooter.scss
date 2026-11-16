@@ -1,0 +1,20 @@
+.register-footer {
+    margin-top: 2rem;
+    text-align: center;
+
+    &__login {
+        margin-bottom: 1rem;
+        font-size: 14px;
+        color: #6b7280;
+
+        a {
+            font-weight: 600;
+            color: #1f6feb;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}

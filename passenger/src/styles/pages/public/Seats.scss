@@ -1,0 +1,488 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/logo';
+@import '@shared/styles/abstracts/variables';
+
+/* =========================================================
+   PAGE SEATS
+   ========================================================= */
+
+.seats {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    /* =====================================================
+       CARDS
+       ===================================================== */
+
+    &__card {
+        width: 100%;
+        background: #ffffff;
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: 16px;
+        box-sizing: border-box;
+        box-shadow: 0 2px 8px rgba(16, 24, 40, 0.04);
+    }
+
+    /* =====================================================
+       TRIP CARD
+       ===================================================== */
+
+    &__card--trip {
+        padding: 20px 24px;
+    }
+
+    &__trip-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    &__trip-main {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+    }
+
+    &__trip-icon {
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 12px;
+        background: #e8f2f8;
+        color: #0b3b60;
+    }
+
+    &__trip-info {
+        min-width: 0;
+    }
+
+    /* =====================================================
+       TITLE
+       ===================================================== */
+
+    &__title {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 9px;
+
+        margin: 0;
+
+        color: var(--tg-text, #172033);
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.3;
+        letter-spacing: -0.01em;
+    }
+
+    &__arrow {
+        color: var(--tg-brand-orange, #f59e0b);
+        font-weight: 400;
+    }
+
+    /* =====================================================
+       META
+       ===================================================== */
+
+    &__meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        margin: 6px 0 0;
+
+        color: var(--tg-text-light, #667085);
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    &__separator {
+        color: #d0d5dd;
+    }
+
+    /* =====================================================
+       TOGGLE
+       ===================================================== */
+
+    &__trip-toggle {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0;
+
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: 9px;
+
+        background: #ffffff;
+        color: #475467;
+
+        cursor: pointer;
+
+        transition:
+            background 0.2s ease,
+            border-color 0.2s ease,
+            color 0.2s ease,
+            transform 0.15s ease;
+
+        &:hover {
+            background: #f9fafb;
+            border-color: #cfd4dc;
+            color: #0b3b60;
+        }
+
+        &:active {
+            transform: scale(0.96);
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(11, 59, 96, 0.15);
+            outline-offset: 2px;
+        }
+    }
+
+    /* =====================================================
+       TRIP DETAILS
+       ===================================================== */
+
+    &__trip-details {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 24px;
+
+        margin-top: 20px;
+        padding-top: 20px;
+
+        border-top: 1px solid #f0f2f5;
+
+        p {
+            margin: 0;
+
+            color: #667085;
+            font-size: 13px;
+            line-height: 1.5;
+
+            strong {
+                color: #344054;
+                font-weight: 600;
+            }
+        }
+    }
+
+    /* =====================================================
+       PLACE CARD
+       ===================================================== */
+
+    &__card--place {
+        padding: 28px 24px;
+    }
+
+    &__place-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+
+        padding-bottom: 20px;
+        border-bottom: 1px solid #f0f2f5;
+
+        h2 {
+            margin: 0;
+
+            color: var(--tg-text, #172033);
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        p {
+            margin: 6px 0 0;
+
+            color: var(--tg-text-light, #667085);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    }
+
+    /* =====================================================
+       BUS LAYOUT
+       ===================================================== */
+
+    &__layout {
+        min-height: 300px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-top: 24px;
+        padding: 32px;
+
+        border: 1px dashed #d0d5dd;
+        border-radius: 14px;
+
+        background: #f9fafb;
+
+        color: #98a2b3;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    /* =====================================================
+       TABLET
+       ===================================================== */
+
+    @media (max-width: 768px) {
+        padding: 24px 16px 48px;
+
+        &__card--trip {
+            padding: 18px 20px;
+        }
+
+        &__card--place {
+            padding: 24px 20px;
+        }
+
+        &__title {
+            font-size: 19px;
+        }
+
+        &__trip-details {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* =====================================================
+       BARRE D'ACTION
+       ===================================================== */
+
+    &__actions {
+        position: sticky;
+        bottom: 16px;
+        z-index: 10;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+
+        margin-top: 24px;
+        padding: 16px 20px;
+
+        background: #ffffff;
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: var(--tg-radius-lg, 16px);
+        box-shadow: 0 8px 24px rgba(8, 44, 72, 0.08);
+
+        @media (max-width: 640px) {
+            position: fixed;
+            left: 16px;
+            right: 16px;
+            bottom: 16px;
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+
+    &__actions-summary {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+    }
+
+    &__actions-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--tg-text, #172033);
+        font-size: 14px;
+        font-weight: 700;
+
+        svg {
+            color: var(--tg-primary, #0b3b60);
+        }
+    }
+
+    &__actions-seats {
+        color: var(--tg-text-light, #667085);
+        font-size: 13px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__continue {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        min-height: 48px;
+        padding: 0 24px;
+
+        border: 0;
+        border-radius: var(--tg-radius-md, 10px);
+
+        background: var(--tg-brand-orange, #f59e0b);
+        color: #ffffff;
+
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 600;
+
+        cursor: pointer;
+        transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+
+        &:hover:not(:disabled) {
+            background: var(--tg-logo-orange-700, #e87500);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.25);
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(245, 158, 11, 0.25);
+            outline-offset: 2px;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #cbd5e1;
+            color: #64748b;
+        }
+
+        @media (max-width: 640px) {
+            .seats { padding-bottom: 100px; }
+            width: 100%;
+        }
+    }
+
+    /* =====================================================
+       MOBILE
+       ===================================================== */
+
+    @media (max-width: 576px) {
+        padding: 20px 12px 40px;
+
+        &__card {
+            border-radius: 14px;
+        }
+
+        &__card--trip {
+            padding: 16px;
+        }
+
+        &__trip-header {
+            align-items: flex-start;
+        }
+
+        &__trip-main {
+            gap: 11px;
+        }
+
+        &__trip-icon {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 10px;
+
+            svg {
+                width: 21px;
+                height: 21px;
+            }
+        }
+
+        &__title {
+            gap: 7px;
+            font-size: 17px;
+        }
+
+        &__meta {
+            font-size: 12px;
+        }
+
+        &__trip-toggle {
+            width: 34px;
+            height: 34px;
+        }
+
+        &__trip-details {
+            margin-top: 16px;
+            padding-top: 16px;
+
+            gap: 10px;
+        }
+
+        &__card--place {
+            padding: 20px 16px;
+        }
+
+        &__place-header {
+            padding-bottom: 16px;
+
+            h2 {
+                font-size: 18px;
+            }
+
+            p {
+                font-size: 13px;
+            }
+        }
+
+        &__layout {
+            min-height: 250px;
+            margin-top: 20px;
+            padding: 20px;
+        }
+    }
+
+    /* =====================================================
+       SMALL MOBILE
+       ===================================================== */
+
+    @media (max-width: 400px) {
+        &__trip-main {
+            align-items: flex-start;
+        }
+
+        &__trip-icon {
+            width: 38px;
+            height: 38px;
+        }
+
+        &__title {
+            font-size: 16px;
+        }
+
+        &__meta {
+            font-size: 11px;
+        }
+
+        &__trip-toggle {
+            width: 32px;
+            height: 32px;
+        }
+    }
+}

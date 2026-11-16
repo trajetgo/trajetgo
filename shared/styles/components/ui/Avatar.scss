@@ -1,0 +1,298 @@
+@import '../../abstracts/animations';
+
+.avatar {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-weight: 600;
+    user-select: none;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    font-family: inherit;
+
+    // Tailles
+    &.avatar-xs {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+
+        .avatar-initials {
+            font-size: 10px;
+        }
+    }
+
+    &.avatar-sm {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+
+        .avatar-initials {
+            font-size: 12px;
+        }
+    }
+
+    &.avatar-md {
+        width: 48px;
+        height: 48px;
+        font-size: 16px;
+
+        .avatar-initials {
+            font-size: 16px;
+        }
+    }
+
+    &.avatar-lg {
+        width: 64px;
+        height: 64px;
+        font-size: 24px;
+
+        .avatar-initials {
+            font-size: 24px;
+        }
+    }
+
+    &.avatar-xl {
+        width: 80px;
+        height: 80px;
+        font-size: 32px;
+
+        .avatar-initials {
+            font-size: 32px;
+        }
+    }
+
+    &.avatar-2xl {
+        width: 120px;
+        height: 120px;
+        font-size: 48px;
+
+        .avatar-initials {
+            font-size: 48px;
+        }
+    }
+
+    // Formes
+    &.avatar-circle {
+        border-radius: 50%;
+    }
+
+    &.avatar-square {
+        border-radius: 4px;
+    }
+
+    &.avatar-rounded {
+        border-radius: 12px;
+    }
+
+    // Bordure
+    &.avatar-border {
+        border: 3px solid currentColor;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
+
+    // Image
+    .avatar-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    // Initiales
+    .avatar-initials {
+        font-weight: 600;
+        line-height: 1;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    // Cliquable
+    &.avatar-clickable {
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        &:active {
+            transform: scale(0.95);
+        }
+
+        &:focus-visible {
+            outline: 2px solid #6c63ff;
+            outline-offset: 2px;
+        }
+    }
+
+    // Badge de statut
+    .avatar-status {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 25%;
+        height: 25%;
+        border-radius: 50%;
+        border: 2px solid white;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+
+        // Tailles adaptées
+        .avatar-xs & {
+            width: 30%;
+            height: 30%;
+            border-width: 1.5px;
+        }
+
+        .avatar-sm & {
+            width: 28%;
+            height: 28%;
+            border-width: 1.5px;
+        }
+
+        .avatar-md & {
+            width: 25%;
+            height: 25%;
+            border-width: 2px;
+        }
+
+        .avatar-lg & {
+            width: 22%;
+            height: 22%;
+            border-width: 2.5px;
+        }
+
+        .avatar-xl & {
+            width: 20%;
+            height: 20%;
+            border-width: 3px;
+        }
+
+        .avatar-2xl & {
+            width: 18%;
+            height: 18%;
+            border-width: 3px;
+        }
+
+        // Statuts
+        &.status-online {
+            background: #28a745;
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+
+        &.status-offline {
+            background: #6c757d;
+        }
+
+        &.status-busy {
+            background: #dc3545;
+            animation: statusPulse 1.5s ease-in-out infinite;
+        }
+
+        &.status-away {
+            background: #ffc107;
+            animation: statusPulse 2.5s ease-in-out infinite;
+        }
+    }
+
+    // Animation de chargement
+    &.avatar-loading {
+        animation: avatarPulse 1.5s ease-in-out infinite;
+    }
+}
+
+// Groupe d'avatars
+.avatar-group {
+    display: flex;
+    align-items: center;
+
+    .avatar {
+        margin-right: -8px;
+        border: 2px solid white;
+        transition: all 0.3s ease;
+
+        &:hover {
+            transform: translateY(-4px);
+            z-index: 1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    .avatar-more {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f3f4f6;
+        color: #6b7280;
+        font-size: 12px;
+        font-weight: 600;
+        border: 2px solid white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+
+        &:hover {
+            background: #e5e7eb;
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+    }
+}
+
+// Responsive
+@media (max-width: 768px) {
+    .avatar {
+        &.avatar-xl {
+            width: 64px;
+            height: 64px;
+            font-size: 24px;
+
+            .avatar-initials {
+                font-size: 24px;
+            }
+        }
+
+        &.avatar-2xl {
+            width: 96px;
+            height: 96px;
+            font-size: 36px;
+
+            .avatar-initials {
+                font-size: 36px;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .avatar {
+        &.avatar-xl {
+            width: 56px;
+            height: 56px;
+            font-size: 20px;
+
+            .avatar-initials {
+                font-size: 20px;
+            }
+        }
+
+        &.avatar-2xl {
+            width: 80px;
+            height: 80px;
+            font-size: 28px;
+
+            .avatar-initials {
+                font-size: 28px;
+            }
+        }
+    }
+}

@@ -1,0 +1,166 @@
+.schedule-actions {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &__trigger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 36px;
+        height: 36px;
+
+        padding: 0;
+
+        border: 1px solid transparent;
+        border-radius: 8px;
+
+        background: transparent;
+        color: #667085;
+
+        cursor: pointer;
+
+        transition:
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            color 0.15s ease,
+            transform 0.15s ease;
+
+        &:hover {
+            background: #f2f4f7;
+            border-color: #e4e7ec;
+            color: #172033;
+        }
+
+        &:focus-visible {
+            outline: 2px solid #0b3b60;
+            outline-offset: 2px;
+        }
+
+        &:active {
+            transform: scale(0.96);
+        }
+
+        svg {
+            flex-shrink: 0;
+        }
+    }
+
+    &__menu {
+        position: absolute;
+
+        top: calc(100% + 8px);
+        right: 0;
+
+        z-index: 50;
+
+        min-width: 210px;
+
+        padding: 6px;
+
+        border: 1px solid #e4e7ec;
+        border-radius: 10px;
+
+        background: #ffffff;
+
+        box-shadow:
+            0 10px 24px rgba(16, 24, 40, 0.08),
+            0 2px 6px rgba(16, 24, 40, 0.05);
+
+        animation: schedule-actions-menu-in 0.12s ease-out;
+    }
+
+    &__item {
+        width: 100%;
+
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        min-height: 40px;
+
+        padding: 0 11px;
+
+        border: 0;
+        border-radius: 7px;
+
+        background: transparent;
+
+        color: #344054;
+
+        font-size: 13px;
+        font-weight: 500;
+
+        text-align: left;
+
+        cursor: pointer;
+
+        transition:
+            background-color 0.15s ease,
+            color 0.15s ease;
+
+        svg {
+            flex-shrink: 0;
+            color: #667085;
+        }
+
+        span {
+            flex: 1;
+        }
+
+        &:hover {
+            background: #f7f9fc;
+            color: #172033;
+
+            svg {
+                color: #0b3b60;
+            }
+        }
+
+        &:focus-visible {
+            outline: 2px solid #0b3b60;
+            outline-offset: -2px;
+        }
+
+        &:active {
+            background: #eef2f6;
+        }
+    }
+}
+
+@keyframes schedule-actions-menu-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .schedule-actions {
+        &__menu {
+            right: 0;
+            min-width: 195px;
+        }
+
+        &__item {
+            min-height: 44px;
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .schedule-actions__menu,
+    .schedule-actions__trigger,
+    .schedule-actions__item {
+        animation: none;
+        transition: none;
+    }
+}

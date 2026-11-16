@@ -1,0 +1,59 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+
+.route-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    &__btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 32px;
+        height: 32px;
+        padding: 0;
+
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: 8px;
+        background: #ffffff;
+        color: var(--tg-text-light, #667085);
+
+        cursor: pointer;
+        transition:
+            background 0.15s ease,
+            color 0.15s ease,
+            border-color 0.15s ease;
+
+        &:hover {
+            background: #f8fafc;
+            color: var(--tg-primary, #0b3b60);
+            border-color: rgba(11, 59, 96, 0.3);
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(11, 59, 96, 0.2);
+            outline-offset: 2px;
+        }
+
+        &--success:hover {
+            color: #047857;
+            border-color: rgba(16, 185, 129, 0.4);
+            background: rgba(16, 185, 129, 0.06);
+        }
+
+        &--warning:hover {
+            color: #b45309;
+            border-color: rgba(245, 158, 11, 0.4);
+            background: rgba(245, 158, 11, 0.06);
+        }
+
+        &--danger:hover {
+            color: #b91c1c;
+            border-color: rgba(220, 38, 38, 0.4);
+            background: rgba(220, 38, 38, 0.06);
+        }
+    }
+}

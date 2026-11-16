@@ -1,0 +1,240 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/logo';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+
+
+.app-footer {
+    width: 100%;
+
+    margin-top: auto;
+
+    background: #ffffff;
+    border-top: 1px solid #e4e7ec;
+
+    color: #667085;
+
+    // =====================================================
+    // CONTAINER
+    // =====================================================
+
+    &__container {
+        display: grid;
+        grid-template-columns:
+            minmax(240px, 1.5fr) repeat(2, minmax(150px, 1fr)) minmax(220px, 1.2fr);
+
+        gap: 48px;
+
+        max-width: 1400px;
+
+        margin: 0 auto;
+        padding: 36px 32px;
+    }
+
+
+    // =====================================================
+    // BRAND
+    // =====================================================
+
+    &__brand {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    &__logo {
+        display: inline-flex;
+        align-items: center;
+
+        margin-bottom: 12px;
+
+        img {
+            display: block;
+
+            width: 50px;
+            height: auto;
+
+            object-fit: contain;
+        }
+    }
+
+    &__title {
+        margin: 0 0 6px;
+
+        color: #0b3b60;
+
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    &__description {
+        max-width: 290px;
+
+        margin: 0;
+
+        color: #667085;
+
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+
+    // =====================================================
+    // COLUMNS
+    // =====================================================
+
+    &__column {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        gap: 9px;
+
+        h4 {
+            margin: 0 0 5px;
+
+            color: #172033;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        a {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            color: #667085;
+
+            font-size: 12px;
+            line-height: 1.5;
+            text-decoration: none;
+
+            transition:
+                color 0.15s ease;
+
+            svg {
+                flex-shrink: 0;
+            }
+
+            &:hover {
+                color: #0b3b60;
+            }
+
+            &:focus-visible {
+                outline: 2px solid #0b3b60;
+                outline-offset: 2px;
+                border-radius: 3px;
+            }
+        }
+    }
+
+
+    // =====================================================
+    // CONTACT
+    // =====================================================
+
+    &__contact {
+        a {
+            font-size: 12px;
+        }
+    }
+
+    &__availability {
+        margin-top: 3px;
+
+        color: #98a2b3;
+
+        font-size: 11px;
+    }
+
+
+    // =====================================================
+    // BOTTOM
+    // =====================================================
+
+    &__bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+
+        border-top: 1px solid #eef0f3;
+
+        padding: 16px 32px;
+
+        background: #fafbfc;
+
+        font-size: 11px;
+    }
+
+    &__bottom-left {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+
+        gap: 8px;
+
+        color: #98a2b3;
+    }
+
+    &__separator {
+        color: #d0d5dd;
+    }
+
+    &__bottom-links {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+
+        gap: 18px;
+
+        a {
+            color: #667085;
+
+            text-decoration: none;
+
+            transition: color 0.15s ease;
+
+            &:hover {
+                color: #0b3b60;
+            }
+
+            &:focus-visible {
+                outline: 2px solid #0b3b60;
+                outline-offset: 2px;
+            }
+        }
+    }
+
+
+    // =====================================================
+    // RESPONSIVE
+    // =====================================================
+
+    @media (max-width: 1100px) {
+        &__container {
+            grid-template-columns:
+                repeat(2, minmax(180px, 1fr));
+
+            gap: 32px;
+        }
+    }
+
+    @media (max-width: 700px) {
+        &__container {
+            grid-template-columns: 1fr;
+
+            gap: 28px;
+
+            padding: 28px 20px;
+        }
+
+        &__bottom {
+            flex-direction: column;
+            align-items: flex-start;
+
+            padding: 16px 20px;
+        }
+    }
+}

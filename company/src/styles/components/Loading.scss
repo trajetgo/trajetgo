@@ -1,0 +1,76 @@
+.loading {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 2rem;
+    box-sizing: border-box;
+
+    // Voile au-dessus de la page
+    background: rgba(15, 23, 42, 0.25);
+
+    // Flou du contenu derrière
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+    // La boîte centrale
+    &__box {
+        width: min(100%, 280px);
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        padding: 2rem;
+
+        box-sizing: border-box;
+
+        background: #ffffff;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+
+        box-shadow:
+            0 10px 25px rgba(15, 23, 42, 0.10),
+            0 20px 50px rgba(15, 23, 42, 0.08);
+    }
+
+    &__logo {
+        width: 90px;
+        height: 90px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 1.5rem;
+
+        overflow: hidden;
+
+        img {
+            width: 65px;
+            height: 65px;
+            object-fit: contain;
+        }
+    }
+
+    .activity-indicator {
+        margin-bottom: 0.75rem;
+    }
+
+    &__message {
+        margin: 0;
+
+        color: #64748b;
+
+        font-size: 0.9rem;
+        font-weight: 500;
+
+        text-align: center;
+    }
+}

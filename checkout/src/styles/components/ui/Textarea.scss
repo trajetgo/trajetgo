@@ -1,0 +1,117 @@
+
+
+.textarea-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+    width: 100%;
+}
+
+.textarea-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .required-star {
+        color: #dc3545;
+        font-size: 16px;
+    }
+}
+
+
+.base-textarea {
+    // width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    background-color: white;
+    color: #1f2937;
+    transition: all 0.2s ease;
+    outline: none;
+
+    &::placeholder {
+        color: #9ca3af;
+    }
+
+    &:hover:not(:disabled) {
+        border-color: #9ca3af;
+    }
+
+    &:focus:not(:disabled) {
+        border-color: #6c63ff;
+        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+    }
+
+    &:disabled {
+        background-color: #f3f4f6;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    &.textarea-error {
+        border-color: #dc3545;
+
+        &:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+        }
+    }
+}
+
+.error-text {
+    font-size: 12px;
+    color: #dc3545;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    &::before {
+        content: '⚠️';
+        font-size: 12px;
+    }
+}
+
+.helper-text {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+// Validation states
+.textarea-container {
+    &.has-error {
+        .textarea-label {
+            color: #dc3545;
+        }
+    }
+
+    &.is-valid {
+        .base-textarea {
+            border-color: #28a745;
+
+            &:focus {
+                border-color: #28a745;
+                box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.15);
+            }
+        }
+    }
+}
+
+// Responsive
+@media (max-width: 480px) {
+    .base-textarea {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .textarea-label {
+        font-size: 13px;
+    }
+}

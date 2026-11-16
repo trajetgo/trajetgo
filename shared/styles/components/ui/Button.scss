@@ -1,0 +1,222 @@
+@import '../../abstracts/colors';
+@import '../../abstracts/logo';
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+    position: relative;
+    white-space: nowrap;
+    user-select: none;
+
+    // États
+    &:focus-visible {
+        outline: 2px solid rgba(0, 0, 0, 0.3);
+        outline-offset: 2px;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    // Loading
+    &.btn-loading {
+        cursor: wait;
+        pointer-events: none;
+
+        .btn-content {
+            opacity: 0.7;
+        }
+    }
+
+    // Full width
+    &.btn-full-width {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+// Variants
+.btn-primary {
+    background: $kg-primary;
+    color: $white;
+
+    &:hover:not(:disabled) {
+        background: $kg-primary-light;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+
+    &:hover:not(:disabled) {
+        background: #e0e0e0;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+
+    &:hover:not(:disabled) {
+        background: #218838;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+
+    &:hover:not(:disabled) {
+        background: #c82333;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+}
+
+.btn-warning {
+    background: #ffc107;
+    color: #212529;
+
+    &:hover:not(:disabled) {
+        background: #e0a800;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+}
+
+.btn-info {
+    background: #17a2b8;
+    color: white;
+
+    &:hover:not(:disabled) {
+        background: #138496;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+}
+
+.btn-outline {
+    background: transparent;
+    color: #6c63ff;
+    border: 2px solid #6c63ff;
+
+    &:hover:not(:disabled) {
+        background: #6c63ff;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(108, 99, 255, 0.2);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+}
+
+.btn-outline-danger {
+    background: transparent;
+    color: #dc3545;
+    border: 2px solid #dc3545;
+
+    &:hover:not(:disabled) {
+        background: #dc3545;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+}
+
+.btn-ghost {
+    background: transparent;
+    color: #6c63ff;
+
+    &:hover:not(:disabled) {
+        background: rgba(108, 99, 255, 0.08);
+        transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+    }
+}
+
+// Sizes
+.btn-small {
+    padding: 6px 14px;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+.btn-medium {
+    padding: 10px 24px;
+    font-size: 14px;
+    border-radius: 8px;
+}
+
+.btn-large {
+    padding: 14px 32px;
+    font-size: 16px;
+    border-radius: 10px;
+}
+
+.btn-xl {
+    padding: 18px 40px;
+    font-size: 18px;
+    border-radius: 12px;
+}

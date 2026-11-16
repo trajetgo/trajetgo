@@ -1,0 +1,54 @@
+@import '../../abstracts/colors';
+
+.otp-input {
+
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+
+    &__label {
+        font-size: .9rem;
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+    &__group {
+        display: flex;
+        justify-content: center;
+        gap: .75rem;
+        flex-wrap: nowrap;
+        margin-bottom: 1rem;
+    }
+
+    &__field {
+        width: 46px;
+        height: 50px;
+        border: 1px solid #d1d5db;
+        border-radius: 12px;
+        background: $white;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        transition: .2s;
+
+        &:focus {
+            outline: none;
+            border-color: $kg-primary;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, .15);
+        }
+
+        &--error {
+            border-color: #dc2626;
+
+            &:focus {
+                box-shadow: 0 0 0 4px rgba(220, 38, 38, .15);
+            }
+        }
+    }
+
+    &__error {
+        color: #dc2626;
+        font-size: .85rem;
+        text-align: center;
+    }
+}

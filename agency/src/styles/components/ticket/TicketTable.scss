@@ -1,0 +1,86 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/logo';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+
+.ticket-table {
+    background: $white;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 980px;
+    }
+
+    thead {
+        background: #f8fafc;
+
+        th {
+            text-align: left;
+            padding: 1rem 1.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            color: #475569;
+        }
+
+    }
+
+    &__ticket-number {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        // gap: 12px;
+        min-width: 200px;
+
+        >div {
+            display: flex;
+            gap: 5px;
+        }
+    }
+
+    &__passenger {
+        display: flex;
+        align-items: stretch;
+        gap: 10px;
+        min-width: 200px;
+
+        >div {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
+    &__trip {
+        display: flex;
+        flex-direction: column;
+        min-width: 200px;
+
+        >div {
+            display: flex;
+            gap: 5px;
+        }
+    }
+
+
+    tbody {
+        tr {
+            border-top: 1px solid #f1f5f9;
+
+            &:hover {
+                background: #f8fafc;
+            }
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            vertical-align: middle;
+        }
+    }
+}

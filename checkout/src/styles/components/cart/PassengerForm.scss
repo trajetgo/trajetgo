@@ -1,0 +1,94 @@
+@import "../../abstracts/colors";
+@import "../../abstracts/fonts";
+
+.passenger-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    // ---------- En-tête ----------
+    &__header {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+
+        h3 {
+            margin: 0 0 2px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--tg-text, #111827);
+        }
+
+        p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+    }
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: rgba(11, 59, 96, 0.08);
+        color: var(--tg-primary, #0b3b60);
+
+        &--child {
+            background: rgba(245, 158, 11, 0.12);
+            color: #d97706;
+        }
+    }
+
+    // ---------- Grille de champs ----------
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px 16px;
+
+        @media (max-width: 640px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    // ---------- Section documents ----------
+    &__documents {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding-top: 18px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    &__section-title {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin: 0;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--tg-primary, #0b3b60);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+
+        svg {
+            flex-shrink: 0;
+            opacity: 0.85;
+        }
+    }
+
+    // ---------- Hint ----------
+    &__hint {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 2px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        background: rgba(11, 59, 96, 0.04);
+        border: 1px solid rgba(11, 59, 96, 0.08);
+        line-height: 1.5;
+    }
+}

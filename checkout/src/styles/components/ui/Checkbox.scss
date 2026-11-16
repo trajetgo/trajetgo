@@ -1,0 +1,207 @@
+@import '../../abstracts/colors';
+
+.checkbox-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        user-select: none;
+        font-size: 14px;
+        color: #1f2937;
+        transition: color 0.2s;
+
+        .checkbox-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+
+            .checkbox-input {
+                position: absolute;
+                opacity: 0;
+                width: 0;
+                height: 0;
+                margin: 0;
+                padding: 0;
+
+                &:focus-visible+.checkbox-custom {
+                    outline: 2px solid #6c63ff;
+                    outline-offset: 2px;
+                }
+
+                &:disabled+.checkbox-custom {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+
+                &:checked+.checkbox-custom {
+                    background: $kg-primary;
+                    border-color: $kg-primary;
+
+                    .checkbox-icon {
+                        opacity: 1;
+                        transform: scale(1);
+                    }
+                }
+
+                &:indeterminate+.checkbox-custom {
+                    background: #6c63ff;
+                    border-color: #6c63ff;
+
+                    .checkbox-icon {
+                        opacity: 0;
+                    }
+
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        width: 60%;
+                        height: 2px;
+                        background: $white;
+                        border-radius: 2px;
+                    }
+                }
+            }
+
+            .checkbox-custom {
+                width: 20px;
+                height: 20px;
+                border: 2px solid #d1d5db;
+                border-radius: 4px;
+                background: $white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+                position: relative;
+
+                .checkbox-icon {
+                    width: 14px;
+                    height: 14px;
+                    color: white;
+                    opacity: 0;
+                    transform: scale(0.5);
+                    transition: all 0.2s ease;
+                }
+            }
+        }
+
+        .checkbox-text {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.5;
+
+            .required-star {
+                color: #dc3545;
+                margin-left: 2px;
+            }
+        }
+    }
+
+    // Tailles
+    &.checkbox-small {
+        .checkbox-wrapper .checkbox-custom {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+
+            .checkbox-icon {
+                width: 11px;
+                height: 11px;
+            }
+        }
+
+        .checkbox-text {
+            font-size: 12px;
+        }
+    }
+
+    &.checkbox-large {
+        .checkbox-wrapper .checkbox-custom {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+
+            .checkbox-icon {
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        .checkbox-text {
+            font-size: 16px;
+        }
+    }
+
+    // Variantes
+    &.checkbox-success {
+        .checkbox-input:checked+.checkbox-custom {
+            background: #28a745;
+            border-color: #28a745;
+        }
+    }
+
+    &.checkbox-danger {
+        .checkbox-input:checked+.checkbox-custom {
+            background: #dc3545;
+            border-color: #dc3545;
+        }
+    }
+
+    &.checkbox-warning {
+        .checkbox-input:checked+.checkbox-custom {
+            background: #ffc107;
+            border-color: #ffc107;
+        }
+    }
+
+    // États
+    &.has-error {
+        .checkbox-custom {
+            border-color: #dc3545;
+        }
+
+        .checkbox-text {
+            color: #dc3545;
+        }
+    }
+
+    &.is-disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+
+        .checkbox-label {
+            cursor: not-allowed;
+        }
+    }
+
+    .checkbox-error {
+        font-size: 12px;
+        color: #dc3545;
+        margin-top: 2px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        &::before {
+            content: '⚠️';
+            font-size: 12px;
+        }
+    }
+
+    .checkbox-helper {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 2px;
+    }
+}

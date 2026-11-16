@@ -1,0 +1,412 @@
+@import '@shared/styles/abstracts/variables';
+
+/* =========================================================
+   SEAT SELECTION
+   ========================================================= */
+
+.seat-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    &__retry {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 12px;
+        padding: 8px 14px;
+        border: 1px solid rgba(11, 59, 96, 0.25);
+        border-radius: 999px;
+        background: rgba(11, 59, 96, 0.04);
+        color: var(--tg-primary, #0b3b60);
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s, border-color 0.15s;
+
+        &:hover {
+            background: rgba(11, 59, 96, 0.08);
+            border-color: var(--tg-primary, #0b3b60);
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(11, 59, 96, 0.2);
+            outline-offset: 2px;
+        }
+    }
+
+    /* =====================================================
+       CHOIX DU MODE
+       ===================================================== */
+
+    &__options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+
+        @media (max-width: 520px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__option {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 16px;
+        border: 2px solid var(--tg-border, #e4e7ec);
+        border-radius: 12px;
+        background: #fff;
+        color: var(--tg-text, #172033);
+        font-family: inherit;
+        text-align: left;
+        cursor: pointer;
+        transition: border-color 0.2s, background 0.2s, transform 0.15s;
+
+        &:hover:not(:disabled) {
+            border-color: rgba(11, 59, 96, 0.3);
+            background: #fbfcfd;
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(11, 59, 96, 0.2);
+            outline-offset: 2px;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        &--active {
+            border-color: var(--tg-primary, #0b3b60);
+            background: rgba(11, 59, 96, 0.04);
+        }
+
+        &-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(11, 59, 96, 0.08);
+            color: var(--tg-primary, #0b3b60);
+        }
+
+        &-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            strong {
+                font-size: 14px;
+                font-weight: 700;
+            }
+
+            span {
+                font-size: 12px;
+                color: var(--tg-text-light, #667085);
+            }
+        }
+    }
+
+    /* =====================================================
+       MODE AUTOMATIQUE
+       ===================================================== */
+
+    &__automatic {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        h3 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--tg-text, #172033);
+        }
+    }
+
+    &__selected-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    &__selected-seat {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: rgba(11, 59, 96, 0.08);
+        color: var(--tg-primary, #0b3b60);
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    /* =====================================================
+       MODE MANUEL
+       ===================================================== */
+
+    &__manual {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* ---------- Légende ---------- */
+
+    &__legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+
+        span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--tg-text-light, #667085);
+            font-size: 12px;
+
+            i {
+                display: inline-block;
+                width: 14px;
+                height: 14px;
+                border-radius: 4px;
+            }
+        }
+    }
+
+    /* ---------- Bus ---------- */
+
+    &__bus {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 20px;
+        border: 2px dashed var(--tg-border, #e4e7ec);
+        border-radius: 16px;
+        background: #fbfcfd;
+    }
+
+    &__driver {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 999px;
+        background: #fff;
+        border: 1px solid var(--tg-border, #e4e7ec);
+        color: var(--tg-text-light, #667085);
+        font-size: 12px;
+        font-weight: 600;
+        align-self: flex-end;
+        width: fit-content;
+    }
+
+    /* ---------- Grille ---------- */
+
+    &__layout {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    &__row {
+        display: grid;
+        gap: 8px;
+
+        &--exit {
+            position: relative;
+
+            &::before,
+            &::after {
+                content: "";
+                position: absolute;
+                top: 50%;
+                width: 4px;
+                height: 70%;
+                background: rgba(16, 185, 129, 0.4);
+                border-radius: 2px;
+                transform: translateY(-50%);
+            }
+
+            &::before {
+                left: -12px;
+            }
+
+            &::after {
+                right: -12px;
+            }
+        }
+    }
+
+    /* =====================================================
+       SIÈGE
+       ===================================================== */
+
+    .seat {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        aspect-ratio: 1;
+        padding: 0;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        background: #e6f7ee;
+        border-color: #10b981;
+        color: #047857;
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+            background 0.15s,
+            color 0.15s,
+            border-color 0.15s,
+            transform 0.1s;
+
+        &:hover:not(:disabled):not(.seat--selected) {
+            transform: scale(1.08);
+            background: #d1fae5;
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(11, 59, 96, 0.25);
+            outline-offset: 2px;
+        }
+
+        /* ---------- Statuts ---------- */
+
+        &--available {
+            background: #e6f7ee;
+            border-color: #10b981;
+            color: #047857;
+        }
+
+        &--occupied {
+            background: #f1f5f9;
+            border-color: #e4e7ec;
+            color: #98a2b3;
+            cursor: not-allowed;
+        }
+
+        &--reserved {
+            background: rgba(245, 158, 11, 0.12);
+            border-color: #f59e0b;
+            color: #b45309;
+            cursor: not-allowed;
+        }
+
+        &--blocked {
+            background: #f8fafc;
+            border-color: #e4e7ec;
+            color: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        /* ---------- Sélectionné ---------- */
+
+        &--selected {
+            background: var(--tg-primary, #0b3b60);
+            border-color: var(--tg-primary, #0b3b60);
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        /* ---------- VIP ---------- */
+
+        &--vip:not(.seat--selected):not(:disabled) {
+            border-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+            color: #b45309;
+
+            &::before {
+                content: "★";
+                font-size: 8px;
+                margin-right: 2px;
+            }
+        }
+
+        /* ---------- Couloir ---------- */
+
+        &--aisle {
+            margin-right: 12px;
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+        }
+    }
+
+    /* =====================================================
+       RÉSUMÉ
+       ===================================================== */
+
+    &__summary {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        background: rgba(11, 59, 96, 0.04);
+        border: 1px solid rgba(11, 59, 96, 0.1);
+    }
+
+    &__summary-count {
+        color: var(--tg-text, #172033);
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    &__summary-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+    }
+
+    &__chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--tg-primary, #0b3b60);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    &__clear {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        margin-left: auto;
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: 999px;
+        background: #fff;
+        color: var(--tg-text-light, #667085);
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.15s, border-color 0.15s;
+
+        &:hover {
+            color: #b91c1c;
+            border-color: rgba(220, 38, 38, 0.3);
+        }
+    }
+
+    &__hint {
+        margin: 0;
+        color: var(--tg-text-light, #667085);
+        font-size: 12px;
+        font-style: italic;
+    }
+}

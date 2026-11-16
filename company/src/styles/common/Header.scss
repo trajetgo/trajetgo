@@ -1,0 +1,135 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/logo';
+
+
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #ffffff; // ✅ fond explicite
+    border-bottom: 1px solid #ececec;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+
+    &__container {
+        width: min(1400px, calc(100% - 2rem));
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        height: 72px;
+    }
+
+    /* ---------- Toggle ---------- */
+
+    &__toggle {
+        display: none; // caché desktop (le toggle est dans la sidebar OU visible partout)
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid #e4e7ec;
+        border-radius: 10px;
+        background: #ffffff;
+        color: #0b3b60;
+        cursor: pointer;
+
+        &:hover {
+            background: #f8fafc;
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(11, 59, 96, 0.2);
+            outline-offset: 2px;
+        }
+
+        // 👉 Si tu veux le toggle visible partout, retire cette ligne
+        display: flex;
+    }
+
+    /* ---------- Brand ---------- */
+
+    &__brand {
+        display: flex;
+        align-items: center;
+        gap: 0.15rem;
+        text-decoration: none;
+        font-size: 1.6rem;
+        font-weight: 700;
+    }
+
+    &__brand-name {
+        color: #0b3b60; // ✅ bleu foncé (fond blanc)
+    }
+
+    &__brand-accent {
+        color: #f59e0b; // ✅ orange logo
+        font-style: italic;
+    }
+
+    /* ---------- Nav ---------- */
+
+    &__nav {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-left: auto; // ✅ pousse les actions à droite
+
+        &-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #475467; // ✅ gris foncé
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+
+            &:hover {
+                color: #0b3b60; // ✅ bleu foncé au hover
+            }
+
+            &.active {
+                color: #0b3b60;
+                font-weight: 600;
+            }
+        }
+    }
+
+    /* ---------- Actions ---------- */
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-left: auto; // ✅ si la nav est cachée
+    }
+
+    &__login {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 8px 16px;
+        border: 2px solid #0b3b60; // ✅ bordure bleu foncé
+        border-radius: 999px;
+        color: #0b3b60; // ✅ texte bleu
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: background 0.2s, color 0.2s;
+
+        &:hover {
+            background: #0b3b60;
+            color: #ffffff;
+        }
+    }
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 900px) {
+    .app-header {
+        &__nav {
+            display: none; // ✅ cachée sur mobile
+        }
+    }
+}

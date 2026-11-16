@@ -1,0 +1,38 @@
+.login-footer {
+    margin-top: 2rem;
+    text-align: center;
+
+    &__register {
+        margin-bottom: 1rem;
+        font-size: 14px;
+        color: #6b7280;
+
+        a {
+            font-weight: 600;
+            color: #1f6feb;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    &__links {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 0.75rem;
+
+        a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+
+            &:hover {
+                color: #1f6feb;
+            }
+        }
+    }
+}

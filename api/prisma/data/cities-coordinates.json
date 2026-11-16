@@ -1,0 +1,269 @@
+{
+    "CI": {
+        "Abidjan": {
+            "lat": 5.30966,
+            "lng": -4.01266,
+            "region": "Lagunes"
+        },
+        "N'Zianouan": {
+            "lat": 6.01161,
+            "lng": -4.82166,
+            "region": "Lagunes"
+        },
+        "Agboville": {
+            "lat": 5.993073,
+            "lng": -4.21313,
+            "region": "Agnéby-Tiassa"
+        },
+        "Tiassalé": {
+            "lat": 5.89564,
+            "lng": -4.82505,
+            "region": "Agnéby-Tiassa"
+        },
+        "N'Douci": {
+            "lat": 5.86510,
+            "lng": -4.76306,
+            "region": "Agnéby-Tiassa"
+        },
+        "Yamoussoukro": {
+            "lat": 6.82762,
+            "lng": -5.28934,
+            "region": "Lacs"
+        },
+        "Bouaké": {
+            "lat": 7.69060,
+            "lng": -5.03030,
+            "region": "Vallée du Bandama"
+        },
+        "Daloa": {
+            "lat": 6.88692,
+            "lng": -6.45298,
+            "region": "Haut-Sassandra"
+        },
+        "Issia": {
+            "lat": 6.48778,
+            "lng": -6.58878,
+            "region": "Haut-Sassandra"
+        },
+        "Zoukougbeu": {
+            "lat": 6.76299,
+            "lng": -6.86246,
+            "region": "Haut-Sassandra"
+        },
+        "Saioua": {
+            "lat": 6.48731,
+            "lng": -6.27615,
+            "region": "Haut-Sassandra"
+        },
+        "Korhogo": {
+            "lat": 9.45800,
+            "lng": -5.62940,
+            "region": "Savanes"
+        },
+        "Boundiali": {
+            "lat": 9.52322,
+            "lng": -6.48201,
+            "region": "Savanes"
+        },
+        "San-Pédro": {
+            "lat": 4.75899,
+            "lng": -6.64639,
+            "region": "Bas-Sassandra"
+        },
+        "Tabou": {
+            "lat": 4.41627,
+            "lng": -7.35591,
+            "region": "Bas-Sassandra"
+        },
+        "Grand-Béréby": {
+            "lat": 4.65075,
+            "lng": -6.92473,
+            "region": "Bas-Sassandra"
+        },
+        "Gabiadji": {
+            "lat": 5.02014,
+            "lng": -6.55888,
+            "region": "Bas-Sassandra"
+        },
+        "Man": {
+            "lat": 7.41251,
+            "lng": -7.55383,
+            "region": "Montagnes"
+        },
+        "Logoualé": {
+            "lat": 7.10742,
+            "lng": -7.55114,
+            "region": "Montagnes"
+        },
+        "Gagnoa": {
+            "lat": 6.13193,
+            "lng": -5.95060,
+            "region": "Gôh"
+        },
+        "Diégonéfla": {
+            "lat": 6.28448,
+            "lng": -5.57640,
+            "region": "Gôh"
+        },
+        "Oumé": {
+            "lat": 6.38239,
+            "lng": -5.41757,
+            "region": "Gôh"
+        },
+        "Grand-Lahou": {
+            "lat": 5.25034,
+            "lng": -5.00244,
+            "region": "Gôh"
+        },
+        "Ouragahio": {
+            "lat": 6.30835,
+            "lng": -5.931234,
+            "region": "Gôh"
+        },
+        "Guibéroua": {
+            "lat": 6.23886,
+            "lng": -6.17131,
+            "region": "Gôh"
+        },
+        "Bayota": {
+            "lat": 6.46477,
+            "lng": -5.95426,
+            "region": "Gôh"
+        },
+        "Divo": {
+            "lat": 5.84053,
+            "lng": -5.35490,
+            "region": "Lôh-Djiboua"
+        },
+        "Lakota": {
+            "lat": 5.85112,
+            "lng": -5.68278,
+            "region": "Lôh-Djiboua"
+        },
+        "Abengourou": {
+            "lat": 6.72972,
+            "lng": -3.49639,
+            "region": "Indénié-Djuablin"
+        },
+        "Agnibilékro": {
+            "lat": 7.12597,
+            "lng": -3.20204,
+            "region": "Indénié-Djuablin"
+        },
+        "Bondoukou": {
+            "lat": 8.04020,
+            "lng": -2.80000,
+            "region": "Gontougo"
+        },
+        "Ferkessédougou": {
+            "lat": 9.59280,
+            "lng": -5.19450,
+            "region": "Tchologo"
+        },
+        "Odienné": {
+            "lat": 9.50000,
+            "lng": -7.56667,
+            "region": "Kabadougou"
+        },
+        "Séguéla": {
+            "lat": 7.96110,
+            "lng": -6.67310,
+            "region": "Worodougou"
+        },
+        "Soubré": {
+            "lat": 5.78530,
+            "lng": -6.59280,
+            "region": "Nawa"
+        },
+        "Méagui": {
+            "lat": 5.40392,
+            "lng": -6.55516,
+            "region": "Nawa"
+        },
+        "Yabayo": {
+            "lat": 5.94877,
+            "lng": -6.60011,
+            "region": "Nawa"
+        },
+        "Oupoyo": {
+            "lat": 5.56721,
+            "lng": -6.59050,
+            "region": "Nawa"
+        },
+        "Adzopé": {
+            "lat": 6.10583,
+            "lng": -3.86404,
+            "region": "Mé"
+        },
+        "Sassandra": {
+            "lat": 4.94900,
+            "lng": -6.09216,
+            "region": "Gbôklé"
+        },
+        "Fresco": {
+            "lat": 5.14528,
+            "lng": -5.62787,
+            "region": "Gbôklé"
+        },
+        "Lélédou": {
+            "lat": 5.11560,
+            "lng": -5.78761,
+            "region": "Gbôklé"
+        },
+        "Duékoué": {
+            "lat": 6.71397,
+            "lng": -7.42521,
+            "region": "Guémon"
+        },
+        "Bangolo": {
+            "lat": 7.01190,
+            "lng": -7.48676,
+            "region": "Guémon"
+        },
+        "Bouaflé": {
+            "lat": 6.98018,
+            "lng": -5.74583,
+            "region": "Marahoué"
+        },
+        "Sinfra": {
+            "lat": 6.61674,
+            "lng": -5.90894,
+            "region": "Marahoué"
+        },
+        "Toumodi": {
+            "lat": 6.56021,
+            "lng": -5.01608,
+            "region": "Bélier"
+        },
+        "Tiébissou": {
+            "lat": 7.15807,
+            "lng": -5.22557,
+            "region": "Bélier"
+        },
+        "Noé": {
+            "lat": 5.29041,
+            "lng": -2.79445,
+            "region": "Sud-Comoé"
+        },
+        "Aboisso": {
+            "lat": 5.31511,
+            "lng": -4.10905,
+            "region": "Sud-Comoé"
+        },
+        "Dimbokro": {
+            "lat": 6.64942,
+            "lng": -4.70405,
+            "region": "N'zi"
+        },
+        "Bocanda": {
+            "lat": 7.06306,
+            "lng": -4.49724,
+            "region": "N'zi"
+        },
+        "Béoumi": {
+            "lat": 7.67453,
+            "lng": -5.58273,
+            "region": "Gbêkê"
+        }
+    }
+}

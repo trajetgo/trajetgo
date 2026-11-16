@@ -1,0 +1,84 @@
+.floating-button {
+
+    position: fixed;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    z-index: 500;
+    // z-index: 9999;
+
+    transition: .25s ease;
+
+    @media (max-width:768px) {
+        display: inline-flex;
+    }
+
+    &--circle {
+        border-radius: 50%;
+    }
+
+    &--rounded {
+        border-radius: 999px;
+        padding-inline: 1.25rem;
+    }
+
+    &--small {
+        width: 48px;
+        height: 48px;
+    }
+
+    &--medium {
+        width: 60px;
+        height: 60px;
+    }
+
+    &--large {
+        width: 72px;
+        height: 72px;
+    }
+
+    &--rounded.floating-button--small {
+        width: auto;
+        height: 44px;
+    }
+
+    &--rounded.floating-button--medium {
+        width: auto;
+        height: 52px;
+    }
+
+    &--rounded.floating-button--large {
+        width: auto;
+        height: 60px;
+    }
+
+    &__label {
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    &--bottom-right {
+        right: 24px;
+        bottom: 24px;
+    }
+
+    &--bottom-left {
+        left: 24px;
+        bottom: 24px;
+    }
+
+    &--top-right {
+        top: 24px;
+        right: 24px;
+    }
+
+    &--top-left {
+        top: 24px;
+        left: 24px;
+    }
+}

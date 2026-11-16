@@ -1,0 +1,200 @@
+
+// File selection
+.tgtl-import-file {
+    &__heading {
+        margin-bottom: 20px;
+
+        h3 {
+            margin: 0 0 7px;
+            color: #172033;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        p {
+            margin: 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+    }
+
+    &__dropzone {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 255px;
+        padding: 30px 20px;
+        background: #fafcff;
+        border: 2px dashed #cbd5e1;
+        border-radius: 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.2s ease;
+
+        &:hover,
+        &.is-dragging {
+            background: #eff6ff;
+            border-color: #3b82f6;
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba(37, 99, 235, 0.2);
+            outline-offset: 3px;
+        }
+
+        h4 {
+            margin: 16px 0 7px;
+            color: #334155;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        p {
+            margin: 0 0 16px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        button {
+            padding: 10px 17px;
+            color: #fff;
+            background: #2563eb;
+            border: none;
+            border-radius: 7px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+
+            &:hover {
+                background: #1d4ed8;
+            }
+        }
+
+        >span {
+            margin-top: 17px;
+            color: #94a3b8;
+            font-size: 11px;
+        }
+    }
+
+    &__upload-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 58px;
+        height: 58px;
+        color: #2563eb;
+        background: #eff6ff;
+        border-radius: 50%;
+    }
+
+    &__selected {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 17px;
+        border: 1px solid #bfdbfe;
+        background: #f8fbff;
+        border-radius: 10px;
+
+        >button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            color: #64748b;
+            background: transparent;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+
+            &:hover {
+                color: #dc2626;
+                background: #fef2f2;
+            }
+        }
+    }
+
+    &__file-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 43px;
+        height: 43px;
+        flex-shrink: 0;
+        color: #2563eb;
+        background: #eff6ff;
+        border-radius: 9px;
+    }
+
+    &__file-info {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 5px;
+        min-width: 0;
+
+        strong {
+            overflow: hidden;
+            color: #334155;
+            font-size: 13px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        span {
+            color: #64748b;
+            font-size: 11px;
+        }
+    }
+
+    &__file-status {
+        color: #16a34a;
+    }
+
+    &__error {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-top: 12px;
+        padding: 11px 13px;
+        color: #b91c1c;
+        background: #fef2f2;
+        border-radius: 8px;
+        font-size: 12px;
+    }
+
+    &__notice {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 15px;
+        margin-top: 20px;
+        color: #64748b;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 9px;
+
+        >svg {
+            flex-shrink: 0;
+            margin-top: 1px;
+            color: #64748b;
+        }
+
+        strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #334155;
+            font-size: 12px;
+        }
+
+        p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+    }
+}

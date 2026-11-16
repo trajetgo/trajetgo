@@ -1,0 +1,259 @@
+@import '@shared/styles/abstracts/colors';
+@import '@shared/styles/abstracts/logo';
+@import '@shared/styles/abstracts/fonts';
+@import '@shared/styles/abstracts/variables';
+
+/* =========================================================
+   USER STATUS MODAL
+   ========================================================= */
+
+.user-status-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 4px 0;
+
+    /* =====================================================
+       ICÔNE
+       ===================================================== */
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 64px;
+        height: 64px;
+        margin: 0 auto;
+
+        border-radius: 50%;
+        background: rgba(11, 59, 96, 0.08);
+        color: var(--tg-primary, #0b3b60);
+
+        animation: popIn 0.25s ease-out;
+    }
+
+    /* =====================================================
+       DESCRIPTION
+       ===================================================== */
+
+    &__description {
+        margin: 0;
+        text-align: center;
+
+        color: #475467;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    /* =====================================================
+       RAPPEL MEMBRE
+       ===================================================== */
+
+    &__user {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        padding: 14px 16px;
+
+        border: 1px solid var(--tg-border, #e4e7ec);
+        border-radius: 12px;
+        background: #fbfcfd;
+    }
+
+    &__avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+
+        width: 40px;
+        height: 40px;
+
+        border-radius: 50%;
+        background: rgba(11, 59, 96, 0.1);
+        color: var(--tg-primary, #0b3b60);
+
+        font-size: 14px;
+        font-weight: 700;
+
+        overflow: hidden;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &__user-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        flex: 1;
+
+        strong {
+            color: #172033;
+            font-size: 14px;
+            font-weight: 600;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        span {
+            color: #667085;
+            font-size: 12px;
+        }
+    }
+
+    /* ---------- Statut actuel ---------- */
+
+    &__current-status {
+        display: inline-flex;
+        align-items: center;
+
+        padding: 4px 10px;
+        border-radius: 999px;
+
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+
+        white-space: nowrap;
+
+        &--active {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+        }
+
+        &--inactive {
+            background: rgba(107, 114, 128, 0.15);
+            color: #4b5563;
+        }
+
+        &--suspended {
+            background: rgba(220, 38, 38, 0.12);
+            color: #b91c1c;
+        }
+
+        &--invited {
+            background: rgba(59, 130, 246, 0.12);
+            color: #1d4ed8;
+        }
+
+        &--unknown {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
+        }
+    }
+
+    /* =====================================================
+       AVERTISSEMENT
+       ===================================================== */
+
+    &__warning {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+
+        padding: 12px 14px;
+
+        border-radius: 10px;
+        background: rgba(220, 38, 38, 0.08);
+        color: #b91c1c;
+
+        font-size: 13px;
+        line-height: 1.5;
+
+        svg {
+            flex: 0 0 auto;
+            margin-top: 2px;
+        }
+
+        span {
+            flex: 1;
+        }
+    }
+
+    /* =====================================================
+       ACTIONS
+       ===================================================== */
+
+    &__actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+
+        padding-top: 8px;
+        border-top: 1px solid var(--tg-border, #e4e7ec);
+
+        @media (max-width: 480px) {
+            flex-direction: column-reverse;
+
+            button {
+                width: 100%;
+            }
+        }
+    }
+
+    /* =====================================================
+       VARIANTES
+       ===================================================== */
+
+    &--primary {
+        .user-status-modal__icon {
+            background: rgba(11, 59, 96, 0.08);
+            color: var(--tg-primary, #0b3b60);
+        }
+    }
+
+    &--warning {
+        .user-status-modal__icon {
+            background: rgba(245, 158, 11, 0.12);
+            color: #b45309;
+        }
+    }
+
+    &--danger {
+        .user-status-modal__icon {
+            background: rgba(220, 38, 38, 0.08);
+            color: #b91c1c;
+        }
+
+        .user-status-modal__user {
+            border-color: rgba(220, 38, 38, 0.2);
+            background: rgba(220, 38, 38, 0.03);
+        }
+    }
+}
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .user-status-modal__icon {
+        animation: none;
+    }
+}

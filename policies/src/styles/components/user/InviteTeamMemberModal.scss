@@ -1,0 +1,170 @@
+@import '../../abstracts/variables';
+
+/* =========================================================
+   INVITE MODAL
+   ========================================================= */
+
+.invite-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 4px 0;
+
+    /* =====================================================
+       ERREUR SERVEUR
+       ===================================================== */
+
+    &__error {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 12px 14px;
+
+        border-radius: 10px;
+        background: rgba(220, 38, 38, 0.08);
+        color: #b91c1c;
+
+        font-size: 13px;
+
+        svg {
+            flex: 0 0 auto;
+        }
+    }
+
+    /* =====================================================
+       ROW (2 colonnes)
+       ===================================================== */
+
+    &__row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+
+        @media (max-width: 480px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* =====================================================
+       APERÇU SMS
+       ===================================================== */
+
+    &__preview {
+        padding: 14px 16px;
+
+        border: 1px dashed var(--tg-border, #e4e7ec);
+        border-radius: 12px;
+        background: #fbfcfd;
+    }
+
+    &__preview-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        margin-bottom: 8px;
+
+        color: #667085;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+
+        svg {
+            color: #98a2b3;
+        }
+    }
+
+    &__preview-text {
+        margin: 0;
+
+        color: #475467;
+        font-size: 13px;
+        line-height: 1.6;
+
+        strong {
+            color: #172033;
+            font-weight: 600;
+        }
+    }
+
+    /* =====================================================
+       ACTIONS
+       ===================================================== */
+
+    &__actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+
+        padding-top: 16px;
+        border-top: 1px solid var(--tg-border, #e4e7ec);
+
+        @media (max-width: 480px) {
+            flex-direction: column-reverse;
+
+            button {
+                width: 100%;
+            }
+        }
+    }
+
+    /* =====================================================
+       ÉTAT SUCCÈS
+       ===================================================== */
+
+    &--success {
+        align-items: center;
+        gap: 20px;
+
+        padding: 32px 16px;
+        text-align: center;
+    }
+
+    &__success-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 80px;
+        height: 80px;
+
+        border-radius: 50%;
+        background: rgba(16, 185, 129, 0.12);
+        color: #047857;
+    }
+
+    &__success-title {
+        margin: 0;
+
+        color: #172033;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    &__success-message {
+        margin: 0;
+
+        color: #475467;
+        font-size: 15px;
+
+        strong {
+            color: #172033;
+            font-weight: 600;
+        }
+    }
+
+    &__success-hint {
+        margin: 0;
+
+        color: #667085;
+        font-size: 13px;
+        line-height: 1.5;
+
+        strong {
+            color: #172033;
+            font-weight: 600;
+        }
+    }
+}
