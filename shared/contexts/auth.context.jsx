@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }) => {
         user,
         loading,
         isAuthenticated: !!user,
+        refreshUser: fetchUser,
         setUser
     };
 

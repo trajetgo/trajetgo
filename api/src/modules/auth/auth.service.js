@@ -12,11 +12,15 @@ const {
 const userRepository = require('../users/user.repository');
 const repository = require('./auth.repository');
 const auditService = require('../audit/audit.service');
-const { generateOtp, hashOtp, compareOtp } = require('../../utils/otp.utils');
+const { generateOtp, hashOtp, compareOtp, hashVerificationToken, generateVerificationToken, compareVerificationToken } = require('../../utils/otp.utils');
 const orangeSmsService = require('../../services/orange-sms.service');
 const { parseIdentifier, normalizePhone } = require('../../utils/identifiers');
 const { generateSessionToken, hashToken } = require('../../utils/tokens.js');
 const notificationService = require('../notifications/notification.service.js');
+const emailService = require('../notifications/channels/email/email.service.js');
+const loginAttemptRepository = require('./loginAttempt.repository.js');
+const securityNotificationService = require('./securityNotification.service.js');
+const riskService = require('./risk.service.js');
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const SESSION_TTL_MS = 1 * DAY_MS;
@@ -47,10 +51,9 @@ class AuthService {
             );
         }
 
-        const existingUser = await repository.findByEmailAndPhone(
-            email,
-            phone
-        );
+        /* ---------- Unicité ---------- */
+
+        const existingUser = await repository.findByEmailAndPhone(email, phone);
 
         if (existingUser) {
             throw new ApiError(
@@ -58,6 +61,8 @@ class AuthService {
                 "Impossible de créer un compte avec ces informations."
             );
         }
+
+        /* ---------- Création utilisateur ---------- */
 
         const passwordHash = await hashPassword(password);
 
@@ -70,96 +75,180 @@ class AuthService {
             password: {
                 create: {
                     hash: passwordHash,
-                    algorithm: CURRENT_ALGORITHM
-                }
+                    algorithm: CURRENT_ALGORITHM,
+                },
             },
             phoneVerified: false,
+            emailVerified: false,
             role: "PASSENGER",
         });
 
-        const otp = generateOtp();
+        /* ---------- 1. Token email (lien) ---------- */
 
-        const expiresAt = new Date(
-            Date.now() +
-            Number(process.env.OTP_EXPIRATION_MINUTES || 5) * 60 * 1000
-        );
+        if (email) {
+            const emailToken = generateVerificationToken();
 
-        await repository.createVerification({
+            const emailExpiresAt = new Date(
+                Date.now() +
+                Number(process.env.EMAIL_VERIFICATION_EXPIRATION_HOURS || 24) *
+                60 * 60 * 1000
+            );
+
+            const emailVerification = await repository.createVerification({
+                userId: newUser.id,
+                purpose: "VERIFY_EMAIL",
+                channel: "EMAIL",
+                target: email,
+                codeHash: hashVerificationToken(emailToken),
+                expiresAt: emailExpiresAt,
+            });
+
+            // emailVerification.id est un cuid opaque (ex. "clx1a2b3c4d5e6f7g8h9i0j")
+            const verificationUrl = `${process.env.AUTH_URL}/verify-email?token=${emailToken}&vid=${emailVerification.id}`;
+
+            await emailService.sendEmail({
+                to: newUser.email,
+                template: "email-verification",
+                data: {
+                    fullName: newUser.fullName,
+                    verificationUrl: verificationUrl,
+                    expiresInHours:
+                        Number(process.env.EMAIL_VERIFICATION_EXPIRATION_HOURS) || 24,
+                },
+                subject: "Vérification de votre adresse e-mail - Trajet Go",
+            });
+        }
+
+        await auditService.log({
             userId: newUser.id,
-            purpose: "VERIFY_PHONE",
-            channel: "SMS",
-            target: phone,
-            codeHash: hashOtp(otp),
-            expiresAt,
+            event: 'register.success',
+            ip: meta.ip,
+            userAgent: meta.userAgent,
+            device: meta.device,
+            os: meta.os,
+            metadata: { email: newUser.email, phone: newUser.phone },
         });
 
-        const isDevelopment = process.env.NODE_ENV !== "production";
-
-        // En production, l'envoi SMS sera activé lorsque le service sera prêt.
-        if (isDevelopment) {
-            console.info(
-                `[DEV] OTP généré pour le compte ${newUser.id}.`
-            );
-        } else {
-            await orangeSmsService.sendVerificationCode(phone, otp);
-        }
+        /* ---------- 2. Retour ---------- */
 
         return {
             id: newUser.id,
             phone: newUser.phone,
             phoneVerified: false,
+            emailVerified: false,
             verificationRequired: true,
-            ...(isDevelopment && { devOtp: otp }),
         };
     };
 
     loginWithIdentifier = async ({ identifier, password, rememberMe = false }, meta = {}) => {
         const parsed = parseIdentifier(identifier);
+        const normalized = parsed?.value ?? String(identifier).trim().toLowerCase();
 
-        const account = parsed ? await userRepository.findForLogin(parsed) : null;
+        const account = parsed
+            ? await userRepository.findForLogin(parsed)
+            : null;
+
         const credential = account?.password;
 
+        /* ---------- Compte inconnu ---------- */
 
         if (!account || !credential) {
-            await dummyVerify(password); // même durée de réponse qu'un vrai compte
-            await auditService.log({
-                event: 'login.failed',
+            await dummyVerify(password);
+
+            await loginAttemptRepository.create({
+                identifier: normalized,
+                success: false,
+                reason: "unknown_account",
                 ip: meta.ip,
                 userAgent: meta.userAgent,
-                metadata: { reason: 'unknown_account' },
             });
+
+            await auditService.log({
+                event: "login.failed",
+                ip: meta.ip,
+                userAgent: meta.userAgent,
+                device: meta.deviceName,
+                os: meta.os,
+                metadata: { reason: "unknown_account" },
+            });
+
             throw new ApiError(401, INVALID_CREDENTIALS);
         }
+
+        /* ---------- Mot de passe incorrect ---------- */
 
         const valid = await verifyPassword(credential, password);
 
         if (!valid) {
-            await auditService.log({
+            await loginAttemptRepository.create({
+                identifier: normalized,
                 userId: account.id,
-                event: 'login.failed',
+                success: false,
+                reason: "bad_password",
                 ip: meta.ip,
                 userAgent: meta.userAgent,
-                metadata: { reason: 'bad_password' },
             });
+
+            await auditService.log({
+                userId: account.id,
+                event: "login.failed",
+                ip: meta.ip,
+                userAgent: meta.userAgent,
+                device: meta.device,
+                os: meta.os,
+                metadata: { reason: "bad_password" },
+            });
+
             throw new ApiError(401, INVALID_CREDENTIALS);
         }
 
-        // Le statut n'est révélé qu'après un mot de passe correct
-        if (account.status === 'INACTIVE') {
+        /* ---------- Statut ---------- */
+
+        if (account.status === "INACTIVE") {
             throw new ApiError(401, INVALID_CREDENTIALS);
         }
-        if (account.status === 'SUSPENDED') {
+
+        if (account.status === "SUSPENDED") {
             await auditService.log({
                 userId: account.id,
-                event: 'login.blocked',
+                event: "login.blocked",
                 ip: meta.ip,
                 userAgent: meta.userAgent,
-                metadata: { reason: 'suspended' },
+                device: meta.device,
+                os: meta.os,
+                metadata: { reason: "suspended" },
             });
-            throw new ApiError(403, 'Ce compte est suspendu.');
+            throw new ApiError(403, "Ce compte est suspendu.");
         }
 
-        // Migration progressive des anciens hash (bcrypt...) vers Argon2id
+        /* ---------- Détection de risque ---------- */
+
+        const risk = await riskService.accessLoginRisk({
+            userId: account.id,
+            identifier: normalized,
+            userAgent: meta.userAgent,
+            ip: meta.ip,
+        });
+
+        if (risk.level === "high") {
+            await auditService.log({
+                userId: account.id,
+                event: "login.blocked",
+                ip: meta.ip,
+                userAgent: meta.userAgent,
+                device: meta.device,
+                os: meta.os,
+                metadata: { reason: "too_many_failures", risk: risk.reasons },
+            });
+
+            throw new ApiError(
+                429,
+                "Trop de tentatives échouées. Réessayez dans quelques minutes."
+            );
+        }
+
+        /* ---------- Rehash progressif ---------- */
+
         if (credentialNeedsRehash(credential)) {
             const newHash = await hashPassword(password);
             await repository.updatePasswordCredential(account.id, {
@@ -168,7 +257,8 @@ class AuthService {
             });
         }
 
-        // Nouvelle session SSO (nouveau jeton à chaque connexion)
+        /* ---------- Création session ---------- */
+
         const token = generateSessionToken();
         const now = new Date();
         const expiresAt = new Date(
@@ -179,25 +269,76 @@ class AuthService {
             userId: account.id,
             tokenHash: hashToken(token),
             authTime: now,
-            amr: ['pwd'],
+            amr: ["pwd"],
             mfaLevel: 0,
             ip: meta.ip,
             userAgent: meta.userAgent,
+            deviceName: meta.device?.device?.model ?? null,
+            os: meta.os?.name ?? null,
             expiresAt,
         });
 
         await userRepository.touchLastLogin(account.id);
 
-        await auditService.log({
+        /* ---------- Enregistrer la connexion réussie ---------- */
+
+        await loginAttemptRepository.create({
+            identifier: normalized,
             userId: account.id,
-            event: 'login.success',
+            success: true,
             ip: meta.ip,
             userAgent: meta.userAgent,
         });
 
+        /* ---------- Audit enrichi ---------- */
+
+        await auditService.log({
+            userId: account.id,
+            event: "login.success",
+            ip: meta.ip,
+            userAgent: meta.userAgent,
+            device: meta.device,
+            os: meta.os,
+            metadata: {
+                risk: risk.level,
+                riskReasons: risk.reasons,
+                knownDevice: risk.knownDevice,
+            },
+        });
+
+        /* ---------- Notification si nouvel appareil ---------- */
+
+        if (!risk.knownDevice) {
+            // Envoi asynchrone : on ne bloque pas la réponse au client.
+            securityNotificationService
+                .notifyNewDevice(account, {
+                    ip: meta.ip,
+                    userAgent: meta.userAgent,
+                    deviceName: meta.deviceName,
+                    os: meta.os,
+                    browser: meta.browser,
+                })
+                .catch((err) => {
+                    console.error("Échec notification nouvel appareil:", err);
+                });
+        }
+
+        /* ---------- Retour ---------- */
+
         const user = await userRepository.findById(account.id);
 
-        return { user, session: { token, expiresAt, persistent: Boolean(rememberMe) } };
+        return {
+            user,
+            session: {
+                token,
+                expiresAt,
+                persistent: Boolean(rememberMe),
+            },
+            risk: {
+                level: risk.level,
+                newDevice: !risk.knownDevice,
+            },
+        };
     };
 
     sendOtp = async (phone, meta = {}) => {
@@ -303,6 +444,336 @@ class AuthService {
         const user = await userRepository.markPhoneVerified(verification.userId);
 
         return user;
+    };
+
+    verifyEmail = async (token, verificationId, meta = {}) => {
+        /* ---------- Validation ---------- */
+
+        if (!token || typeof token !== "string") {
+            throw new ApiError(400, "Token manquant.");
+        }
+
+        /* ---------- Recherche par hash ---------- */
+
+        const tokenHash = hashVerificationToken(token);
+
+        const verification = await repository.findActiveVerificationByHash(
+            tokenHash,
+            "VERIFY_EMAIL"
+        );
+
+        if (!verification) {
+            throw new ApiError(
+                400,
+                "Lien invalide ou expiré. Demandez un nouvel email."
+            );
+        }
+
+        // Défense en profondeur : si vid est fourni, il doit correspondre
+        if (verificationId && verification.id !== verificationId) {
+            throw new ApiError(400, "Lien invalide ou expiré.");
+        }
+
+        /* ---------- Comparaison à temps constant ---------- */
+
+        if (!compareVerificationToken(token, verification.codeHash)) {
+            throw new ApiError(400, "Lien invalide.");
+        }
+
+        /* ---------- Consommation ---------- */
+
+        await repository.consumeVerification(verification.id);
+
+        /* ---------- Marquage ---------- */
+
+        const user = await userRepository.markEmailVerified(
+            verification.userId
+        );
+
+        await auditService.log({
+            userId: user.id,
+            event: 'email.verified',
+            ip: meta.ip,
+            userAgent: meta.userAgent,
+            device: meta.device,
+            os: meta.os,
+            metadata: { email: user.email },
+        });
+
+        return user;
+    };
+
+    resendVerificationEmail = async (verificationId) => {
+        /* ---------- Recherche de la vérification ---------- */
+
+        const verification = await repository.findVerificationById(verificationId);
+
+        if (!verification) {
+            throw new ApiError(400, "Demande invalide.");
+        }
+
+        /* ---------- Vérifications ---------- */
+
+        if (verification.purpose !== "VERIFY_EMAIL") {
+            throw new ApiError(400, "Demande invalide.");
+        }
+
+        if (verification.channel !== "EMAIL") {
+            throw new ApiError(400, "Demande invalide.");
+        }
+
+        /* ---------- L'utilisateur est-il déjà vérifié ? ---------- */
+
+        const user = await repository.findUserById(verification.userId);
+
+        if (!user) {
+            throw new ApiError(400, "Demande invalide.");
+        }
+
+        if (user.emailVerified) {
+            throw new ApiError(400, "Cette adresse e-mail est déjà vérifiée.");
+        }
+
+        /* ---------- Rate-limiting ---------- */
+
+        const recent = await repository.findRecentVerification({
+            target: verification.target,
+            purpose: "VERIFY_EMAIL",
+            since: new Date(Date.now() - 5 * 60 * 1000), // 5 min
+        });
+
+        if (recent) {
+            throw new ApiError(
+                429,
+                "Veuillez attendre 5 minutes avant de demander un nouveau lien."
+            );
+        }
+
+        /* ---------- Nouvelle vérification ---------- */
+
+        const newToken = generateVerificationToken();
+
+        const expiresAt = new Date(
+            Date.now() +
+            Number(process.env.EMAIL_VERIFICATION_EXPIRATION_HOURS || 24) *
+            60 * 60 * 1000
+        );
+
+        const newVerification = await repository.createVerification({
+            userId: user.id,
+            purpose: "VERIFY_EMAIL",
+            channel: "EMAIL",
+            target: verification.target,
+            codeHash: hashVerificationToken(newToken),
+            expiresAt,
+        });
+
+        /* ---------- Envoi ---------- */
+        const verificationUrl = `${process.env.AUTH_URL}/verify-email?token=${newToken}&vid=${newVerification.id}`;
+
+        await emailService.sendEmail({
+            to: verification.target,
+            template: "email-verification",
+            data: {
+                fullName: user.fullName,
+                verificationUrl: verificationUrl,
+                expiresInHours:
+                    Number(process.env.EMAIL_VERIFICATION_EXPIRATION_HOURS) || 24,
+            },
+            subject: "Vérification de votre adresse e-mail - Trajet Go",
+        });
+
+        return { sent: true };
+    };
+
+    forgotPassword = async (identifier, meta = {}) => {
+        const parsed = parseIdentifier(identifier);
+
+        if (!parsed) {
+            // Identifiant mal formé : on retourne quand même "sent" pour
+            // ne pas révéler que le format est invalide.
+            return { sent: true };
+        }
+
+        const { type, value } = parsed;
+
+        const account = await repository.findByIdentifier({ type, value });
+
+        if (!account) {
+            return { sent: true };
+        }
+
+        /* ---------- Rate-limiting ---------- */
+
+        const recent = await repository.findRecentVerification({
+            target: value,
+            purpose: "RESET_PASSWORD",
+            since: new Date(Date.now() - 60 * 1000),
+        });
+
+        if (recent) {
+            throw new ApiError(
+                429,
+                "Veuillez attendre avant de demander un nouveau lien."
+            );
+        }
+
+        /* ---------- Durée de validité ---------- */
+
+        const expiresAt = new Date(
+            Date.now() +
+            Number(process.env.PASSWORD_RESET_EXPIRATION_MINUTES || 60) * 60 * 1000
+        );
+
+        /* ---------- Email : token + lien ---------- */
+
+        if (type === "email") {
+            const token = generateVerificationToken();
+
+            const verification = await repository.createVerification({
+                userId: account.id,
+                purpose: "RESET_PASSWORD",
+                channel: "EMAIL",
+                target: account.email,
+                codeHash: hashVerificationToken(token),
+                expiresAt,
+            });
+
+            // ✅ On utilise l'id de LA vérification créée, pas `recent`
+            const resetUrl = `${process.env.AUTH_URL}/reset-password?token=${token}&vid=${verification.id}`;
+
+            await emailService.sendEmail({
+                to: account.email,
+                template: "reset-password",
+                data: {
+                    fullName: account.fullName,
+                    resetUrl,
+                    expiresInMinutes:
+                        Number(process.env.PASSWORD_RESET_EXPIRATION_MINUTES) || 60,
+                },
+                subject: "Réinitialisation de votre mot de passe - Trajet Go",
+            });
+
+            await auditService.log({
+                userId: account.id,
+                event: 'password.reset.requested',
+                ip: meta.ip,
+                userAgent: meta.userAgent,
+                device: meta.device,
+                os: meta.os,
+                metadata: { email: account.email },
+            });
+
+            return { sent: true };
+        }
+
+        /* ---------- SMS : OTP uniquement ---------- */
+
+        const otp = generateOtp();
+
+        await repository.createVerification({
+            userId: account.id,
+            purpose: "RESET_PASSWORD",
+            channel: "SMS",
+            target: account.phone,
+            codeHash: hashOtp(otp),
+            expiresAt,
+        });
+
+        const isDev = process.env.NODE_ENV !== "production";
+
+        if (isDev) {
+            console.info(`[DEV] OTP reset pour ${value} : ${otp}`);
+        } else {
+            await orangeSmsService.sendVerificationCode(value, otp);
+        }
+
+        await auditService.log({
+            userId: account.id,
+            event: 'password.reset.requested',
+            ip: meta.ip,
+            userAgent: meta.userAgent,
+            device: meta.device,
+            os: meta.os,
+            metadata: { phone: account.phone },
+        });
+
+        return { sent: true };
+    };
+
+    validateResetToken = async (token) => {
+        if (!token) return false;
+
+        const tokenHash = hashVerificationToken(token);
+
+        const verification = await repository.findActiveVerificationByHash(
+            tokenHash,
+            "RESET_PASSWORD"
+        );
+
+        return Boolean(verification);
+    };
+
+    resetPassword = async ({ token, verificationId, newPassword }) => {
+        const tokenHash = hashVerificationToken(token);
+
+        const verification = await repository.findActiveVerificationByHash(
+            tokenHash,
+            "RESET_PASSWORD"
+        );
+
+        if (!verification) {
+            throw new ApiError(400, "Lien invalide ou expiré.");
+        }
+
+        // Défense en profondeur : si vid est fourni, il doit correspondre
+        if (verificationId && verification.id !== verificationId) {
+            throw new ApiError(400, "Lien invalide ou expiré.");
+        }
+
+        /* ---------- Mise à jour du mot de passe ---------- */
+
+        const hash = await hashPassword(newPassword);
+
+        await repository.updatePasswordCredential(verification.userId, {
+            hash,
+            algorithm: CURRENT_ALGORITHM,
+        });
+
+        /* ---------- Consommation du token ---------- */
+
+        await repository.consumeVerification(verification.id);
+
+        /* ---------- Révocation de toutes les sessions ---------- */
+
+        await repository.revokeSessions(verification.userId);
+
+        return { userId: verification.userId };
+    };
+
+    logout = async (userId, token, meta = {}) => {
+        if (!token) {
+            // Pas de token : rien à révoquer. On retourne success quand même
+            // (le client va nettoyer son cookie de son côté).
+            return { success: true };
+        }
+
+        const tokenHash = hashToken(token);
+
+        const result = await repository.revokeSessionByToken(tokenHash);
+
+        await auditService.log({
+            userId,
+            event: result.count > 0
+                ? "logout.success"
+                : "logout.already_revoked",
+            ip: meta.ip,
+            userAgent: meta.userAgent,
+            device: meta.device,
+            os: meta.os,
+        });
+
+        return { success: true };
     };
 };
 

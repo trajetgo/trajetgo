@@ -1,14 +1,14 @@
 import {
-    Armchair, 
-    BarChart3, 
-    Building2, 
+    Armchair,
+    BarChart3,
+    Building2,
     BusFront,
-    CalendarClock, 
+    CalendarClock,
     Home,
     Route,
-    Settings, 
-    Ticket, 
-    Users, 
+    Settings,
+    Ticket,
+    Users,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import trajetGo from "@shared/assets/logo.png";
@@ -165,8 +165,8 @@ export default function Sidebar({
                 <div className="sidebar__footer">
                     <div className="sidebar__company">
                         <Avatar
-                            src={user.company?.logo}
-                            name={user.company?.name}
+                            src={user?.avatar}
+                            name={`${user?.firstName ?? ""} ${user?.lastName ?? ""}`}
                             size="sm"
                             className="sidebar__company-avatar"
                         />

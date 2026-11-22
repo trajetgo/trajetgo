@@ -4,12 +4,13 @@ const {
     ENUMS
 } = require("./import.constants");
 
-function createIssue(message, row, column, code) {
+function createIssue(message, row, column, code, sheet = null) {
     return {
         message,
         row: row || null,
         column: column || null,
-        code: code || "INVALID_VALUE"
+        code: code || "INVALID_VALUE",
+        sheet
     };
 }
 
@@ -86,7 +87,8 @@ function validateRequiredFields(sheet, records, errors) {
                         `Le champ "${field}" est obligatoire.`,
                         record.rowNumber,
                         field,
-                        "REQUIRED_FIELD"
+                        "REQUIRED_FIELD",
+                        sheet
                     )
                 );
             }
@@ -146,9 +148,9 @@ function validateHeaders(sheet, parsed, errors, warnings) {
 
 function validateUniqueIds(sheet, records, errors) {
     const idField =
-        sheet === "Plans_Sieges" ? null : "external_id";
-
-    if (!idField) return;
+        sheet === "Programmations"
+            ? "departure_external_id"
+            : "external_id";
 
     const seen = new Map();
 
@@ -168,9 +170,10 @@ function validateUniqueIds(sheet, records, errors) {
                     "DUPLICATE_EXTERNAL_ID"
                 )
             );
-        } else {
-            seen.set(normalizedId, record.rowNumber);
+            return;
         }
+
+        seen.set(normalizedId, record.rowNumber);
     });
 }
 
@@ -193,12 +196,53 @@ function validateEnum(records, field, allowedValues, errors) {
     });
 }
 
+
+function validateListEnum(records, field, allowedValues, errors) {
+    records.forEach((record) => {
+        const value = getValue(record, field);
+
+        if (isBlank(value)) return;
+
+        const values = String(value)
+            .split(",")
+            .map((item) => item.trim().toUpperCase())
+            .filter(Boolean);
+
+        const invalidValues = values.filter(
+            (item) => !allowedValues.includes(item)
+        );
+
+        if (invalidValues.length > 0) {
+            errors.push(
+                createIssue(
+                    `Valeurs invalides : ${invalidValues.join(", ")}. Valeurs autorisées : ${allowedValues.join(", ")}.`,
+                    record.rowNumber,
+                    field,
+                    "INVALID_ENUM"
+                )
+            );
+        }
+
+        if (new Set(values).size !== values.length) {
+            errors.push(
+                createIssue(
+                    "Un même équipement ne doit pas apparaître plusieurs fois.",
+                    record.rowNumber,
+                    field,
+                    "DUPLICATE_ENUM"
+                )
+            );
+        }
+    });
+}
+
 function validateBasicValues(sheets, errors, warnings) {
     const cities = getRows(sheets, "Villes");
     const agencies = getRows(sheets, "Agences");
     const buses = getRows(sheets, "Bus");
     const seats = getRows(sheets, "Plans_Sieges");
     const routes = getRows(sheets, "Lignes");
+    const drivers = getRows(sheets, "Chauffeurs");
     const schedules = getRows(sheets, "Programmations");
     const personnel = getRows(sheets, "Personnel");
 
@@ -288,22 +332,105 @@ function validateBasicValues(sheets, errors, warnings) {
         });
     });
 
-    schedules.forEach((record) => {
-        ["departure_time", "arrival_time"].forEach((field) => {
-            const value = getValue(record, field);
+    routes.forEach((record) => {
+        /* ---------- base_price ---------- */
 
-            if (!isBlank(value) && !isValidTime(value)) {
+        const basePrice = getValue(record, "base_price");
+
+        if (!isBlank(basePrice) && !isPositiveInteger(basePrice)) {
+            errors.push(
+                createIssue(
+                    "Le prix de base doit être un entier positif en FCFA.",
+                    record.rowNumber,
+                    "base_price",
+                    "INVALID_AMOUNT"
+                )
+            );
+        }
+
+        /* ---------- distance ---------- */
+
+        const distance = getValue(record, "distance");
+
+        if (!isBlank(distance)) {
+            const n = Number(distance);
+
+            if (!Number.isFinite(n) || n <= 0) {
                 errors.push(
                     createIssue(
-                        "L'horaire doit respecter le format HH:MM.",
+                        "La distance doit être un nombre positif (km).",
                         record.rowNumber,
-                        field,
-                        "INVALID_TIME"
+                        "distance",
+                        "INVALID_DISTANCE"
                     )
                 );
             }
-        });
+        }
 
+        /* ---------- duration ---------- */
+
+        const duration = getValue(record, "duration");
+
+        if (!isBlank(duration)) {
+            const n = Number(duration);
+
+            if (!Number.isInteger(n) || n <= 0) {
+                errors.push(
+                    createIssue(
+                        "La durée doit être un entier positif (minutes).",
+                        record.rowNumber,
+                        "duration",
+                        "INVALID_DURATION"
+                    )
+                );
+            }
+        }
+    });
+
+    drivers.forEach((record) => {
+        const email = getValue(record, "email");
+
+        if (!isBlank(email) && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email))) {
+            errors.push(
+                createIssue(
+                    "L'adresse e-mail du chauffeur n'est pas valide.",
+                    record.rowNumber,
+                    "email",
+                    "INVALID_EMAIL"
+                )
+            );
+        }
+
+        const licenseCategory = getValue(record, "license_category");
+
+        if (!isBlank(licenseCategory) && !ENUMS.licenseCategories.includes(String(licenseCategory).toUpperCase())) {
+            errors.push(
+                createIssue(
+                    `Catégorie de permis "${licenseCategory}" invalide.`,
+                    record.rowNumber,
+                    "license_category",
+                    "INVALID_LICENSE_CATEGORY"
+                )
+            );
+        }
+    });
+
+    schedules.forEach((record) => {
+        // Heure de départ
+        const departureTime = getValue(record, "departure_time");
+
+        if (!isBlank(departureTime) && !isValidTime(departureTime)) {
+            errors.push(
+                createIssue(
+                    "L'heure de départ doit respecter le format HH:MM.",
+                    record.rowNumber,
+                    "departure_time",
+                    "INVALID_TIME"
+                )
+            );
+        }
+
+        // Dates
         ["start_date", "end_date"].forEach((field) => {
             const value = getValue(record, field);
 
@@ -337,12 +464,14 @@ function validateBasicValues(sheets, errors, warnings) {
             );
         }
 
+        // Jours de circulation
         const days = getValue(record, "days_of_week");
 
         if (!isBlank(days)) {
             const values = String(days)
                 .split(",")
-                .map((day) => day.trim().toUpperCase());
+                .map((day) => day.trim().toUpperCase())
+                .filter(Boolean);
 
             const invalidDays = values.filter(
                 (day) => !ENUMS.daysOfWeek.includes(day)
@@ -369,6 +498,60 @@ function validateBasicValues(sheets, errors, warnings) {
                     )
                 );
             }
+        }
+
+        // Prix
+        const price = getValue(record, "price");
+
+        if (!isBlank(price) && !isPositiveInteger(price)) {
+            errors.push(
+                createIssue(
+                    "Le prix de programmation doit être un entier positif en FCFA.",
+                    record.rowNumber,
+                    "price",
+                    "INVALID_AMOUNT"
+                )
+            );
+        }
+
+        // Durée facultative : le fallback Route.durationMin
+        // sera appliqué lors de la génération des voyages.
+        const duration = getValue(record, "duration_minutes");
+
+        if (!isBlank(duration)) {
+            const minutes = Number(duration);
+
+            if (!Number.isInteger(minutes) || minutes <= 0) {
+                errors.push(
+                    createIssue(
+                        "La durée doit être un entier positif exprimé en minutes.",
+                        record.rowNumber,
+                        "duration_minutes",
+                        "INVALID_DURATION"
+                    )
+                );
+            }
+        }
+
+        // auto_generate : ExcelJS peut retourner un booléen natif
+        const autoGenerate = getValue(record, "auto_generate");
+
+        if (
+            !isBlank(autoGenerate) &&
+            ![true, false, "TRUE", "FALSE"].includes(
+                typeof autoGenerate === "string"
+                    ? autoGenerate.toUpperCase()
+                    : autoGenerate
+            )
+        ) {
+            errors.push(
+                createIssue(
+                    "La valeur doit être TRUE ou FALSE.",
+                    record.rowNumber,
+                    "auto_generate",
+                    "INVALID_BOOLEAN"
+                )
+            );
         }
     });
 
@@ -437,6 +620,7 @@ function validateRelationships(sheets, errors) {
 
     const agencyRows = getRows(sheets, "Agences");
     const routeRows = getRows(sheets, "Lignes");
+    const drivers = getRows(sheets, "Chauffeurs");
     const scheduleRows = getRows(sheets, "Programmations");
 
     validateReference({
@@ -556,7 +740,9 @@ function validateRelationships(sheets, errors) {
     });
 }
 
+
 function validateSheetEnums(sheets, errors) {
+    // Agences
     validateEnum(
         getRows(sheets, "Agences"),
         "status",
@@ -564,13 +750,22 @@ function validateSheetEnums(sheets, errors) {
         errors
     );
 
+    // Bus
     validateEnum(
         getRows(sheets, "Bus"),
         "status",
-        ENUMS.status,
+        ENUMS.busStatus,
         errors
     );
 
+    validateEnum(
+        getRows(sheets, "Bus"),
+        "seat_layout_type",
+        ENUMS.seatLayoutTypes,
+        errors
+    );
+
+    // Lignes
     validateEnum(
         getRows(sheets, "Lignes"),
         "status",
@@ -578,13 +773,52 @@ function validateSheetEnums(sheets, errors) {
         errors
     );
 
+    // Chauffeurs
+    validateEnum(
+        getRows(sheets, "Chauffeurs"),
+        "status",
+        ENUMS.driverStatus,
+        errors
+    );
+
+    validateEnum(
+        getRows(sheets, "Chauffeurs"),
+        "license_category",
+        ENUMS.licenseCategories,
+        errors
+    );
+
+    // Sièges
+    validateEnum(
+        getRows(sheets, "Plans_Sieges"),
+        "position",
+        ENUMS.seatPositions,
+        errors
+    );
+
+    validateEnum(
+        getRows(sheets, "Plans_Sieges"),
+        "status",
+        ENUMS.seatStatus,
+        errors
+    );
+
+    // Programmations
     validateEnum(
         getRows(sheets, "Programmations"),
-        "status",
+        "schedule_status",
         ENUMS.status,
         errors
     );
 
+    validateEnum(
+        getRows(sheets, "Programmations"),
+        "departure_status",
+        ENUMS.status,
+        errors
+    );
+
+    // Personnel
     validateEnum(
         getRows(sheets, "Personnel"),
         "status",
@@ -596,6 +830,14 @@ function validateSheetEnums(sheets, errors) {
         getRows(sheets, "Personnel"),
         "role",
         ENUMS.roles,
+        errors
+    );
+
+    // Équipements du bus
+    validateListEnum(
+        getRows(sheets, "Bus"),
+        "amenities",
+        ENUMS.busAmenities,
         errors
     );
 }

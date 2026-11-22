@@ -1,0 +1,237 @@
+
+@import "@shared/styles/abstracts/colors";
+@import "@shared/styles/abstracts/fonts";
+
+.company-details {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    // ---------- En-tête ----------
+
+    &__header {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    &__logo {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: rgba(11, 59, 96, 0.08);
+        color: var(--tg-primary, #0b3b60);
+        font-size: 1.1rem;
+        font-weight: 700;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
+
+    &__identity {
+        flex: 1;
+        min-width: 0;
+
+        h2 {
+            margin: 0 0 2px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--tg-text, #111827);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        p {
+            margin: 0 0 8px;
+            font-size: 0.82rem;
+            color: #6b7280;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+
+    &__badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    &__status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 9px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        white-space: nowrap;
+
+        &.active {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+        }
+
+        &.inactive {
+            background: rgba(107, 114, 128, 0.12);
+            color: #4b5563;
+        }
+
+        &.suspended {
+            background: rgba(239, 68, 68, 0.12);
+            color: #b91c1c;
+        }
+    }
+
+    &__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 9px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 500;
+        background: #f3f4f6;
+        color: #4b5563;
+    }
+
+    // ---------- Tabs ----------
+
+    &__tabs {
+        display: flex;
+        gap: 4px;
+        border-bottom: 1px solid #e5e7eb;
+        overflow-x: auto;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    &__tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 13px;
+        border: none;
+        background: transparent;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: #6b7280;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: color 0.15s ease, border-color 0.15s ease;
+
+        &:hover {
+            color: #374151;
+        }
+
+        &.is-active {
+            color: var(--tg-primary, #0b3b60);
+            border-bottom-color: var(--tg-primary, #0b3b60);
+            font-weight: 600;
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--tg-primary, #0b3b60);
+            outline-offset: -2px;
+        }
+    }
+
+    // ---------- Contenu ----------
+
+    &__content {
+        min-height: 140px;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px 20px;
+
+        @media (max-width: 560px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__field {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
+
+        &--wide {
+            grid-column: 1 / -1;
+        }
+    }
+
+    &__field-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.72rem;
+        font-weight: 500;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+
+        svg {
+            flex-shrink: 0;
+            opacity: 0.7;
+        }
+    }
+
+    &__field-value {
+        font-size: 0.88rem;
+        font-weight: 500;
+        color: var(--tg-text, #111827);
+        overflow-wrap: anywhere;
+    }
+
+    &__empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 8px;
+        padding: 28px 16px;
+        color: #9ca3af;
+
+        p {
+            margin: 0;
+            font-size: 0.85rem;
+        }
+    }
+
+    // ---------- Responsive ----------
+
+    @media (max-width: 480px) {
+        &__header {
+            gap: 12px;
+        }
+
+        &__logo {
+            width: 48px;
+            height: 48px;
+            font-size: 1rem;
+        }
+
+        &__identity h2 {
+            font-size: 1.05rem;
+        }
+    }
+}

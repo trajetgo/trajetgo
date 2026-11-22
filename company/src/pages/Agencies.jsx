@@ -4,6 +4,8 @@ import {
     Search,
     Building2,
     X,
+    List,
+    LayoutGrid,
 } from "lucide-react";
 
 import Loading from "@shared/components/Loading";
@@ -17,6 +19,8 @@ import AgencyStatusModal from "../components/agency/AgencyStatusModal";
 import { STATUS_FILTERS } from "../utils/agency.utils";
 
 import "../styles/pages/Agencies.scss";
+import AgencyList from "../components/agency/AgencyList";
+import AgencyGrid from "../components/agency/AgencyGrid";
 
 export default function Agencies() {
     const {
@@ -25,6 +29,7 @@ export default function Agencies() {
 
         agencies,
         filteredAgencies,
+
         counts,
 
         search,
@@ -32,6 +37,9 @@ export default function Agencies() {
 
         sort,
         handleSort,
+
+        viewMode,
+        changeViewMode,
 
         statusFilter,
         setStatusFilter,
@@ -188,6 +196,32 @@ export default function Agencies() {
 
                         </div>
 
+                        <div className="agencies__view-toggle" role="tablist">
+                            <button
+                                type="button"
+                                role="tab"
+                                aria-selected={viewMode === "list"}
+                                className={`agencies__view-btn ${viewMode === "list" ? "agencies__view-btn--active" : ""
+                                    }`}
+                                onClick={() => changeViewMode("list")}
+                                aria-label="Vue liste"
+                            >
+                                <List size={16} />
+                            </button>
+
+                            <button
+                                type="button"
+                                role="tab"
+                                aria-selected={viewMode === "grid"}
+                                className={`agencies__view-btn ${viewMode === "grid" ? "agencies__view-btn--active" : ""
+                                    }`}
+                                onClick={() => changeViewMode("grid")}
+                                aria-label="Vue grille"
+                            >
+                                <LayoutGrid size={16} />
+                            </button>
+                        </div>
+
                     </section>
 
 
@@ -197,22 +231,22 @@ export default function Agencies() {
 
                     {(search ||
                         statusFilter !== "ALL") && (
-                        <div className="agencies__result-info">
+                            <div className="agencies__result-info">
 
-                            <span>
-                                {filteredAgencies.length}{" "}
-                                agence
-                                {filteredAgencies.length > 1
-                                    ? "s"
-                                    : ""}{" "}
-                                trouvée
-                                {filteredAgencies.length > 1
-                                    ? "s"
-                                    : ""}
-                            </span>
+                                <span>
+                                    {filteredAgencies.length}{" "}
+                                    agence
+                                    {filteredAgencies.length > 1
+                                        ? "s"
+                                        : ""}{" "}
+                                    trouvée
+                                    {filteredAgencies.length > 1
+                                        ? "s"
+                                        : ""}
+                                </span>
 
-                        </div>
-                    )}
+                            </div>
+                        )}
 
 
                     {/* =================================================
@@ -240,18 +274,36 @@ export default function Agencies() {
 
                         <section className="agencies__card">
 
-                            <AgencyTable
-                                agencies={filteredAgencies}
-                                search={search}
-                                sort={sort}
-                                onSort={handleSort}
-                                setSelectedAction={
-                                    setSelectedAction
-                                }
-                                setSelectedAgency={
-                                    setSelectedAgency
-                                }
-                            />
+                            {viewMode === "list" && (
+                                <AgencyList
+                                    agencies={filteredAgencies}
+                                    search={search}
+                                    sort={sort}
+                                    onSort={handleSort}
+                                    setSelectedAction={
+                                        setSelectedAction
+                                    }
+                                    setSelectedAgency={
+                                        setSelectedAgency
+                                    }
+                                />
+                            )}
+
+                            {viewMode === "grid" && (
+                                <AgencyGrid
+                                    agencies={filteredAgencies}
+                                    search={search}
+                                    sort={sort}
+                                    onSort={handleSort}
+                                    setSelectedAction={
+                                        setSelectedAction
+                                    }
+                                    setSelectedAgency={
+                                        setSelectedAgency
+                                    }
+                                />
+
+                            )}
 
                         </section>
                     )}

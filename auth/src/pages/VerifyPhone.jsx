@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useToast } from '@shared/contexts/toast.context';
 
-import useVerifyPhone from '../../hooks/useVerifyPhone';
-import VerifyPhoneForm from '../../components/auth/VerifyPhoneForm';
-import VerifyPhoneHeader from '../../components/auth/VerifyPhoneHeader';
+import useVerifyPhone from '../hooks/useVerifyPhone';
+import VerifyPhoneForm from '../components/auth/VerifyPhoneForm';
+import VerifyPhoneHeader from '../components/auth/VerifyPhoneHeader';
 
-import '../../styles/pages/auth/VerifyPhone.scss';
-import { useNavigate } from 'react-router-dom';
+import '../styles/pages/VerifyPhone.scss';
 
 export default function VerifyPhone() {
 

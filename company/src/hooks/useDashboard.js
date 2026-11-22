@@ -4,37 +4,33 @@ import service from "../services/dashboard.service"
 export default function useDashboard() {
     const [loading, setLoading] = useState(true);
     const [serverError, setServerError] = useState("");
-    const [data, setData] = useState([]);
+    const [summary, setSummary] = useState(null);
 
-    const loadData = useCallback(async () => {
+    const fetchSummary = useCallback(async () => {
         setLoading(true);
         setServerError("");
 
         try {
-            const result = await service.getDashboard();
-
-            if (!result.success) {
-                setServerError("Une erreur est survenue");
-            }
-
-            setData(result.data);
-        } catch (error) {
-            setServerError(error.message);
+            const result = await service.getSummary();
+            setSummary(result.data ?? null);
+        } catch (err) {
+            setServerError(err.message || "Impossible de charger le tableau de bord.");
+            setSummary(null);
         } finally {
             setLoading(false);
         }
     }, []);
 
     useEffect(() => {
-        loadData();
-    }, [loadData])
+        fetchSummary();
+    }, [fetchSummary])
 
     return {
         loading,
         serverError,
 
-        data,
+        summary,
 
-        refresh: loadData,
+        refresh: fetchSummary,
     }
 }

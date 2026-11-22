@@ -12,7 +12,6 @@ import Loading from "@shared/components/Loading";
 import Pagination from "@shared/components/ui/Pagination";
 
 import useCompanies from "../../hooks/useCompanies";
-import CompanyTable from "../../components/company/CompanyTable";
 
 import { STATUS_FILTERS } from "../../utils/company.utils";
 
@@ -20,6 +19,8 @@ import CreateCompanyModal from "../../components/company/CreateCompanyModal";
 import CompanyGrid from "../../components/company/CompanyGrid";
 
 import "../../styles/pages/admin/Companies.scss";
+import CompanyList from "../../components/company/CompanyList";
+import CompanyDetailsModal from "../../components/company/CompanyDetailsModal";
 
 export default function Companies() {
     const {
@@ -248,8 +249,9 @@ export default function Companies() {
                         <section className="companies__card">
 
                             {viewMode === "list" && (
-                                <CompanyTable
-                                    companies={paginatedCompanies}
+                                <CompanyList
+                                    companies={companies}
+                                    paginatedCompanies={paginatedCompanies}
                                     search={search}
                                     sort={sort}
                                     onSort={handleSort}
@@ -279,6 +281,14 @@ export default function Companies() {
                     )}
 
                 </>
+            )}
+
+            {selectedCompany && selectedAction === "VIEW" && (
+                <CompanyDetailsModal 
+                    company={selectedCompany}
+                    isOpen={!!selectedCompany}
+                    onClose={() => setSelectedCompany(null)}
+                />
             )}
 
             <CreateCompanyModal

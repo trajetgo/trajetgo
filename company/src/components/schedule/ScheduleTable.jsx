@@ -222,11 +222,13 @@ export default function ScheduleTable({
             sortable: false,
             render: (_, schedule) => {
                 const departures = schedule.departures ?? [];
+
+                // Dédoublonnage par id, en ignorant les départs sans bus
                 const uniqueBuses = new Map();
 
-                departures.forEach((d) => {
-                    if (d.bus && !uniqueBuses.has(d.bus.id)) {
-                        uniqueBuses.set(d.bus.id, d.bus);
+                departures.forEach((dep) => {
+                    if (dep.bus?.id && !uniqueBuses.has(dep.bus.id)) {
+                        uniqueBuses.set(dep.bus.id, dep.bus);
                     }
                 });
 
@@ -239,10 +241,24 @@ export default function ScheduleTable({
                 return (
                     <div className="schedule-table__buses">
                         <BusFront size={14} aria-hidden="true" />
-                        <span>
-                            {buses.length} bus
-                            {buses.length > 1 ? "" : ""}
-                        </span>
+
+                        <div className="schedule-table__bus-badges">
+                            {buses.slice(0, 2).map((bus) => (
+                                <span
+                                    key={bus.id}
+                                    className="schedule-table__bus-badge"
+                                    title={bus.registrationNumber ?? bus.name}
+                                >
+                                    {bus.name ?? bus.registrationNumber ?? "—"}
+                                </span>
+                            ))}
+
+                            {buses.length > 2 && (
+                                <span className="schedule-table__bus-badge schedule-table__bus-badge--more">
+                                    +{buses.length - 2}
+                                </span>
+                            )}
+                        </div>
                     </div>
                 );
             },
@@ -283,8 +299,8 @@ export default function ScheduleTable({
             render: (_, schedule) => (
                 <span
                     className={`schedule-table__status ${schedule.active
-                            ? "schedule-table__status--active"
-                            : "schedule-table__status--inactive"
+                        ? "schedule-table__status--active"
+                        : "schedule-table__status--inactive"
                         }`}
                 >
                     {schedule.active ? "Active" : "Inactive"}

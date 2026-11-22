@@ -265,5 +265,27 @@
             "lng": -5.58273,
             "region": "Gbêkê"
         }
+    },
+    "GH": {
+        "Kumassi": {
+            "lat": "6.7000",
+            "lng": "-1.6250",
+            "region": "Ashanti"
+        },
+        "Boankra": {
+            "lat": "6.4167",
+            "lng": "0.0833",
+            "region": "Ashanti"
+        },
+        "Akrofuom": {
+            "lat": "6.1208",
+            "lng": "-1.6536",
+            "region": "Ashanti"
+        },
+        "Accra": {
+            "lat": "5.5560",
+            "lng": "-0.1969",
+            "region": "Greater Accra"
+        }
     }
 }

@@ -730,6 +730,10 @@
             min-width: 65px;
             text-align: center;
             font-size: 10px;
+
+            span {
+                display: none;
+            }
         }
 
         &__header h2 {

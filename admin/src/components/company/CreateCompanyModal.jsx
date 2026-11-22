@@ -5,7 +5,6 @@ import useCreateCompany from "../../hooks/useCreateCompany";
 import useLocations from "../../hooks/useLocations";
 import CreateCompanyForm from "./CreateCompanyForm";
 
-
 export default function CreateCompanyModal({
     open,
     onClose,

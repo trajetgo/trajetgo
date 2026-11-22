@@ -5,7 +5,7 @@ import HighlightText from "@shared/components/ui/HighlightText";
 import { formatDate } from "@shared/utils/date.utils";
 
 import CompanyActions from "./CompanyActions";
-import { COMPANY_STATUS } from "../../utils/company.utils";
+import { formatStatus } from "../../utils/company.utils";
 
 import "../../styles/components/company/CompanyTable.scss";
 
@@ -17,15 +17,6 @@ export default function CompanyTable({
     setSelectedAction,
     setSelectedCompany,
 }) {
-
-    const formatStatus = (status) => {
-        return (
-            COMPANY_STATUS[status] || {
-                class: "unknown",
-                label: "Inconnu",
-            }
-        );
-    };
 
     const columns = [
         {

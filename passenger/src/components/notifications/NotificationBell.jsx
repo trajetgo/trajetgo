@@ -66,16 +66,13 @@ function NotificationItem({ notification, onRead, navigate }) {
 // ─── Composant principal ──────────────────────────────────────
 export default function NotificationBell() {
     const {
+        supported,
         permission,
-        isSubscribed,
+        subscribed,
         loading,
         error,
-        notifications,
-        unreadCount,
-        subscribe,
-        markAsRead,
-        markAllAsRead,
-        refresh,
+        enable,
+        disable
     } = usePushNotifications()
 
     const [open, setOpen] = useState(false);
@@ -111,7 +108,7 @@ export default function NotificationBell() {
         if (permission === 'denied') return <BellOff size={20} />
 
         // 3. Abonné + dropdown ouvert + notifs non lues → cloche animée
-        if (isSubscribed && open && unreadCount > 0) return <BellRing size={20} />
+        if (subscribed && open) return <BellRing size={20} />
 
         // 4. Tous les autres cas : abonné, non abonné, granted en attente
         return <Bell size={20} />
@@ -122,7 +119,7 @@ export default function NotificationBell() {
         if (permission === 'denied') return
 
         // Pas encore abonné → lancer l'abonnement
-        if (!isSubscribed) { subscribe(); return }
+        if (!subscribed) { enable(); return }
 
         // Abonné → toggle dropdown
         setOpen(o => !o)
@@ -138,26 +135,19 @@ export default function NotificationBell() {
                 disabled={loading}
                 aria-label={
                     permission === 'denied' ? 'Notifications bloquées' :
-                        !isSubscribed ? 'Activer les notifications' :
-                            `${unreadCount} notification${unreadCount > 1 ? 's' : ''} non lue${unreadCount > 1 ? 's' : ''}`
+                        !subscribed && 'Activer les notifications'
                 }
                 title={
-                    !isSubscribed && permission !== 'denied'
+                    !subscribed && permission !== 'denied'
                         ? 'Cliquer pour activer les notifications'
                         : undefined
                 }
             >
                 {renderBellIcon()}
 
-                {/* Badge compteur */}
-                {unreadCount > 0 && !loading && (
-                    <span className="nb-badge">
-                        {unreadCount > 99 ? '99+' : unreadCount}
-                    </span>
-                )}
 
                 {/* Indicateur "non abonné" */}
-                {!isSubscribed && permission === 'default' && !loading && (
+                {!subscribed && permission === 'default' && !loading && (
                     <span className="nb-dot-unsubscribed" title="Notifications désactivées" />
                 )}
             </button>

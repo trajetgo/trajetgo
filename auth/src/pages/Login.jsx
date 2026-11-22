@@ -4,13 +4,13 @@ import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '@shared/contexts/auth.context';
 import { useToast } from '@shared/contexts/toast.context';
 
-import LoginHeader from '../../components/auth/LoginHeader';
-import LoginForm from '../../components/auth/LoginForm';
-import LoginFooter from '../../components/auth/LoginFooter';
-import useLogin from '../../hooks/useLogin';
-import { getDefaultRedirect, getSafeContinueUrl } from '../../utils/redirect.utils';
+import LoginHeader from '../components/auth/LoginHeader';
+import LoginForm from '../components/auth/LoginForm';
+import LoginFooter from '../components/auth/LoginFooter';
+import useLogin from '../hooks/useLogin';
+import { getDefaultRedirect, getSafeContinueUrl } from '../utils/redirect.utils';
 
-import '../../styles/pages/auth/Login.scss';
+import '../styles/pages/Login.scss';
 
 export default function Login() {
 

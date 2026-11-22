@@ -47,11 +47,15 @@
         }
     }
 
-    &__agency {
+
+    &__company,
+    &__name,
+    &__phone,
+    &__date {
         display: flex;
         align-items: center;
         gap: 12px;
-        min-width: 210px;
+        min-width: 200px;
     }
 
     &__icon {
@@ -70,5 +74,42 @@
         background: #f7f9fc;
 
         font-size: 18px;
+    }
+
+    &__status {
+        // min-width: 120px;
+        display: inline-flex;
+        gap: 5px;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 26px;
+        padding: 5px 10px;
+
+        border: 1px solid transparent;
+        border-radius: 999px;
+
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1;
+        white-space: nowrap;
+
+        &--active {
+            background: #eef4ff;
+            border-color: #dbe7ff;
+            color: #2563eb;
+        }
+
+        &--inactive {
+            background: #fff7e6;
+            border-color: #fde7b0;
+            color: #b77900;
+        }
+
+        &--closed {
+            background: #fdecec;
+            border-color: #f8d5d5;
+            color: #c92a2a;
+        }
     }
 }

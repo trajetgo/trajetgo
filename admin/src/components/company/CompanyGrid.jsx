@@ -8,7 +8,7 @@ import {
 import HighlightText from "@shared/components/ui/HighlightText";
 
 import CompanyActions from "./CompanyActions";
-import { COMPANY_STATUS } from "../../utils/company.utils";
+import { COMPANY_STATUS, formatStatus } from "../../utils/company.utils";
 
 import "../../styles/components/company/CompanyGrid.scss";
 
@@ -70,7 +70,8 @@ function CompanyGridCard({
     setSelectedAction,
     setSelectedCompany,
 }) {
-    const status = getStatus(company.status);
+
+    const status = formatStatus(company.status);
 
     const handleView = () => {
         setSelectedCompany?.(company);
@@ -107,7 +108,7 @@ function CompanyGridCard({
                     </div>
 
                     <span
-                        className={`company-card__status company-card__status--${status.className}`}
+                        className={`company-card__status company-card__status--${status.class}`}
                     >
                         {status.label}
                     </span>

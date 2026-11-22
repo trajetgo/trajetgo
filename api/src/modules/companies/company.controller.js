@@ -1,12 +1,7 @@
 const ApiResponse = require('../../utils/ApiResponse');
 const asyncHandler = require('../../utils/asyncHandler');
+const requestMeta = require('../../utils/requestMeta');
 const service = require('./company.service');
-
-// Derrière un proxy (Nginx, Render...) : app.set('trust proxy', 1) pour que req.ip soit juste
-const requestMeta = (req) => ({
-    ip: req.ip,
-    userAgent: req.get("user-agent"),
-});
 
 class CompanyController {
     getCompanies = asyncHandler(async (req, res) => {
@@ -54,6 +49,7 @@ class CompanyController {
     createCompany = asyncHandler(async (req, res) => {
         const company =
             await service.createCompany(
+                req.user.id,
                 req.body,
                 requestMeta(req)
             );

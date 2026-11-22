@@ -10,6 +10,10 @@ const validateCsrf = require('../../middlewares/csrf.middleware');
 const validate = require('../../middlewares/validate.middleware');
 const requireRecaptcha = require('./recaptcha.middleware');
 
+router.post(
+    "/test-email",
+    controller.testEmail
+)
 
 router.post(
     '/register',
@@ -34,11 +38,38 @@ router.post(
     controller.verifyPhone
 );
 
-// router.post(
-//     '/logout',
-//     validateCsrf,
-//     controller.logout
-// );
+router.get(
+    '/verify-email',
+    validate(schema.verifyEmail, "query"),
+    controller.verifyEmail
+);
+
+router.post(
+    "/forgot-password",
+    validateCsrf,
+    validate(schema.forgotPassword, "body"),
+    controller.forgotPassword
+);
+
+router.get(
+    "/validate-reset-token",
+    validate(schema.validateResetToken, "query"),
+    controller.validateResetToken
+);
+
+router.post(
+    "/reset-password",
+    validateCsrf,
+    validate(schema.resetPassword, "body"),
+    controller.resetPassword
+);
+
+router.post(
+    '/logout',
+    authenticate,
+    validateCsrf,
+    controller.logout
+);
 
 // router.post(
 //     '/refresh',

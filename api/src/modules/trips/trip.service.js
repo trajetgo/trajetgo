@@ -83,12 +83,14 @@ class TripService {
                     time: trip.arrivalAt,
                 },
 
-                duration: trip.arrivalAt
-                    ? formatDuration(
-                        trip.departureAt,
-                        trip.arrivalAt
-                    )
-                    : null,
+                duration: trip.route.durationMin,
+
+                // duration: trip.arrivalAt
+                //     ? formatDuration(
+                //         trip.departureAt,
+                //         trip.arrivalAt
+                //     )
+                //     : null,
 
                 date: trip.departureAt,
 
@@ -111,7 +113,7 @@ class TripService {
                             : 0,
                 },
 
-                price: trip.price,
+                price: trip.route.basePrice,
                 status: trip.status,
             };
         });
@@ -731,7 +733,8 @@ class TripService {
                     }
                     : null,
 
-                duration: durationMinutes,
+                // duration: durationMinutes,
+                duration: trip.route.durationMin,
                 durationLabel: durationMinutes
                     ? `${Math.floor(durationMinutes / 60)}h${String(durationMinutes % 60).padStart(2, "0")}`
                     : null,
@@ -739,7 +742,7 @@ class TripService {
                 availableSeats,
                 totalSeats,
 
-                price: trip.price,
+                price: trip.route.basePrice,
                 currency: "XOF",
 
                 status: trip.status,

@@ -5,7 +5,7 @@ import Button from "@shared/components/ui/Button";
 import SearchableSelect from "@shared/components/ui/SearchableSelect";
 import ActivityIndicator from "@shared/components/ui/ActivityIndicator";
 
-import CreateAgencyStepper from "./CreateAgencyStepper.jsx";
+import CreateAgencyStepper from "./CreateAgencyStepper";
 
 import "../../styles/components/agency/CreateAgencyForm.scss";
 
@@ -50,6 +50,7 @@ export default function CreateAgencyForm({
     const StepIcon = STEP_ICONS[step.key] ?? Building2;
 
     /* ---------- Rendu des champs selon l'étape ---------- */
+
     const renderFields = () => {
         switch (step.key) {
             case "identity":
@@ -110,7 +111,7 @@ export default function CreateAgencyForm({
                 return (
                     <>
                         <SearchableSelect
-                            label="Ville du siège"
+                            label="Ville de l'agence"
                             name="cityId"
                             id="cityId"
                             value={formData.cityId}
@@ -133,7 +134,7 @@ export default function CreateAgencyForm({
                         />
 
                         <Input
-                            label="Adresse du siège"
+                            label="Adresse de l'agence"
                             name="address"
                             id="address"
                             value={formData.address}
@@ -149,7 +150,7 @@ export default function CreateAgencyForm({
             default:
                 return null;
         }
-    };
+    }
 
     /* ---------- Submit ---------- */
 

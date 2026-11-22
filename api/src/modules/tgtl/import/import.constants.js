@@ -1,9 +1,11 @@
+
 const EXPECTED_SHEETS = [
     "LISEZ_MOI",
     "Compagnie",
     "Villes",
     "Agences",
     "Bus",
+    "Chauffeurs",
     "Plans_Sieges",
     "Lignes",
     "Programmations",
@@ -16,10 +18,10 @@ const SHEET_SCHEMAS = {
             "external_id",
             "name",
             "legal_name",
-            "registration_number (RCCM)",
-            "taxId (DFE)",
+            "registration_number",
+            "taxId",
             "country_code",
-            "address (siège)",
+            "address",
             "currency",
             "phone",
             "email",
@@ -90,8 +92,28 @@ const SHEET_SCHEMAS = {
         ]
     },
 
+    Chauffeurs: {
+        headers: [
+            "external_id",
+            "first_name",
+            "last_name",
+            "phone",
+            "email",
+            "license_number",
+            "license_category",
+            "status"
+        ],
+        defaultColumns: ["status"],
+        required: [
+            "external_id",
+            "first_name",
+            "last_name"
+        ]
+    },
+
     Plans_Sieges: {
         headers: [
+            "external_id",
             "bus_external_id",
             "seat_number",
             "row_number",
@@ -99,7 +121,9 @@ const SHEET_SCHEMAS = {
             "position",
             "status"
         ],
+        defaultColumns: ["position", "status"],
         required: [
+            "external_id",
             "bus_external_id",
             "seat_number",
             "row_number",
@@ -110,18 +134,21 @@ const SHEET_SCHEMAS = {
     Lignes: {
         headers: [
             "external_id",
-            "name",
             "origin_city_external_id",
             "destination_city_external_id",
-            "departure_agency_external_id",
-            "arrival_agency_external_id",
+            "distance",
+            "duration",
+            "base_price",
             "status"
         ],
+        defaultColumns: ["status"],
         required: [
             "external_id",
-            "name",
             "origin_city_external_id",
-            "destination_city_external_id"
+            "destination_city_external_id",
+            "distance",
+            "duration",
+            "base_price"
         ]
     },
 
@@ -131,20 +158,38 @@ const SHEET_SCHEMAS = {
             "route_external_id",
             "departure_agency_external_id",
             "arrival_agency_external_id",
-            "bus_external_id",
-            "departure_time",
-            "arrival_time",
+            "price",
+            "duration_minutes",
             "days_of_week",
             "start_date",
             "end_date",
-            "status"
+            "auto_generate",
+            "schedule_status",
+            "departure_external_id",
+            "departure_time",
+            "bus_external_id",
+            "driver_external_id",
+            "departure_status"
+        ],
+        defaultColumns: [
+            "duration_minutes",
+            "end_date",
+            "auto_generate",
+            "schedule_status",
+            "driver_external_id",
+            "departure_status"
         ],
         required: [
             "external_id",
             "route_external_id",
-            "departure_time",
+            "departure_agency_external_id",
+            "arrival_agency_external_id",
+            "price",
             "days_of_week",
-            "start_date"
+            "start_date",
+            "departure_external_id",
+            "departure_time",
+            "bus_external_id"
         ]
     },
 
@@ -159,6 +204,7 @@ const SHEET_SCHEMAS = {
             "agency_external_id",
             "status"
         ],
+        defaultColumns: ["email", "agency_external_id", "status"],
         required: [
             "external_id",
             "first_name",
@@ -169,13 +215,68 @@ const SHEET_SCHEMAS = {
     }
 };
 
+
 const ENUMS = {
-    status: ["ACTIVE", "INACTIVE"],
+    status: [
+        "ACTIVE",
+        "INACTIVE"
+    ],
+
+    busStatus: [
+        "ACTIVE",
+        "INACTIVE",
+        "RETIRED"
+    ],
+
+    driverStatus: [
+        "ACTIVE",
+        "INACTIVE",
+        "ON_LEAVE",
+        "SUSPENDED"
+    ],
+
+    seatStatus: [
+        "ACTIVE",
+        "INACTIVE"
+    ],
+
+    seatLayoutTypes: [
+        "TWO_PLUS_TWO",
+        "TWO_PLUS_ONE",
+        "ONE_PLUS_TWO",
+        "CUSTOM"
+    ],
+
+    seatPositions: [
+        "WINDOW",
+        "AISLE",
+        "MIDDLE"
+    ],
+
+    busAmenities: [
+        "AIR_CONDITIONING",
+        "WIFI",
+        "USB_CHARGING",
+        "POWER_OUTLET",
+        "TOILET",
+        "TV",
+        "RECLINING_SEATS",
+        "READING_LIGHT",
+        "LUGGAGE_SPACE"
+    ],
 
     roles: [
         "COMPANY_ADMIN",
         "AGENCY_AGENT",
         "CONTROLLER"
+    ],
+
+    licenseCategories: [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E"
     ],
 
     daysOfWeek: [
@@ -186,6 +287,11 @@ const ENUMS = {
         "FRIDAY",
         "SATURDAY",
         "SUNDAY"
+    ],
+
+    boolean: [
+        "TRUE",
+        "FALSE"
     ]
 };
 

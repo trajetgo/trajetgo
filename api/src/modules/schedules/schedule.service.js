@@ -11,35 +11,45 @@ const repository = require("./schedule.repository");
 
 class ScheduleService {
     getSchedules = async (filters, user) => {
-        /* =========================================================
-          1. Résolution du companyId
-        ========================================================= */
+        /* ---------- 1. companyId ---------- */
 
         let companyId = null;
 
         if (user.role === "SUPER_ADMIN") {
-            companyId = filters.companyId ?? null;   // peut voir toutes
+            companyId = filters.companyId ?? null;
         } else {
             if (!user.companyId) {
-                throw new ApiError(
-                    403,
-                    "Aucune compagnie associée à cet utilisateur."
-                );
+                throw new ApiError(403, "Aucune compagnie associée à cet utilisateur.");
             }
             companyId = user.companyId;
         }
 
-        /* =========================================================
-       2. Construction de la pagination
-    ========================================================= */
+        /* ---------- 2. Pagination ---------- */
 
         const page = Math.max(1, Number(filters.page) || 1);
         const limit = Math.min(100, Math.max(1, Number(filters.limit) || 20));
         const skip = (page - 1) * limit;
 
-        /* =========================================================
-           3. Appel repository
-        ========================================================= */
+        /* ---------- 3. Tri (whitelist) ---------- */
+
+        const SORTABLE_FIELDS = new Set([
+            "createdAt", "updatedAt", "startDate", "endDate",
+            "price", "durationMinutes", "active",
+        ]);
+
+        const sortBy = SORTABLE_FIELDS.has(filters.sortBy)
+            ? filters.sortBy
+            : "createdAt";
+        const sortOrder = filters.sortOrder === "asc" ? "asc" : "desc";
+
+        /* ---------- 4. Jours normalisés ---------- */
+
+        const daysOfWeek = filters.daysOfWeek
+            ? (Array.isArray(filters.daysOfWeek) ? filters.daysOfWeek : [filters.daysOfWeek])
+                .map((d) => String(d).trim().toUpperCase())
+            : null;
+
+        /* ---------- 5. Repository ---------- */
 
         const { items, total } = await repository.findMany({
             companyId,
@@ -47,26 +57,16 @@ class ScheduleService {
             busId: filters.busId ?? null,
             status: filters.status ?? null,
             search: filters.search ?? null,
-            daysOfWeek: filters.daysOfWeek
-                ? Array.isArray(filters.daysOfWeek)
-                    ? filters.daysOfWeek
-                    : [filters.daysOfWeek]
-                : null,
-            startDate: filters.startDate
-                ? new Date(filters.startDate)
-                : null,
-            endDate: filters.endDate
-                ? new Date(filters.endDate)
-                : null,
+            daysOfWeek,
+            startDate: filters.startDate ? new Date(filters.startDate) : null,
+            endDate: filters.endDate ? new Date(filters.endDate) : null,
             skip,
             take: limit,
-            sortBy: filters.sortBy ?? "createdAt",
-            sortOrder: filters.sortOrder ?? "desc",
+            sortBy,
+            sortOrder,
         });
 
-        /* =========================================================
-           4. Formatage pour le front
-        ========================================================= */
+        /* ---------- 6. DTO ---------- */
 
         const schedules = items.map((schedule) => ({
             id: schedule.id,
@@ -75,32 +75,23 @@ class ScheduleService {
                 ? {
                     id: schedule.route.id,
                     origin: schedule.route.originCity?.name ?? null,
-                    destination:
-                        schedule.route.destinationCity?.name ?? null,
+                    destination: schedule.route.destinationCity?.name ?? null,
                     distanceKm: schedule.route.distanceKm,
                 }
                 : null,
 
             departureAgency: schedule.departureAgency
-                ? {
-                    id: schedule.departureAgency.id,
-                    name: schedule.departureAgency.name,
-                }
+                ? { id: schedule.departureAgency.id, name: schedule.departureAgency.name }
                 : null,
 
             arrivalAgency: schedule.arrivalAgency
-                ? {
-                    id: schedule.arrivalAgency.id,
-                    name: schedule.arrivalAgency.name,
-                }
+                ? { id: schedule.arrivalAgency.id, name: schedule.arrivalAgency.name }
                 : null,
 
-            /* Période */
             startDate: schedule.startDate,
             endDate: schedule.endDate,
             daysOfWeek: schedule.daysOfWeek,
 
-            /* N départs */
             departures: (schedule.departures ?? []).map((d) => ({
                 id: d.id,
                 departureTime: d.departureTime,
@@ -116,11 +107,10 @@ class ScheduleService {
 
             departureCount: schedule.departures?.length ?? 0,
 
-            /* Copiés depuis Route */
-            price: schedule.price,
-            durationMinutes: schedule.durationMinutes,
+            // ✅ champs propres à Schedule, pas à Route
+            price: schedule.route.basePrice,
+            durationMinutes: schedule.route.durationMin,
 
-            /* Méta */
             active: schedule.active,
             autoGenerate: schedule.autoGenerate,
 
@@ -129,15 +119,16 @@ class ScheduleService {
             createdAt: schedule.createdAt,
             updatedAt: schedule.updatedAt,
 
-            company: {
-                name: schedule.route.company.name,
-                logo: schedule.route.company.logo
-            }
+            // ✅ null-safe
+            company: schedule.route?.company
+                ? {
+                    name: schedule.route.company.name,
+                    logo: schedule.route.company.logo,
+                }
+                : null,
         }));
 
-        /* =========================================================
-           5. Retour avec pagination
-        ========================================================= */
+        /* ---------- 7. Retour ---------- */
 
         return {
             items: schedules,

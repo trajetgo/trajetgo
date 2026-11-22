@@ -5,6 +5,7 @@ const { parseWorkbook } = require("./import.parser");
 const { validateWorkbook } = require("./import.validators");
 
 const repository = require("./import.repository");
+const tgtlRepository = require("../tgtl.repository");
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                             */
@@ -61,6 +62,69 @@ function splitList(value) {
         .filter(Boolean);
 }
 
+/**
+ * Normalise une valeur de temps vers "HH:MM".
+ *
+ * Accepte :
+ *   - "07:00", "7:00", "07:00:00" (chaînes)
+ *   - Date (cellule Excel formatée en heure)
+ *   - number entre 0 et 1 (fraction de journée Excel)
+ *
+ * Retourne null si la valeur est vide ou invalide.
+ */
+function normalizeTime(value) {
+    if (value === null || value === undefined || value === "") {
+        return null;
+    }
+
+    // Date Excel (ex. 1899-12-31T07:00:00.000Z)
+    if (value instanceof Date) {
+        const hours = value.getHours();
+        const minutes = value.getMinutes();
+
+        return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+    }
+
+    // Fraction de journée Excel (0.291666 = 07:00)
+    if (typeof value === "number") {
+        const totalMinutes = Math.round(value * 24 * 60);
+        const hours = Math.floor(totalMinutes / 60) % 24;
+        const minutes = totalMinutes % 60;
+
+        return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+    }
+
+    // Chaîne "H:MM", "HH:MM", "HH:MM:SS"
+    const str = String(value).trim();
+    const match = /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec(str);
+
+    if (!match) return null;
+
+    const hours = Number(match[1]);
+    const minutes = Number(match[2]);
+
+    if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+        return null;
+    }
+
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
+
+function computeDurationMinutes(departureTime, arrivalTime) {
+    const dep = normalizeTime(departureTime);
+    const arr = normalizeTime(arrivalTime);
+
+    if (!dep || !arr) return null;
+
+    const [depH, depM] = dep.split(":").map(Number);
+    const [arrH, arrM] = arr.split(":").map(Number);
+
+    let diff = (arrH * 60 + arrM) - (depH * 60 + depM);
+    if (diff < 0) diff += 24 * 60;   // passage de minuit
+
+    return diff;
+}
+
 /* ------------------------------------------------------------------ */
 
 class TgtlImportService {
@@ -90,7 +154,7 @@ class TgtlImportService {
 
         const companyId = requireUserCompany(user);
 
-        /* ---------- 1. Ré-analyse serveur (jamais confiance au client) ---------- */
+        /* ---------- 1. Ré-analyse serveur ---------- */
 
         const parsed = await parseWorkbook(file.buffer);
         const report = validateWorkbook(parsed);
@@ -104,39 +168,35 @@ class TgtlImportService {
 
         const sheets = parsed.sheets;
 
-        /* ---------- 2. Préparation des maps d'external_id ---------- */
-
-        const citiesMap = buildIdMap(sheets.Villes?.data ?? []);
-        const agenciesMap = buildIdMap(sheets.Agences?.data ?? []);
-        const busesMap = buildIdMap(sheets.Bus?.data ?? []);
-        const routesMap = buildIdMap(sheets.Lignes?.data ?? []);
-
-        /* ---------- 3. Mappings Prisma : external_id → id réel ---------- */
+        /* ---------- 2. Maps d'external_id ---------- */
 
         const prismaCityId = new Map();
         const prismaAgencyId = new Map();
         const prismaBusId = new Map();
         const prismaRouteId = new Map();
+        const prismaDriverId = new Map();
+        const scheduleRowById = new Map();
 
-        /* ---------- 4. Transaction ---------- */
+        /* ---------- 3. Transaction ---------- */
 
         const result = await repository.transaction(async (tx) => {
             const stats = {
-                countries: 0,
-                regions: 0,
-                cities: 0,
-                agencies: 0,
-                buses: 0,
-                seatLayouts: 0,
-                seats: 0,
-                routes: 0,
-                schedules: 0,
-                departures: 0,
-                invitations: 0,
+                countries: { created: 0, updated: 0 },
+                regions: { created: 0, updated: 0 },
+                cities: { created: 0, updated: 0 },
+                agencies: { created: 0, updated: 0 },
+                buses: { created: 0, updated: 0 },
+                seatLayouts: { created: 0, updated: 0 },
+                seats: { created: 0, updated: 0 },
+                routes: { created: 0, updated: 0 },
+                drivers: { created: 0, updated: 0 },
+                schedules: { created: 0, updated: 0 },
+                departures: { created: 0, updated: 0 },
+                invitations: { created: 0, skipped: 0 },
             };
 
             /* =================================================
-               4.1 — Compagnie (mise à jour de celle de l'utilisateur)
+               3.1 — Compagnie
             ================================================= */
 
             const companyRow = sheets.Compagnie?.data?.[0]?.data;
@@ -158,7 +218,7 @@ class TgtlImportService {
             }
 
             /* =================================================
-               4.2 — Villes : Country + Region + City
+               3.2 — Villes : Country + Region + City
             ================================================= */
 
             for (const { data: row } of sheets.Villes?.data ?? []) {
@@ -171,13 +231,9 @@ class TgtlImportService {
 
                 if (!country) {
                     country = await tx.country.create({
-                        data: {
-                            code: countryCode,
-                            name: countryCode,
-                            currency: "XOF",
-                        },
+                        data: { code: countryCode, name: countryCode, currency: "XOF" },
                     });
-                    stats.countries++;
+                    stats.countries.created++;
                 }
 
                 let regionId = null;
@@ -193,7 +249,9 @@ class TgtlImportService {
                         region = await tx.region.create({
                             data: { countryId: country.id, name: regionName },
                         });
-                        stats.regions++;
+                        stats.regions.created++;
+                    } else {
+                        stats.regions.updated++;
                     }
 
                     regionId = region.id;
@@ -202,11 +260,17 @@ class TgtlImportService {
                 const cityName = String(row.city_name ?? "").trim();
                 if (!cityName) continue;
 
+                const existingCity = await tx.city.findUnique({
+                    where: { countryId_name: { countryId: country.id, name: cityName } },
+                });
+
                 const city = await tx.city.upsert({
-                    where: {
-                        countryId_name: { countryId: country.id, name: cityName },
+                    where: { countryId_name: { countryId: country.id, name: cityName } },
+                    update: {
+                        regionId,
+                        latitude: toFloat(row.latitude),
+                        longitude: toFloat(row.longitude),
                     },
-                    update: {},
                     create: {
                         countryId: country.id,
                         regionId,
@@ -216,15 +280,17 @@ class TgtlImportService {
                     },
                 });
 
+                if (existingCity) stats.cities.updated++;
+                else stats.cities.created++;
+
                 prismaCityId.set(
                     String(row.external_id).trim().toUpperCase(),
                     city.id
                 );
-                stats.cities++;
             }
 
             /* =================================================
-               4.3 — Agences
+               3.3 — Agences
             ================================================= */
 
             for (const { data: row } of sheets.Agences?.data ?? []) {
@@ -239,45 +305,65 @@ class TgtlImportService {
                     );
                 }
 
-                let agency = await tx.agency.findFirst({
-                    where: { companyId, name: String(row.name).trim() },
+                const name = String(row.name).trim();
+
+                const existing = await tx.agency.findUnique({
+                    where: { companyId_name: { companyId, name } },
                 });
 
-                if (!agency) {
-                    agency = await tx.agency.create({
-                        data: {
-                            companyId,
-                            cityId,
-                            name: String(row.name).trim(),
-                            address: row.address || null,
-                            phone: row.phone || null,
-                            status: row.status || "ACTIVE",
-                        },
-                    });
-                    stats.agencies++;
-                }
+                const agency = await tx.agency.upsert({
+                    where: { companyId_name: { companyId, name } },
+                    update: {
+                        cityId,
+                        address: row.address || null,
+                        phone: row.phone || null,
+                        status: row.status || "ACTIVE",
+                    },
+                    create: {
+                        companyId,
+                        cityId,
+                        name,
+                        address: row.address || null,
+                        phone: row.phone || null,
+                        status: row.status || "ACTIVE",
+                    },
+                });
+
+                if (existing) stats.agencies.updated++;
+                else stats.agencies.created++;
 
                 prismaAgencyId.set(extId, agency.id);
             }
 
             /* =================================================
-               4.4 — Bus + SeatLayout + Seats
+               3.4 — Bus + SeatLayout + Seats
             ================================================= */
 
             for (const { data: row } of sheets.Bus?.data ?? []) {
                 const extId = String(row.external_id).trim().toUpperCase();
+                const registrationNumber = String(row.registration_number).trim();
+
+                const existingBus = await tx.bus.findUnique({
+                    where: {
+                        companyId_registrationNumber: { companyId, registrationNumber },
+                    },
+                });
 
                 const bus = await tx.bus.upsert({
                     where: {
-                        companyId_registrationNumber: {
-                            companyId,
-                            registrationNumber: String(row.registration_number).trim(),
-                        },
+                        companyId_registrationNumber: { companyId, registrationNumber },
                     },
-                    update: {},
+                    update: {
+                        fleetNumber: row.fleet_number || null,
+                        name: row.name || null,
+                        brand: row.brand_name || null,
+                        capacity: toInt(row.capacity) ?? 0,
+                        status: row.status || "ACTIVE",
+                        amenities: splitList(row.amenities),
+                    },
                     create: {
                         companyId,
-                        registrationNumber: String(row.registration_number).trim(),
+                        registrationNumber,
                         fleetNumber: row.fleet_number || null,
                         name: row.name || null,
                         brand: row.brand_name || null,
@@ -287,14 +373,24 @@ class TgtlImportService {
                     },
                 });
 
-                prismaBusId.set(extId, bus.id);
-                stats.buses++;
+                if (existingBus) stats.buses.updated++;
+                else stats.buses.created++;
 
-                // SeatLayout (optionnel)
+                prismaBusId.set(extId, bus.id);
+
                 if (row.seat_layout_type) {
+                    const existingLayout = await tx.seatLayout.findUnique({
+                        where: { busId: bus.id },
+                    });
+
                     const layout = await tx.seatLayout.upsert({
                         where: { busId: bus.id },
-                        update: {},
+                        update: {
+                            name: `${bus.name ?? "Bus"} layout`,
+                            type: String(row.seat_layout_type).toUpperCase(),
+                            rows: toInt(row.seat_layout_rows) ?? 0,
+                            columns: toInt(row.seat_layout_columns) ?? 0,
+                        },
                         create: {
                             busId: bus.id,
                             name: `${bus.name ?? "Bus"} layout`,
@@ -303,15 +399,19 @@ class TgtlImportService {
                             columns: toInt(row.seat_layout_columns) ?? 0,
                         },
                     });
-                    stats.seatLayouts++;
 
-                    // Seats
+                    if (existingLayout) stats.seatLayouts.updated++;
+                    else stats.seatLayouts.created++;
+
                     const seatRows = (sheets.Plans_Sieges?.data ?? []).filter(
                         ({ data }) =>
                             String(data.bus_external_id).trim().toUpperCase() === extId
                     );
 
                     if (seatRows.length > 0) {
+                        // Remplacement complet : on supprime puis recrée
+                        await tx.seat.deleteMany({ where: { layoutId: layout.id } });
+
                         await tx.seat.createMany({
                             data: seatRows.map(({ data: seat }) => ({
                                 layoutId: layout.id,
@@ -323,15 +423,89 @@ class TgtlImportService {
                                     : null,
                                 status: seat.status || "ACTIVE",
                             })),
-                            skipDuplicates: true,
                         });
-                        stats.seats += seatRows.length;
+
+                        stats.seats.created += seatRows.length;
                     }
                 }
             }
 
             /* =================================================
-               4.5 — Routes
+   3.4bis — Chauffeurs
+================================================= */
+
+            for (const { data: row } of sheets.Chauffeurs?.data ?? []) {
+                const extId = String(row.external_id).trim().toUpperCase();
+                const firstName = String(row.first_name ?? "").trim();
+                const lastName = String(row.last_name ?? "").trim();
+
+                if (!firstName || !lastName) continue;
+
+                const fullName = `${firstName} ${lastName}`;
+                const licenseNumber = row.license_number
+                    ? String(row.license_number).trim()
+                    : null;
+
+                // Unicité : (companyId, licenseNumber) si fourni, sinon (companyId, phone) ou (companyId, fullName)
+                let existing = null;
+
+                if (licenseNumber) {
+                    existing = await tx.driver.findUnique({
+                        where: { companyId_licenseNumber: { companyId, licenseNumber } },
+                    });
+                } else if (row.phone) {
+                    existing = await tx.driver.findFirst({
+                        where: { companyId, phone: String(row.phone).trim() },
+                    });
+                } else {
+                    existing = await tx.driver.findFirst({
+                        where: { companyId, fullName },
+                    });
+                }
+
+                let driver;
+
+                if (existing) {
+                    driver = await tx.driver.update({
+                        where: { id: existing.id },
+                        data: {
+                            firstName,
+                            lastName,
+                            fullName,
+                            phone: row.phone ? String(row.phone).trim() : null,
+                            email: row.email ? String(row.email).trim() : null,
+                            licenseNumber,
+                            licenseCategory: row.license_category
+                                ? String(row.license_category).toUpperCase()
+                                : null,
+                            status: row.status || "ACTIVE",
+                        },
+                    });
+                    stats.drivers.updated++;
+                } else {
+                    driver = await tx.driver.create({
+                        data: {
+                            companyId,
+                            firstName,
+                            lastName,
+                            fullName,
+                            phone: row.phone ? String(row.phone).trim() : null,
+                            email: row.email ? String(row.email).trim() : null,
+                            licenseNumber,
+                            licenseCategory: row.license_category
+                                ? String(row.license_category).toUpperCase()
+                                : null,
+                            status: row.status || "ACTIVE",
+                        },
+                    });
+                    stats.drivers.created++;
+                }
+
+                prismaDriverId.set(extId, driver.id);
+            }
+
+            /* =================================================
+               3.5 — Routes
             ================================================= */
 
             for (const { data: row } of sheets.Lignes?.data ?? []) {
@@ -344,41 +518,49 @@ class TgtlImportService {
                 );
 
                 if (!originCityId || !destinationCityId) {
-                    throw new ApiError(
-                        422,
-                        `Ligne "${extId}" : villes introuvables.`
-                    );
+                    throw new ApiError(422, `Ligne "${extId}" : villes introuvables.`);
                 }
+
+                const existing = await tx.route.findUnique({
+                    where: {
+                        companyId_originCityId_destinationCityId: {
+                            companyId, originCityId, destinationCityId,
+                        },
+                    },
+                });
 
                 const route = await tx.route.upsert({
                     where: {
                         companyId_originCityId_destinationCityId: {
-                            companyId,
-                            originCityId,
-                            destinationCityId,
+                            companyId, originCityId, destinationCityId,
                         },
                     },
-                    update: {},
+                    update: {
+                        basePrice: toInt(row.base_price) ?? 0,
+                        distanceKm: toFloat(row.distance) ?? 0,
+                        durationMin: toInt(row.duration) ?? 0,
+                        active: toBool(row.active) ?? true,
+                    },
                     create: {
                         companyId,
                         originCityId,
                         destinationCityId,
                         basePrice: toInt(row.base_price) ?? 0,
-                        distanceKm: toFloat(row.distance_km),
-                        durationMin: toInt(row.duration_min),
+                        distanceKm: toFloat(row.distance) ?? 0,
+                        durationMin: toInt(row.duration) ?? 0,
                         active: toBool(row.active) ?? true,
                     },
                 });
 
+                if (existing) stats.routes.updated++;
+                else stats.routes.created++;
+
                 prismaRouteId.set(extId, route.id);
-                stats.routes++;
             }
 
             /* =================================================
-               4.6 — Programmation + Départs
+               3.6 — Programmations + Départs
             ================================================= */
-
-            const scheduleRowById = new Map();
 
             for (const { data: row } of sheets.Programmations?.data ?? []) {
                 const extId = String(row.external_id).trim().toUpperCase();
@@ -399,26 +581,123 @@ class TgtlImportService {
                     );
                 }
 
-                const schedule = await tx.schedule.create({
-                    data: {
+                const durationMinutes = computeDurationMinutes(
+                    row.departure_time,
+                    row.arrival_time
+                );
+
+                const startDate = toDate(row.start_date);
+
+                const existing = await tx.schedule.findUnique({
+                    where: {
+                        companyId_routeId_departureAgencyId_arrivalAgencyId_startDate: {
+                            companyId,
+                            routeId,
+                            departureAgencyId,
+                            arrivalAgencyId,
+                            startDate,
+                        },
+                    },
+                });
+
+                const schedule = await tx.schedule.upsert({
+                    where: {
+                        companyId_routeId_departureAgencyId_arrivalAgencyId_startDate: {
+                            companyId,
+                            routeId,
+                            departureAgencyId,
+                            arrivalAgencyId,
+                            startDate,
+                        },
+                    },
+                    update: {
+                        price: toInt(row.price) ?? 0,
+                        durationMinutes: durationMinutes,
+                        daysOfWeek: splitList(row.days_of_week).map((d) => d.toUpperCase()),
+                        endDate: toDate(row.end_date),
+                        active: toBool(row.active) ?? true,
+                        autoGenerate: toBool(row.auto_generate) ?? true,
+                    },
+                    create: {
                         companyId,
                         routeId,
                         departureAgencyId,
                         arrivalAgencyId,
                         price: toInt(row.price) ?? 0,
-                        durationMinutes: toInt(row.duration_minutes),
-                        daysOfWeek: splitList(row.days_of_week).map((d) =>
-                            d.toUpperCase()
-                        ),
-                        startDate: toDate(row.start_date),
+                        durationMinutes: durationMinutes,
+                        daysOfWeek: splitList(row.days_of_week).map((d) => d.toUpperCase()),
+                        startDate,
                         endDate: toDate(row.end_date),
                         active: toBool(row.active) ?? true,
                         autoGenerate: toBool(row.auto_generate) ?? true,
                     },
                 });
 
+                if (existing) stats.schedules.updated++;
+                else stats.schedules.created++;
+
                 scheduleRowById.set(extId, schedule.id);
-                stats.schedules++;
+
+                /* ---------- Départ intégré (format V1) ---------- */
+
+                const busExtId = String(row.bus_external_id ?? "").trim().toUpperCase();
+                const busId = prismaBusId.get(busExtId);
+
+                if (busId && row.departure_time) {
+                    const departureTime = normalizeTime(row.departure_time);
+
+                    const existingDeparture = await tx.scheduleDeparture.findUnique({
+                        where: {
+                            scheduleId_departureTime_busId: {
+                                scheduleId: schedule.id,
+                                departureTime,
+                                busId,
+                            },
+                        },
+                    });
+
+                    /* ---------- Résolution du chauffeur ---------- */
+
+                    const driverExtId = String(row.driver_external_id ?? "").trim().toUpperCase();
+                    const driverId = driverExtId ? prismaDriverId.get(driverExtId) : null;
+
+                    if (driverExtId && !driverId) {
+                        throw new ApiError(
+                            422,
+                            `Programmation "${extId}" : chauffeur "${driverExtId}" introuvable.`
+                        );
+                    }
+
+                    await tx.scheduleDeparture.upsert({
+                        where: {
+                            scheduleId_departureTime_busId: {
+                                scheduleId: schedule.id,
+                                departureTime,
+                                busId,
+                            },
+                        },
+                        update: {
+                            active: toBool(row.status === "ACTIVE") ?? true,
+                            driverId,                         // ← ajout
+                        },
+                        create: {
+                            scheduleId: schedule.id,
+                            busId,
+                            departureTime,
+                            active: toBool(row.status === "ACTIVE") ?? true,
+                            driverId,                         // ← ajout
+                        },
+                    });
+
+                    if (existingDeparture) stats.departures.updated++;
+                    else stats.departures.created++;
+                } else if (busExtId) {
+                    // Le bus est référencé mais introuvable → erreur explicite
+                    throw new ApiError(
+                        422,
+                        `Programmation "${extId}" : bus "${busExtId}" introuvable.`
+                    );
+                }
             }
 
             for (const { data: row } of sheets.Departs?.data ?? []) {
@@ -431,36 +710,56 @@ class TgtlImportService {
 
                 if (!scheduleId || !busId) continue;
 
-                await tx.scheduleDeparture.create({
-                    data: {
+                const departureTime = normalizeTime(row.departure_time);
+
+                const existing = await tx.scheduleDeparture.findUnique({
+                    where: {
+                        scheduleId_departureTime_busId: {
+                            scheduleId,
+                            departureTime,
+                            busId,
+                        },
+                    },
+                });
+
+                await tx.scheduleDeparture.upsert({
+                    where: {
+                        scheduleId_departureTime_busId: {
+                            scheduleId,
+                            departureTime,
+                            busId,
+                        },
+                    },
+                    update: { active: toBool(row.active) ?? true },
+                    create: {
                         scheduleId,
                         busId,
-                        departureTime: String(row.departure_time).trim(),
+                        departureTime,
                         active: toBool(row.active) ?? true,
                     },
                 });
 
-                stats.departures++;
+                if (existing) stats.departures.updated++;
+                else stats.departures.created++;
             }
 
             /* =================================================
-               4.7 — Personnel : invitations
+               3.7 — Personnel : invitations
             ================================================= */
 
             for (const { data: row } of sheets.Personnel?.data ?? []) {
                 const phone = String(row.phone ?? "").trim();
                 if (!phone) continue;
 
-                const existing = await tx.user.findUnique({
-                    where: { phone },
-                });
+                const existing = await tx.user.findUnique({ where: { phone } });
 
-                if (existing) continue; // déjà inscrit
+                if (existing) {
+                    stats.invitations.skipped++;
+                    continue;
+                }
 
                 const agencyId = row.agency_external_id
-                    ? prismaAgencyId.get(
-                        String(row.agency_external_id).trim().toUpperCase()
-                    )
+                    ? prismaAgencyId.get(String(row.agency_external_id).trim().toUpperCase())
                     : null;
 
                 const token = crypto.randomBytes(32).toString("hex");
@@ -482,21 +781,52 @@ class TgtlImportService {
                     },
                 });
 
-                stats.invitations++;
-
-                // TODO : envoyer le lien d'invitation par SMS/email
-                // await notificationService.sendInvitation({ phone, token, ... })
+                stats.invitations.created++;
             }
 
-            return stats;
+            /* =================================================
+               3.8 — Totaux réels en base (dans la transaction)
+            ================================================= */
+
+            const totals = {
+                agencies: await tx.agency.count({ where: { companyId } }),
+                buses: await tx.bus.count({ where: { companyId } }),
+                routes: await tx.route.count({ where: { companyId } }),
+                schedules: await tx.schedule.count({ where: { companyId } }),
+                drivers: await tx.driver.count({ where: { companyId } }),   // ← ajout
+                staff: await tx.user.count({ where: { companyId } }),
+            };
+
+            return { stats, totals };
         });
 
-        /* ---------- 5. Rapport de confirmation ---------- */
+        /* ---------- 4. État de l'intégration ---------- */
+
+        const { stats, totals } = result;
+
+        await tgtlRepository.upsert(companyId, {
+            lastSyncAt: new Date(),
+            lastSyncType: "import",
+            lastSyncVersion: "1.2",
+            resourcesImported:
+                totals.agencies +
+                totals.buses +
+                totals.routes +
+                totals.schedules +
+                totals.drivers,                                         // ← ajout
+            agenciesCount: totals.agencies,
+            busesCount: totals.buses,
+            routesCount: totals.routes,
+            schedulesCount: totals.schedules,
+            driversCount: totals.drivers,                               // ← ajout (si la colonne existe)
+            staffCount: totals.staff,
+        });
 
         return {
             status: "SUCCESS",
             companyId,
-            imported: result,
+            stats,
+            totals,
             file: {
                 originalName: file.originalname,
                 size: file.size,

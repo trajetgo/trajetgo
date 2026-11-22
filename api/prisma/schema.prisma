@@ -147,6 +147,8 @@ model User {
   sessions      Session[]
   auditLogs     AuditLog[]
   verifications Verification[]
+
+  loginAttempts LoginAttempt[]
  
   notifications Notification[]
   pushSubscriptions PushSubscription[]
@@ -165,6 +167,7 @@ model User {
   @@index([status])
   @@index([companyId])
   @@index([agencyId])
+  @@map("users")
 }
 
 model PasswordCredential {
@@ -176,6 +179,7 @@ model PasswordCredential {
   updatedAt  DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("password_credentials")
 }
 
 model PushSubscription {
@@ -208,6 +212,7 @@ model PushSubscription {
   @@index([userId, application])
   @@index([revokedAt])
   @@index([expiresAt])
+  @@map("push_subscriptions")
 }
 
 model Notification {
@@ -244,6 +249,7 @@ model Notification {
   @@index([category])
   @@index([eventKey])
   @@index([expiresAt])
+  @@map("notifications")
 }
 
 model NotificationDelivery {
@@ -290,6 +296,7 @@ model NotificationDelivery {
   @@index([pushSubscriptionId])
   @@index([provider, providerMessageId])
   @@index([channel, status])
+  @@map("notification_delivery")
 }
 
 // Codes à usage unique (OTP SMS/WhatsApp/e-mail, liens de réinitialisation).
@@ -311,7 +318,34 @@ model Verification {
   user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([target, purpose])
+  @@index([codeHash, purpose]) 
   @@index([expiresAt])
+  @@map("verifications")
+}
+
+model LoginAttempt {
+  id          String   @id @default(cuid())
+
+  // Identifiant tenté (email ou téléphone, normalisé) — pas userId,
+  // car on veut aussi tracer les tentatives sur des comptes inexistants.
+  identifier  String
+
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  success     Boolean  @default(false)
+  reason      String?  // "bad_password" | "unknown_account" | "suspended" | ...
+
+  ip          String?
+  userAgent   String?
+  country     String?  // rempli si géo-IP activée
+
+  createdAt   DateTime @default(now())
+
+  @@index([identifier, createdAt])
+  @@index([userId, createdAt])
+  @@index([ip, createdAt])
+  @@map("login_attempts")
 }
 
 // ----------------------------------------------------------------------------
@@ -335,6 +369,7 @@ model Session {
   ip         String?
   userAgent  String?  
   deviceName String?  
+  os         String?
 
   createdAt  DateTime @default(now())
   lastSeenAt DateTime @default(now()) 
@@ -375,12 +410,16 @@ model Company {
 
   users       User[]
   buses       Bus[]
+  drivers     Driver[] 
   routes      Route[]
   agencies    Agency[]
   schedules   Schedule[]
 
   subscription Subscription?
+  tgtlIntegration TgtlIntegration?
   invitations CompanyInvitation[]
+
+  externalReferences ExternalReference[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -388,6 +427,7 @@ model Company {
   @@index([name])
   @@index([status])
   @@index([cityId])
+  @@map("companies")
 }
 
 /* =========================================================
@@ -412,6 +452,7 @@ model Country {
   @@index([name])
   @@index([code])
   @@index([active])
+  @@map("countries")
 }
 
 model Region {
@@ -432,6 +473,7 @@ model Region {
   @@unique([countryId, name])
   @@index([countryId])
   @@index([active])
+  @@map("regions")
 }
 
 model City {
@@ -466,6 +508,7 @@ model City {
   @@index([regionId])
   @@index([countryId])
   @@index([active])
+  @@map("cities")
 }
 
 model Location {
@@ -489,6 +532,7 @@ model Location {
 
   @@index([cityId])
   @@index([active])
+  @@map("locations")
 }
 
 model Agency {
@@ -522,10 +566,12 @@ model Agency {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([companyId, name])
   @@index([companyId])
   @@index([cityId])
   @@index([status])
   @@index([name])
+  @@map("agencies")
 }
 
 enum AgencyStatus {
@@ -547,8 +593,8 @@ model Route {
   destinationCity City @relation("RouteDestination", fields: [destinationCityId], references: [id])
 
   basePrice   Int
-  distanceKm Float?
-  durationMin Int?
+  distanceKm Float
+  durationMin Int
 
   active Boolean @default(true)
 
@@ -564,6 +610,7 @@ model Route {
   @@index([active])
 
   @@unique([companyId, originCityId, destinationCityId])
+  @@map("routes")
 }
 
 model Bus {
@@ -642,6 +689,7 @@ model Bus {
   @@index([brand])
   @@index([model])
   @@index([status])
+  @@map("buses")
 }
 
 enum BusType {
@@ -650,6 +698,45 @@ enum BusType {
   BUS
   VAN
   OTHER
+}
+
+model Driver {
+  id String @id @default(cuid())
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  // Identité
+  firstName String
+  lastName  String
+  fullName  String?
+
+  phone     String?
+  email     String?
+  licenseNumber String?   // numéro de permis de conduire
+  licenseCategory String? // "C", "D", "E"…
+
+  // Statut
+  status DriverStatus @default(ACTIVE)
+
+  // Relations
+  trips     Trip[]
+  departures ScheduleDeparture[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([status])
+  @@unique([companyId, licenseNumber])
+  @@map("drivers")
+}
+
+enum DriverStatus {
+  ACTIVE
+  INACTIVE
+  ON_LEAVE    // en congé
+  SUSPENDED   // suspendu
 }
 
 model Trip {
@@ -661,8 +748,14 @@ model Trip {
   busId String
   bus   Bus @relation(fields: [busId], references: [id])
 
+  driverId String?
+  driver   Driver? @relation(fields: [driverId], references: [id])
+
   scheduleId String?
   schedule Schedule? @relation(fields: [scheduleId], references: [id])
+
+  scheduleDepartureId String?
+  scheduleDeparture   ScheduleDeparture? @relation(fields: [scheduleDepartureId], references: [id], onDelete: SetNull)
 
   departureLocationId String?
   arrivalLocationId   String?
@@ -691,12 +784,14 @@ model Trip {
   @@unique([scheduleId, departureAt, busId])
   @@index([routeId])
   @@index([busId])
+  @@index([driverId])
   @@index([departureAt])
   @@index([status])
   @@index([departureLocationId])
   @@index([arrivalLocationId])
   @@index([departureAgencyId])
   @@index([arrivalAgencyId])
+  @@map("trips")
 }
 
 model Booking {
@@ -729,6 +824,7 @@ model Booking {
   @@index([seatId])
   @@index([agencyId])
   @@index([status])
+  @@map("bookings")
 }
 
 model SeatLayout {
@@ -751,6 +847,7 @@ model SeatLayout {
 
   @@unique([busId])
   @@index([busId])
+  @@map("seat_layout")
 }
 
 enum SeatLayoutType {
@@ -782,6 +879,7 @@ model Seat {
   @@unique([layoutId, row, column])
   @@index([layoutId])
   @@index([status])
+  @@map("seats")
 }
 
 enum SeatPosition {
@@ -841,6 +939,7 @@ model Payment {
   @@index([transactionId])
   @@index([providerReference])
   @@index([expiresAt])
+  @@map("payments")
 }
 
 enum TicketStatus {
@@ -873,6 +972,7 @@ model Ticket {
   @@index([ticketNumber])
   @@index([qrCode])
   @@index([status])
+  @@map("tickets")
 }
 
 enum BoardingStatus {
@@ -905,6 +1005,7 @@ model Boarding {
   @@index([controllerId])
   @@index([status])
   @@index([scannedAt])
+  @@map("boardings")
 }
 
 enum NotificationType {
@@ -955,6 +1056,7 @@ model Subscription {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  @@map("subscriptions")
 }
 
 model Plan {
@@ -969,6 +1071,7 @@ model Plan {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  @@map("plans")
 }
 
 model CompanyInvitation {
@@ -1002,6 +1105,7 @@ model CompanyInvitation {
   @@index([phone])
   @@index([email])
   @@index([expiresAt])
+  @@map("company_invitation")
 }
 
 
@@ -1044,9 +1148,11 @@ model Schedule {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([companyId, routeId, departureAgencyId, arrivalAgencyId, startDate])
   @@index([companyId])
   @@index([routeId])
   @@index([active])
+  @@map("schedules")
 }
 
 model ScheduleDeparture {
@@ -1058,7 +1164,12 @@ model ScheduleDeparture {
   busId String
   bus   Bus @relation(fields: [busId], references: [id])
 
+  driverId String?
+  driver   Driver? @relation(fields: [driverId], references: [id])
+
   departureTime String    // "08:00"
+
+  trips Trip[]
 
   active Boolean @default(true)
 
@@ -1068,6 +1179,8 @@ model ScheduleDeparture {
   @@unique([scheduleId, departureTime, busId])
   @@index([scheduleId])
   @@index([busId])
+  @@index([driverId])
+  @@map("schedule_departures")
 }
 
 enum DayOfWeek {
@@ -1078,6 +1191,67 @@ enum DayOfWeek {
   FRIDAY
   SATURDAY
   SUNDAY
+}
+
+model TgtlIntegration {
+  id        String   @id @default(cuid())
+
+  companyId String   @unique
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  // Dernière opération réussie
+  lastSyncAt        DateTime?
+  lastSyncType      String?   // "import" | "export" | "sync"
+  lastSyncVersion   String?   // ex. "1.2"
+
+  // Compteurs de la dernière importation
+  resourcesImported Int       @default(0)
+  agenciesCount     Int       @default(0)
+  busesCount        Int       @default(0)
+  routesCount       Int       @default(0)
+  schedulesCount    Int       @default(0)
+  staffCount        Int       @default(0)
+  driversCount      Int       @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tgtl_integrations")
+}
+
+enum ExternalEntityType {
+  COMPANY
+  COUNTRY
+  REGION
+  CITY
+  AGENCY
+  BUS
+  SEAT
+  DRIVER
+  ROUTE
+  SCHEDULE
+  SCHEDULE_DEPARTURE
+  USER
+}
+
+model ExternalReference {
+  id         String             @id @default(cuid())
+
+  companyId  String
+  company    Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  source     String             @default("TGTL")
+  entityType ExternalEntityType
+  externalId String
+  entityId   String
+
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
+  @@unique([companyId, source, entityType, externalId])
+  @@unique([companyId, source, entityType, entityId])
+  @@index([companyId, entityType, entityId])
+  @@map("external_references")
 }
 
 // ----------------------------------------------------------------------------
@@ -1091,6 +1265,9 @@ model AuditLog {
   event     String // "login.success", "login.failed", "password.reset", "session.revoked"...
   ip        String?
   userAgent String? 
+  device    String?
+  os        String?
+  browser   String?
   metadata  Json?
   createdAt DateTime @default(now())
 
@@ -1098,4 +1275,5 @@ model AuditLog {
 
   @@index([userId, createdAt])
   @@index([event, createdAt])
+  @@map("audit_logs")
 }

@@ -4,7 +4,7 @@ import ActivityIndicator from "@shared/components/ui/ActivityIndicator";
 import Button from "@shared/components/ui/Button";
 
 export default function CreateLocationForm({
-    type,
+    type, // "country" | "region" | "city" | "location"
     formData,
     errors,
     touched,
@@ -19,8 +19,17 @@ export default function CreateLocationForm({
     onSubmit,
     onCancel,
 }) {
-    const isCountry = type === "COUNTRY";
-    const isCity = type === "CITY";
+    const isCountry = type === "country";
+    const isRegion = type === "region";
+    const isCity = type === "city";
+    const isLocation = type === "location";
+
+    const submitLabel = {
+        country: "Créer le pays",
+        region: "Créer la région",
+        city: "Créer la ville",
+        location: "Créer le point d'arrêt",
+    }[type] ?? "Créer";
 
     return (
         <form
@@ -55,32 +64,34 @@ export default function CreateLocationForm({
                 />
 
                 {/* Code */}
-                <Input
-                    label="Code"
-                    name="code"
-                    value={formData.code}
-                    onChange={(e) =>
-                        onChange(
-                            "code",
-                            e.target.value.toUpperCase()
-                        )
-                    }
-                    onBlur={() => onBlur("code")}
-                    placeholder={
-                        isCountry
-                            ? "Ex. CI"
-                            : "Ex. YMK"
-                    }
-                    error={
-                        touched.code
-                            ? errors.code
-                            : ""
-                    }
-                    required
-                />
+                {!(isRegion || isCity) && (
+                    <Input
+                        label="Code"
+                        name="code"
+                        value={formData.code}
+                        onChange={(e) =>
+                            onChange(
+                                "code",
+                                e.target.value.toUpperCase()
+                            )
+                        }
+                        onBlur={() => onBlur("code")}
+                        placeholder={
+                            isCountry
+                                ? "Ex. CI"
+                                : "Ex. YMK"
+                        }
+                        error={
+                            touched.code
+                                ? errors.code
+                                : ""
+                        }
+                        required
+                    />
+                )}
 
                 {/* Pays pour une ville */}
-                {isCity && (
+                {(isRegion || isCity) && (
                     <Select
                         label="Pays"
                         name="countryId"
@@ -99,23 +110,12 @@ export default function CreateLocationForm({
                                 : ""
                         }
                         required
-                    >
-                        <option value="">
-                            {countriesLoading
-                                ? "Chargement..."
-                                : "Sélectionnez un pays"
-                            }
-                        </option>
+                        options={countries.map(c => ({
+                            value: c.id,
+                            label: c.name
+                        }))}
+                    />
 
-                        {countries.map((country) => (
-                            <option
-                                key={country.id}
-                                value={country.id}
-                            >
-                                {country.name}
-                            </option>
-                        ))}
-                    </Select>
                 )}
 
                 {/* Indicatif téléphonique */}
@@ -213,11 +213,7 @@ export default function CreateLocationForm({
                             type="digital"
                             color="white"
                         />
-                    ) : (
-                        isCountry
-                            ? "Créer le pays"
-                            : "Créer la ville"
-                    )}
+                    ) : submitLabel}
                 </Button>
             </div>
         </form>

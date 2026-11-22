@@ -103,6 +103,57 @@ class LocationRepository {
         });
     };
 
+    /* ---------- Pays ---------- */
+
+    findCountryByCode = (code) => {
+        return prisma.country.findUnique({ where: { code } });
+    };
+
+    findCountryById = (id) => {
+        return prisma.country.findUnique({ where: { id } });
+    };
+
+    createCountry = (data) => {
+        return prisma.country.create({ data });
+    };
+
+    /* ---------- Région ---------- */
+
+    findRegionById = (id) => {
+        return prisma.region.findUnique({ where: { id } });
+    };
+
+    findRegionByNameAndCountry = (name, countryId) => {
+        return prisma.region.findFirst({
+            where: { name, countryId },
+        });
+    };
+
+    createRegion = (data) => {
+        return prisma.region.create({ data });
+    };
+
+    /* ---------- Ville ---------- */
+
+    findCityById = (id) => {
+        return prisma.city.findUnique({ where: { id } });
+    };
+
+    findCityByNameAndCountry = (name, countryId) => {
+        return prisma.city.findFirst({
+            where: { name, countryId },
+        });
+    };
+
+    createCity = (data) => {
+        return prisma.city.create({ data });
+    };
+
+    /* ---------- Point d'arrêt ---------- */
+
+    createLocation = (data) => {
+        return prisma.location.create({ data });
+    };
 };
 
 module.exports = new LocationRepository();

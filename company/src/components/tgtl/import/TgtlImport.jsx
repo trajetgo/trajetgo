@@ -18,15 +18,15 @@ import ImportConfirmationStep from "./ImportConfirmationStep";
 import useImportSession from "../../../hooks/useImportSession";
 import service from "../../../services/tgtlImport.service";
 
-import { 
-    BASE_PATH, 
-    EXIT_PATH, 
-    STEP_ANALYSIS, 
-    STEP_CONFIRMATION, 
-    STEP_FILE, 
-    STEP_PREVIEW, 
-    STEP_RESOLUTION, 
-    STEPS 
+import {
+    BASE_PATH,
+    EXIT_PATH,
+    STEP_ANALYSIS,
+    STEP_CONFIRMATION,
+    STEP_FILE,
+    STEP_PREVIEW,
+    STEP_RESOLUTION,
+    STEPS
 } from "../../../utils/tgtl.utils";
 
 import "../../../styles/components/tgtl/import/Import.scss";
@@ -210,6 +210,11 @@ export default function TgtlImport() {
             const result = await service.confirm(formData);
 
             setImportResult(result?.data ?? {});
+
+            navigate(EXIT_PATH, {
+                replace: true,
+                state: { imported: true },
+            });
         } catch (error) {
             setConfirmError(error.message);
         } finally {

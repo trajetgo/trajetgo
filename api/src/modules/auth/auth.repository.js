@@ -61,14 +61,15 @@ class AuthRepository {
     };
 
     findByEmailAndPhone = async (email, phone) => {
-        return await prisma.user.findFirst({
-            where: {
-                AND: [
-                    { email },
-                    { phone }
-                ]
-            },
-            select: PUBLIC_SELECT
+        const conditions = [{ phone }];
+
+        if (email) {
+            conditions.push({ email });
+        }
+
+        return prisma.user.findFirst({
+            where: { OR: conditions },
+            select: PUBLIC_SELECT,
         });
     };
 
@@ -113,25 +114,37 @@ class AuthRepository {
     }
 
     createRefreshToken = async (data) => {
-        return await prisma.refreshToken.create({
+        return await prisma.session.create({
             data
         });
     }
 
-    findRefreshToken = async (tokenHash) => {
-        return await prisma.refreshToken.findFirst({
-            where: { tokenHash }
+    findActiveSessionByTokenHash = (tokenHash) => {
+        return prisma.session.findFirst({
+            where: {
+                tokenHash,
+                revokedAt: null,
+                expiresAt: { gt: new Date() },
+            },
+            include: { user: { select: PUBLIC_SELECT } },
         });
-    }
+    };
 
-    revokeRefreshToken = async (tokenHash) => {
-        return await prisma.refreshToken.delete({
-            where: { tokenHash }
+    // Soft delete a session by setting revokedAt to the current date
+    revokeSessionByToken = async (tokenHash) => {
+        return await prisma.session.updateMany({
+            where: {
+                tokenHash,
+                revokedAt: null,   // ne révoque que si pas déjà révoquée
+            },
+            data: {
+                revokedAt: new Date(),
+            },
         });
-    }
+    };
 
     revokeSessions = async (userId) => {
-        return await prisma.refreshToken.updateMany({
+        return await prisma.session.updateMany({
             where: { userId, revokedAt: null },
             data: { revokedAt: new Date() },
         })
@@ -140,17 +153,46 @@ class AuthRepository {
     updatePasswordCredential = async (userId, { hash, algorithm }) => {
         return await prisma.passwordCredential.update({
             where: { userId },
-            data: { hash, algorithm, needsRehash: false },
+            data: { hash, algorithm },
         });
     }
 
-    findActiveVerification = async (target, purpose) => {
+    findActiveVerification = async (target, purpose, codeHash) => {
         return prisma.verification.findFirst({
             where: {
                 target,
                 purpose,
+                codeHash,
                 consumedAt: null,
                 expiresAt: { gt: new Date() },
+            },
+            orderBy: { createdAt: "desc" },
+        });
+    };
+
+    findActiveVerificationByHash = (codeHash, purpose) => {
+        return prisma.verification.findFirst({
+            where: {
+                codeHash,
+                purpose,
+                consumedAt: null,
+                expiresAt: { gt: new Date() },
+            },
+            orderBy: { createdAt: "desc" },
+        });
+    };
+
+    // auth.repository.js
+    findVerificationById = (id) => {
+        return prisma.verification.findUnique({ where: { id } });
+    };
+
+    findRecentVerification = async ({ target, purpose, since }) => {
+        return await prisma.verification.findFirst({
+            where: {
+                target,
+                purpose,
+                createdAt: { gte: since },
             },
             orderBy: { createdAt: "desc" },
         });

@@ -1,52 +1,5 @@
-import { API_URL } from "./api";
-import csrfService from "./csrf.service";
+import { API_URL } from "@shared/services/api";
 
-// Fonction utilitaire pour les requêtes protégées CSRF
-const makeCsrfRequest = async (url, options = {}) => {
-    let token;
-    try {
-        token = await csrfService.getCsrfToken();
-    } catch (error) {
-        console.error('Impossible de récupérer le token CSRF:', error);
-        throw new Error('CSRF token unavailable');
-    }
-
-    const config = {
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-csrf-token': token, // Utilisez un seul header pour plus de clarté
-        },
-        ...options
-    };
-
-    const response = await fetch(url, config);
-
-    // Si CSRF invalide, reset et relance une fois
-    if (response.status === 403) {
-        const responseText = await response.text();
-        console.warn('CSRF 403 response:', responseText);
-
-        let errorData;
-        try {
-            errorData = JSON.parse(responseText);
-        } catch {
-            errorData = { message: responseText };
-        }
-
-        if (errorData.code === 'EBADCSRFTOKEN' || errorData.message?.includes('CSRF')) {
-            console.warn('CSRF token invalide, régénération...');
-            csrfService.resetCsrfToken();
-            token = await csrfService.getCsrfToken();
-
-            config.headers['x-csrf-token'] = token;
-
-            return await fetch(url, config);
-        }
-    }
-
-    return response;
-};
 
 class TgtlImportService {
     analyze = async (formData) => {

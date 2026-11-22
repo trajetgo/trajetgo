@@ -1,11 +1,12 @@
 import { Building2 } from "lucide-react";
 
-import { formatDate } from "@shared/utils/date.utils";
 import Table from "@shared/components/ui/Table";
 import HighlightText from "@shared/components/ui/HighlightText";
+import { formatDate } from "@shared/utils/date.utils";
 
 import AgencyActions from "./AgencyActions";
 import { AGENCY_STATUS } from "../../utils/agency.utils";
+import { formatStatus } from "../../constants/agency.constants";
 
 import "../../styles/components/agency/AgencyTable.scss";
 
@@ -16,15 +17,10 @@ export default function AgencyTable({
     onSort,
     setSelectedAction,
     setSelectedAgency,
+    selectedRows = [],
+    onToggleAll,
+    onToggleRow,
 }) {
-    const formatStatus = (status) => {
-        return (
-            AGENCY_STATUS[status] || {
-                class: "unknown",
-                label: "Inconnu",
-            }
-        );
-    };
 
     const columns = [
         {
@@ -32,18 +28,34 @@ export default function AgencyTable({
             label: "Agence",
             sortable: true,
             render: (_, agency) => (
-                <div className="agency-table__agency">
-                    <div className="agency-table__icon">
-                        <Building2 size={18} />
-                    </div>
+                <div className="agency-table__name">
+                    <Building2 size={18} />
+                    <HighlightText
+                        as="strong"
+                        text={agency.name}
+                        search={search}
+                    />
+                </div>
+            ),
+        },
 
-                    <div className="agency-table__info">
-                        <HighlightText
-                            as="strong"
-                            text={agency.name}
-                            search={search}
-                        />
-                    </div>
+        {
+            key: "company",
+            label: "Entrprise",
+            sortable: true,
+            render: (_, agency) => (
+                <div className="agency-table__company">
+                    <img
+                        width={40}
+                        height={40}
+                        src={agency.company?.logo}
+                        alt={agency.company?.name}
+                    />
+                    <HighlightText
+                        as="strong"
+                        text={agency.company?.name}
+                        search={search}
+                    />
                 </div>
             ),
         },
@@ -53,14 +65,16 @@ export default function AgencyTable({
             label: "Ville",
             sortable: true,
             render: (_, agency) => (
-                <HighlightText
-                    text={
-                        agency?.city?.name ||
-                        "—"
-                    }
-                    as="span"
-                    search={search}
-                />
+                <div className="agency-table__city">
+                    <HighlightText
+                        text={
+                            agency?.city?.name ||
+                            "—"
+                        }
+                        as="span"
+                        search={search}
+                    />
+                </div>
             ),
         },
 
@@ -69,11 +83,13 @@ export default function AgencyTable({
             label: "Téléphone",
             sortable: true,
             render: (_, agency) => (
-                <HighlightText
-                    text={agency.phone || "—"}
-                    as="span"
-                    search={search}
-                />
+                <div className="agency-table__phone">
+                    <HighlightText
+                        text={agency.phone || "—"}
+                        as="span"
+                        search={search}
+                    />
+                </div>
             ),
         },
 
@@ -86,10 +102,13 @@ export default function AgencyTable({
                     agency.status
                 );
 
+                const Icon = status.icon;
+
                 return (
                     <span
-                        className={`badge badge--${status.class}`}
+                        className={`agency-table__status agency-table__status--${status.class}`}
                     >
+                        <Icon size={14} />
                         {status.label}
                     </span>
                 );
@@ -99,12 +118,17 @@ export default function AgencyTable({
         {
             key: "date",
             label: "Ajouté le",
-            sortable: false,
+            sortable: true,
             render: (_, agency) => (
-                <span>
-                    {formatDate(agency.updatedAt, "dd MMM yyyy · HH:mm")}
-                </span>
-            )
+                <div className="agency-table__date">
+                    <span>
+                        {formatDate(
+                            agency.createdAt,
+                            "dd MMM yyyy"
+                        )}
+                    </span>
+                </div>
+            ),
         },
 
         {
@@ -114,8 +138,12 @@ export default function AgencyTable({
             render: (_, agency) => (
                 <AgencyActions
                     agency={agency}
-                    onView={setSelectedAgency}
+                    onView={(agency) => {
+                        setSelectedAgency(agency);
+                        setSelectedAction("VIEW");
+                    }}
                     setSelectedAction={setSelectedAction}
+                    setSelectedAgency={setSelectedAgency}
                 />
             ),
         },
@@ -130,6 +158,9 @@ export default function AgencyTable({
             sortable
             onSort={onSort}
             defaultSort={sort}
+            selectedRows={selectedRows}
+            onToggleAll={onToggleAll}
+            onToggleRow={onToggleRow}
             emptyMessage="Aucune agence trouvée."
             hoverable
             bordered

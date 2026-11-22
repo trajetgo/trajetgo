@@ -40,6 +40,7 @@ export default function useAgencies() {
         key: "createdAt",
         direction: "desc",
     });
+    const [viewMode, setViewMode] = useState("list"); // list | grid
 
     /* ---------- Chargement ---------- */
 
@@ -72,6 +73,11 @@ export default function useAgencies() {
     useEffect(() => {
         loadAgencies();
     }, [loadAgencies]);
+
+
+    const changeViewMode = (mode) => {
+        setViewMode(mode)
+    }
 
     /* ---------- Tri ---------- */
 
@@ -183,6 +189,8 @@ export default function useAgencies() {
         setSearch,
         sort,
         handleSort,
+        viewMode,
+        changeViewMode,
         statusFilter,
         setStatusFilter,
         updateStatus,

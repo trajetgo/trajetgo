@@ -146,7 +146,7 @@ class CompanyService {
         return company;
     };
 
-    createCompany = async (data, meta = {}) => {
+    createCompany = async (userId, data, meta = {}) => {
         if (data.registrationNumber) {
             const existingCompany =
                 await repository.findByRegistrationNumber(
@@ -197,11 +197,16 @@ class CompanyService {
         });
 
         auditService.log({
-            userId: createdCompany.id,
-            event: "company.create",
+            userId: userId,
+            event: "company.created",
             ip: meta.ip,
             userAgent: meta.userAgent,
-            metadata: {},
+            deviceName: meta.deviceName,
+            os: meta.os,
+            browser: meta.browser,
+            metadata: {
+                userId,
+            },
         })
 
         return createdCompany;

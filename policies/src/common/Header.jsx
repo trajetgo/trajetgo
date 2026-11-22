@@ -7,7 +7,6 @@ import { useAuth } from "@shared/contexts/auth.context";
 import { AUTH_URL } from "@shared/services/api";
 
 import NotificationBell from "../components/notifications/NotificationBell";
-import { NAV_ITEMS } from "../utils/nav.utils";
 
 import "../styles/common/Header.scss";
 
@@ -55,25 +54,6 @@ export default function Header({
                     className="app-header__nav"
                     aria-label="Navigation principale"
                 >
-                    {NAV_ITEMS.map((item) => {
-                        const Icon = item.icon;
-
-                        return (
-                            <NavLink
-                                key={item.path}
-                                to={item.path}
-                                end={item.path === "/"}
-                                title={item.label}
-                                className={({ isActive }) =>
-                                    `sidebar__link ${isActive ? "sidebar__link--active" : ""
-                                    }`
-                                }
-                            >
-                                <Icon size={19} />
-                                <span> {item.label} </span>
-                            </NavLink>
-                        );
-                    })}
                 </nav>
 
                 <div className="app-header__actions">

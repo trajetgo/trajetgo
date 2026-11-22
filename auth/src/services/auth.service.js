@@ -207,6 +207,129 @@ class AuthService {
             throw error;
         }
     };
+
+    verifyEmail = async (token, verificationId) => {
+        const params = new URLSearchParams({ token });
+        if (verificationId) params.set("vid", verificationId);
+
+
+        try {
+            const response = await fetch(`${API_URL}/auth/verify-email?${params.toString()}`, {
+                method: "GET",
+                credentials: "include",
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                const error = new Error(
+                    result.message || "Lien invalide ou expiré."
+                );
+                error.status = response.status;
+                error.data = result;
+                throw error;
+            }
+
+            return result;
+        } catch (error) {
+            if (error.name === "TypeError" || error.message.includes("fetch")) {
+                throw new Error(
+                    "Impossible de contacter le serveur. Vérifiez votre connexion."
+                );
+            }
+            throw error;
+        }
+    };
+
+    resendVerificationEmail = async (verificationId) => {
+        const response = await makeCsrfRequest(`${API_URL}/auth/resend-verification`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ verificationId }),
+            credentials: "include",
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            const error = new Error(
+                result.message || "Impossible d'envoyer un nouveau lien."
+            );
+            error.status = response.status;
+            error.data = result;
+            throw error;
+        }
+
+        return result;
+    };
+
+    forgotPassword = async (identifier) => {
+        const response = await makeCsrfRequest(`${API_URL}/auth/forgot-password`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ identifier }),
+            credentials: "include",
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            const error = new Error(
+                result.message || "Impossible d'envoyer le lien."
+            );
+            error.status = response.status;
+            error.data = result;
+            throw error;
+        }
+
+        return result;
+    };
+
+    validateResetToken = async (token) => {
+        const params = new URLSearchParams({ token });
+
+        const response = await fetch(`${API_URL}/auth/validate-reset-token?${params.toString()}`, {
+            method: "GET",
+            credentials: "include",
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            const error = new Error(
+                result.message || "Lien invalide ou expiré."
+            );
+            error.status = response.status;
+            error.data = result;
+            throw error;
+        }
+
+        console.log("Token de réinitialisation validé avec succès:", result);
+
+        return result;
+    };
+
+    resetPassword = async ({ token, verificationId, newPassword }) => {
+        const response = await makeCsrfRequest(`${API_URL}/auth/reset-password`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token, verificationId, newPassword }),
+            credentials: "include",
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            const error = new Error(
+                result.message || "Impossible de réinitialiser le mot de passe."
+            );
+            error.status = response.status;
+            error.data = result;
+            throw error;
+        }
+
+        return result;
+    };
 };
 
 const authService = new AuthService();

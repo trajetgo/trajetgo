@@ -17,6 +17,7 @@ import CreateLocationModal from "../../components/locations/CreateLocationModal"
 import LocationTable from "../../components/locations/LocationTable";
 
 import "../../styles/pages/admin/Locations.scss";
+import { LOCATION_TYPES } from "../../constants/location.constants";
 
 /* ------------------------------------------------------------------ */
 
@@ -37,7 +38,7 @@ const CREATE_LABELS = {
 /* ------------------------------------------------------------------ */
 
 export default function Locations() {
-    const [activeTab, setActiveTab] = useState("country");
+    const [activeTab, setActiveTab] = useState(LOCATION_TYPES.COUNTRY);
     const [openModal, setOpenModal] = useState({
         show: false,
         type: null,
@@ -59,6 +60,13 @@ export default function Locations() {
         serverError,
         refresh,
     } = useLocations(activeTab);
+
+    /* ---------- Pays, pour le sélecteur du modal ---------- */
+
+    const {
+        locations: countries,
+        loading: countriesLoading,
+    } = useLocations(LOCATION_TYPES.COUNTRY);
 
     const currentTab = TABS.find((t) => t.key === activeTab);
 
@@ -129,8 +137,8 @@ export default function Locations() {
                             aria-selected={isActive}
                             aria-controls={`panel-${tab.key}`}
                             className={`locations__tab ${isActive
-                                    ? "locations__tab--active"
-                                    : ""
+                                ? "locations__tab--active"
+                                : ""
                                 }`}
                             onClick={() => handleTabChange(tab.key)}
                         >
@@ -225,6 +233,10 @@ export default function Locations() {
                 type={openModal.type}
                 onClose={handleModalClose}
                 onCreated={handleCreated}
+
+                countries={countries}
+                countriesLoading={countriesLoading}
+                locationsError={serverError}
             />
         </div>
     );

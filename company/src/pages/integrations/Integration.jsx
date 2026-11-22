@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useToast } from "@shared/contexts/toast.context";
 
 import TgtlHeader from "../../components/tgtl/TgtlHeader";
 import TgtlStatusCard from "../../components/tgtl/TgtlStatusCard";
@@ -6,9 +7,22 @@ import TgtlOverview from "../../components/tgtl/TgtlOverview";
 import TgtlOperationCard from "../../components/tgtl/TgtlOperationCard";
 
 import "../../styles/pages/integrations/Integration.scss";
+import useTgtlStatus from "../../hooks/useTgtlStatus";
+import { useEffect } from "react";
 
 export default function Integration() {
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const { showToast } = useToast();
+
+    const { status, loading, error, refresh } = useTgtlStatus();
+
+    useEffect(() => {
+        if (location.state?.imported) {
+            refresh();
+        }
+    }, [location.state, refresh]);
 
     const handleOperation = (operation) => {
         switch (operation) {
@@ -37,9 +51,17 @@ export default function Integration() {
 
                 <TgtlHeader />
 
-                <TgtlStatusCard />
+                <TgtlStatusCard
+                    status={status}
+                    loading={loading}
+                    error={error}
+                    onRefresh={refresh}
+                />
 
-                <TgtlOverview />
+                <TgtlOverview
+                    status={status}
+                    loading={loading}
+                />
 
                 <TgtlOperationCard
                     onOperation={handleOperation}

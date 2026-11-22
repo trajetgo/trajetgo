@@ -94,6 +94,11 @@ router.use(
     require("../modules/tgtl/tgtl.routes")
 );
 
+router.use(
+    "/dashboard",
+    require("../modules/dashboard/dashboard.routes")
+);
+
 
 // Error handling
 router.use(notFound);

@@ -209,6 +209,19 @@ class UserRepository {
             }
         });
     }
-}
+
+    markEmailVerified = async (userId) => {
+        return await prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                emailVerified: true,
+                emailVerifiedAt: new Date()
+            },
+            select: PUBLIC_SELECT
+        })
+    };
+};
 
 module.exports = new UserRepository();

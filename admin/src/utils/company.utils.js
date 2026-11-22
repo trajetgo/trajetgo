@@ -17,6 +17,15 @@ export const STATUS_FILTERS = [
     },
 ];
 
+export const formatStatus = (status) => {
+    return (
+        COMPANY_STATUS[status] || {
+            class: "unknown",
+            label: "Inconnu",
+        }
+    );
+};
+
 export const COMPANY_STATUS = {
     ACTIVE: {
         class: "active",

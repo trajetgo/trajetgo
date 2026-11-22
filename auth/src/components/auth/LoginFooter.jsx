@@ -15,7 +15,7 @@ export default function LoginFooter() {
       </p>
 
       <nav className="login-footer__links">
-        <Link to="r/forgot-password">
+        <Link to="/forgot-password">
           Mot de passe oublié
         </Link>
       </nav>

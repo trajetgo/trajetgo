@@ -1,21 +1,18 @@
 import Modal from "@shared/components/ui/Modal";
 
 import useCreateLocation from "../../hooks/useCreateLocation";
-import useLocations from "../../hooks/useLocations";
 import CreateLocationForm from "./CreateLocationForm";
 
 export default function CreateLocationModal({
-    type, // "COUNTRY" | "CITY"
+    type, // "country" | "city"
     open,
     onClose,
     onCreated,
-}) {
-    const {
-        locations: countries,
-        loading: countriesLoading,
-        serverError: locationsError,
-    } = useLocations("COUNTRY");
 
+    countries,
+    countriesLoading,
+    locationsError,
+}) {
     const {
         formData,
         errors,
@@ -46,7 +43,7 @@ export default function CreateLocationModal({
             isOpen={open}
             onClose={onClose}
             title={
-                type === "COUNTRY"
+                type === "country"
                     ? "Ajouter un pays"
                     : "Ajouter une ville"
             }

@@ -16,7 +16,7 @@ class EmailService {
         // Si un template EJS est spécifié, on le compile dynamiquement
         if (template) {
             // Définissez le chemin vers votre dossier templates
-            const templatePath = path.join(__dirname, `../templates/${template}.ejs`);
+            const templatePath = path.join(__dirname, `../../templates/email/${template}.ejs`);
 
             // Rendu du fichier EJS avec les données fournies
             emailHtml = await ejs.renderFile(templatePath, data);
@@ -25,16 +25,22 @@ class EmailService {
             if (!emailSubject) {
                 switch (template) {
                     case 'verify-email':
-                        emailSubject = "Vérification de votre adresse e-mail - Xenady";
+                        emailSubject = "Vérification de votre adresse e-mail - Trajet Go";
+                        break;
+                    case 'email-verification':
+                        emailSubject = "Vérification de votre adresse e-mail - Trajet Go";
+                        break;
+                    case 'new-device-login':
+                        emailSubject = "Nouvelle connexion à votre compte Trajet Go";
                         break;
                     default:
-                        emailSubject = "Notification - Xenady";
+                        emailSubject = "Notification - Trajet Go";
                 }
             }
         }
 
         const mailOptions = {
-            from: `"TrajetGo Auth" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+            from: `"TrajetGo" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
             to,
             subject: emailSubject,
             html: emailHtml,

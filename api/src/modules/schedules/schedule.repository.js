@@ -52,7 +52,6 @@ class ScheduleRepository {
         }
 
         /* ---------- Filtre par jours de la semaine ---------- */
-
         if (daysOfWeek && daysOfWeek.length > 0) {
             where.daysOfWeek = {
                 hasSome: daysOfWeek,
@@ -114,7 +113,7 @@ class ScheduleRepository {
         /* ---------- Order by ---------- */
 
         const orderBy = {
-            [sortBy]: sortOrder,
+            [sortBy]: sortOrder === "asc" ? "asc" : "desc",
         };
 
         /* ---------- Requête ---------- */
@@ -143,6 +142,8 @@ class ScheduleRepository {
                             destinationCity: {
                                 select: { id: true, name: true },
                             },
+                            basePrice: true,
+                            durationMin: true
                         },
                     },
                     departureAgency: {

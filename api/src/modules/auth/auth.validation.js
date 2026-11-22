@@ -90,6 +90,47 @@ module.exports = {
             .length(6, "Le code doit contenir 6 chiffres."),
     }),
 
+    verifyEmail: z.object({
+        token: z
+            .string({
+                required_error: "Le token de vérification est obligatoire.",
+            })
+            .min(1, "Le token de vérification est obligatoire."),
+        vid: z
+            .string({
+                required_error: "L'identifiant de vérification est obligatoire.",
+            })
+            .min(1, "L'identifiant de vérification est obligatoire."),
+    }),
+
+    forgotPassword: z.object({
+        identifier: z
+            .string({
+                required_error: "L'email ou le téléphone est obligatoire.",
+            })
+            .trim()
+            .min(1, "L'email ou le téléphone est obligatoire."),
+    }),
+
+    validateResetToken: z.object({
+        token: z
+            .string({
+                required_error: "Le token de réinitialisation est obligatoire.",
+            })
+            .min(1, "Le token de réinitialisation est obligatoire."),
+    }),
+
+    resetPassword: z.object({
+        token: z.string().min(1, "Token requis."),
+        verificationId: z.string().optional(),
+        newPassword: z
+            .string()
+            .min(8, "Au moins 8 caractères.")
+            .regex(/[A-Z]/, "Au moins une majuscule.")
+            .regex(/[a-z]/, "Au moins une minuscule.")
+            .regex(/[0-9]/, "Au moins un chiffre."),
+    }),
+
     sendOtp: z.object({
         phone: z
             .string()

@@ -6,12 +6,13 @@ const compression = require('compression');
 const morgan = require('morgan');
 const fs = require('fs');
 const helmet = require('helmet');
+const cron = require("node-cron");
 const cookieParser = require('cookie-parser');
 
 const router = require('./src/app');
 const corsOptions = require('./src/config/cors');
 const { scheduleGenerateTrips } = require('./src/cron/generateTrips');
-
+const generateTripsJob = require("./src/jobs/generateTrips.job");
 const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 5000;
@@ -96,6 +97,13 @@ app.set('trust proxy', 1);
 
 
 scheduleGenerateTrips();
+
+// Tous les jours à 02:00
+cron.schedule("0 2 * * *", () => {
+    generateTripsJob.run().catch((err) => {
+        console.error("[cron] generateTrips:", err);
+    });
+});
 
 server.listen(PORT, () => {
     console.log(`🚀 Server running on port ${APP_BASE_URL}:${PORT}`);

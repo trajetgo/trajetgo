@@ -1,22 +1,31 @@
 import { useState } from "react";
 import service from "../services/locations.service";
 
-export default function useCreateLocation(type) {
+export default function useCreateLocation(rawType) {
+    const type = rawType?.toLowerCase() ?? null;
+
     const initialFormData = {
         name: "",
-        code: "",
-        coords: {
-            lat: "",
-            lng: "",
-        },
+        coords: { lat: "", lng: "" },
     };
 
-    if (type === "COUNTRY") {
+    if (type === "country") {
         initialFormData.phoneCode = "";
+        initialFormData.code = "";
     }
 
-    if (type === "CITY") {
+    if (type === "region") {
+        initialFormData.code = "";
         initialFormData.countryId = "";
+    }
+
+    if (type === "city") {
+        initialFormData.countryId = "";
+        initialFormData.regionId = "";
+    }
+
+    if (type === "location") {
+        initialFormData.cityId = "";
     }
 
     const [formData, setFormData] = useState(initialFormData);
@@ -62,20 +71,27 @@ export default function useCreateLocation(type) {
     const validate = () => {
         const nextErrors = {};
 
-        if (!formData.name.trim()) {
+        if (!formData.name?.trim()) {
             nextErrors.name = "Le nom est obligatoire.";
         }
 
-        if (!formData.code.trim()) {
-            nextErrors.code = "Le code est obligatoire.";
+        // Le code n'est obligatoire que pour country et city
+        if (type === "country") {
+            if (!formData.code?.trim()) {
+                nextErrors.code = "Le code est obligatoire.";
+            }
         }
 
-        if (type === "COUNTRY" && !formData.phoneCode.trim()) {
+        if (type === "country" && !formData.phoneCode?.trim()) {
             nextErrors.phoneCode = "L'indicatif téléphonique est obligatoire.";
         }
 
-        if (type === "CITY" && !formData.countryId) {
+        if ((type === "region" || type === "city") && !formData.countryId) {
             nextErrors.countryId = "Le pays est obligatoire.";
+        }
+
+        if (type === "location" && !formData.cityId) {
+            nextErrors.cityId = "La ville est obligatoire.";
         }
 
         setErrors(nextErrors);
@@ -104,26 +120,31 @@ export default function useCreateLocation(type) {
 
         try {
             const payload = {
-                type,
+                type,                                   // ← "country" | "region" | …
                 name: formData.name.trim(),
-                code: formData.code.trim(),
-                coords: {
-                    lat: formData.coords.lat
-                        ? Number(formData.coords.lat)
-                        : null,
-
-                    lng: formData.coords.lng
-                        ? Number(formData.coords.lng)
-                        : null,
-                },
+                ...(type === "country" && {
+                    code: formData.code.trim().toUpperCase(),
+                    phoneCode: formData.phoneCode.trim(),
+                }),
+                ...(type === "region" && {
+                    code: formData.code?.trim() || null,
+                    countryId: formData.countryId,
+                }),
+                ...(type === "city" && {
+                    // code: formData.code.trim().toUpperCase(),
+                    countryId: formData.countryId,
+                    regionId: formData.regionId || null,
+                }),
+                ...(type === "location" && {
+                    cityId: formData.cityId,
+                }),
             };
 
-            if (type === "COUNTRY") {
-                payload.phoneCode = formData.phoneCode.trim();
-            }
-
-            if (type === "CITY") {
-                payload.countryId = formData.countryId;
+            if (formData.coords?.lat || formData.coords?.lng) {
+                payload.coords = {
+                    lat: formData.coords.lat,
+                    lng: formData.coords.lng,
+                };
             }
 
             const result = await service.createLocation(payload);

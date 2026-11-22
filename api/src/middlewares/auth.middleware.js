@@ -25,14 +25,8 @@ module.exports = asyncHandler(async (req, res, next) => {
         authRepository.touchSession(session.id).catch(() => { });
     }
 
-    req.user = { 
-        id: session.user.id, 
-        status: session.user.status,
-        role: session.user.role,
-        companyId: session.user.companyId,
-        agencyId: session.user.agencyId
-    };
-    req.session = { id: session.id };
+    req.user = session.user;
+    req.session = session;
 
     next();
 });

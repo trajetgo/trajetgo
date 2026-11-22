@@ -18,3 +18,8 @@ export const REGISTER_STEPS = [
         fields: ["password", "agree"],
     },
 ];
+
+export const REGISTER_SUCCESS_STORAGE_KEY = "tg:register-success";
+export const FORGOT_PASSWORD_IDENTIFIER_STORAGE_KEY = "tg:forgot-password-identifier";
+
+export const PASSWORD_MIN_LENGTH = 8;

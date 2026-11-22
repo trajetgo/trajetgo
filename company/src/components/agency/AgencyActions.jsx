@@ -1,40 +1,52 @@
-import { useEffect, useRef, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import {
     Eye,
-    Pencil,
+    MoreHorizontal,
     Power,
     RotateCcw,
-    MoreHorizontal,
+    PowerCircle,
 } from "lucide-react";
 
 import "../../styles/components/agency/AgencyActions.scss";
 
 /* ------------------------------------------------------------------ */
-/* Position du menu                                                    */
-/* ------------------------------------------------------------------ */
 
 const MENU_WIDTH = 210;
 const MENU_GAP = 8;
+const VIEWPORT_PADDING = 8;
 
-function computeMenuPosition(trigger) {
+function computeMenuPosition(trigger, menu) {
     if (!trigger) return { top: 0, left: 0 };
 
     const rect = trigger.getBoundingClientRect();
+    const menuHeight = menu?.offsetHeight ?? 160;
 
-    // Aligner le bord droit du menu sur le bord droit du trigger
-    const left = rect.right - MENU_WIDTH;
+    const left = Math.max(
+        VIEWPORT_PADDING,
+        Math.min(
+            rect.right - MENU_WIDTH,
+            window.innerWidth - MENU_WIDTH - VIEWPORT_PADDING
+        )
+    );
 
-    // Si le menu dépasse à gauche, aligner sur le bord gauche
-    const safeLeft = Math.max(8, left);
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const openAbove =
+        spaceBelow < menuHeight + MENU_GAP &&
+        rect.top > menuHeight + MENU_GAP;
+
+    const top = openAbove
+        ? rect.top - menuHeight - MENU_GAP
+        : Math.min(
+            rect.bottom + MENU_GAP,
+            window.innerHeight - menuHeight - VIEWPORT_PADDING
+        );
 
     return {
-        top: rect.bottom + MENU_GAP,
-        left: safeLeft,
+        top: Math.max(VIEWPORT_PADDING, top),
+        left,
     };
 }
-
-/* ------------------------------------------------------------------ */
 
 export default function AgencyActions({
     agency,
@@ -48,91 +60,97 @@ export default function AgencyActions({
     const menuRef = useRef(null);
     const triggerRef = useRef(null);
 
-    /* ---------- Recalcul de la position à l'ouverture ---------- */
-
-    useEffect(() => {
-        if (!open) return;
-
-        setPosition(computeMenuPosition(triggerRef.current));
-
-        // Recalcul au scroll / resize
-        const handleReposition = () => {
-            setPosition(computeMenuPosition(triggerRef.current));
-        };
-
-        window.addEventListener("scroll", handleReposition, true);
-        window.addEventListener("resize", handleReposition);
-
-        return () => {
-            window.removeEventListener("scroll", handleReposition, true);
-            window.removeEventListener("resize", handleReposition);
-        };
-    }, [open]);
-
-    /* ---------- Fermeture extérieure + Escape ---------- */
-
-    useEffect(() => {
-        if (!open) return;
-
-        const onClickOutside = (e) => {
-            if (
-                !menuRef.current?.contains(e.target) &&
-                !triggerRef.current?.contains(e.target)
-            ) {
-                setOpen(false);
-            }
-        };
-
-        const onEscape = (e) => {
-            if (e.key === "Escape") {
-                setOpen(false);
-                triggerRef.current?.focus();
-            }
-        };
-
-        document.addEventListener("mousedown", onClickOutside);
-        document.addEventListener("keydown", onEscape);
-
-        return () => {
-            document.removeEventListener("mousedown", onClickOutside);
-            document.removeEventListener("keydown", onEscape);
-        };
-    }, [open]);
-
-    /* ---------- Handlers ---------- */
-
-    const close = () => setOpen(false);
-
-    const openAction = (action) => {
-        close();
-        setSelectedAgency(agency);
-        setSelectedAction(action);
-    };
-
-    const handleView = () => {
-        close();
-        onView?.(agency);
-    };
-
     /* ---------- Status ---------- */
 
     const isActive = agency?.status === "ACTIVE";
     const isInactive = agency?.status === "INACTIVE";
     const isClosed = agency?.status === "CLOSED";
 
-    /* ---------- Menu (portail) ---------- */
+    /* ---------- Positionnement ---------- */
+
+    useEffect(() => {
+        if (!open) return;
+
+        const updatePosition = () => {
+            setPosition(
+                computeMenuPosition(triggerRef.current, menuRef.current)
+            );
+        };
+
+        updatePosition();
+
+        window.addEventListener("scroll", updatePosition, true);
+        window.addEventListener("resize", updatePosition);
+
+        return () => {
+            window.removeEventListener("scroll", updatePosition, true);
+            window.removeEventListener("resize", updatePosition);
+        };
+    }, [open]);
+
+    /* ---------- Fermeture extérieure et Escape ---------- */
+
+    useEffect(() => {
+        if (!open) return;
+
+        const handlePointerDown = (event) => {
+            if (
+                !menuRef.current?.contains(event.target) &&
+                !triggerRef.current?.contains(event.target)
+            ) {
+                setOpen(false);
+            }
+        };
+
+        const handleKeyDown = (event) => {
+            if (event.key === "Escape") {
+                setOpen(false);
+                triggerRef.current?.focus();
+            }
+        };
+
+        document.addEventListener("mousedown", handlePointerDown);
+        document.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.removeEventListener("mousedown", handlePointerDown);
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [open]);
+
+    if (!agency) return null;
+
+    /* ---------- Actions ---------- */
+
+    const close = () => setOpen(false);
+
+    const openAction = (action) => {
+        close();
+        setSelectedAgency?.(agency);
+        setSelectedAction?.(action);
+    };
+
+    const handleView = () => {
+        close();
+        setSelectedAgency?.(agency);
+        onView?.(agency);
+    };
+
+    /* ---------- Menu en portail ---------- */
 
     const menu = open
         ? createPortal(
             <div
                 ref={menuRef}
-                className="agency-actions__menu agency-actions__menu--portal"
+                className="agency-actions__menu"
                 role="menu"
                 style={{
                     position: "fixed",
                     top: `${position.top}px`,
                     left: `${position.left}px`,
                     width: `${MENU_WIDTH}px`,
+                    zIndex: 1100,
+                    visibility: position.top === 0 ? "hidden" : "visible",
                 }}
             >
                 <button
@@ -145,16 +163,29 @@ export default function AgencyActions({
                     <span>Voir les détails</span>
                 </button>
 
-                <button
-                    type="button"
-                    role="menuitem"
-                    className="agency-actions__item"
-                    onClick={() => openAction("EDIT")}
-                >
-                    <Pencil size={16} />
-                    <span>Modifier</span>
-                </button>
+                {isActive && (
+                    <button
+                        type="button"
+                        role="menuitem"
+                        className="agency-actions__item"
+                        onClick={() => openAction("EDIT_STATUS")}
+                    >
+                        <Power size={16} />
+                        <span>Désactiver</span>
+                    </button>
+                )}
 
+                {isInactive && (
+                    <button
+                        type="button"
+                        role="menuitem"
+                        className="agency-actions__item"
+                        onClick={() => openAction("EDIT_STATUS")}
+                    >
+                        <RotateCcw size={16} />
+                        <span>Réactiver</span>
+                    </button>
+                )}
 
                 {!isClosed && (
                     <button
@@ -163,19 +194,8 @@ export default function AgencyActions({
                         className="agency-actions__item"
                         onClick={() => openAction("EDIT_STATUS")}
                     >
-                        {isActive ? (
-                            <Power size={16} />
-                        ) : (
-                            <RotateCcw size={16} />
-                        )}
-
-                        <span>
-                            {isActive
-                                ? "Désactiver"
-                                : isInactive
-                                    ? "Réactiver"
-                                    : "Modifier le statut"}
-                        </span>
+                        <PowerCircle size={16} />
+                        <span>Fermer</span>
                     </button>
                 )}
             </div>,
@@ -190,11 +210,10 @@ export default function AgencyActions({
                 type="button"
                 className="agency-actions__trigger"
                 title="Actions"
-                aria-label={`Actions pour ${agency?.name || "cette agence"
-                    }`}
+                aria-label={`Actions pour ${agency.name || "cette agence"}`}
                 aria-expanded={open}
                 aria-haspopup="menu"
-                onClick={() => setOpen((v) => !v)}
+                onClick={() => setOpen((current) => !current)}
             >
                 <MoreHorizontal size={18} />
             </button>

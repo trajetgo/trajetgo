@@ -280,6 +280,7 @@ class TripRepository {
                     select: {
                         id: true,
                         distanceKm: true,
+                        durationMin: true,
                         originCity: { select: { id: true, name: true } },
                         destinationCity: { select: { id: true, name: true } },
                         basePrice: true,

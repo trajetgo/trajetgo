@@ -1,5 +1,5 @@
-import { API_URL } from "./api";
-import csrfService from "./csrf.service";
+import { API_URL } from "@shared/services/api";
+import csrfService from "@shared/services/csrf.service";
 
 // Fonction utilitaire pour les requêtes protégées CSRF
 const makeCsrfRequest = async (url, options = {}) => {
@@ -22,11 +22,9 @@ const makeCsrfRequest = async (url, options = {}) => {
 
     const response = await fetch(url, config);
 
-
     // Si CSRF invalide, reset et relance une fois
     if (response.status === 403) {
         const responseText = await response.text();
-        console.warn('CSRF 403 response:', responseText);
 
         let errorData;
         try {
@@ -36,7 +34,6 @@ const makeCsrfRequest = async (url, options = {}) => {
         }
 
         if (errorData.code === 'EBADCSRFTOKEN' || errorData.message?.includes('CSRF')) {
-            console.warn('CSRF token invalide, régénération...');
             csrfService.resetCsrfToken();
             token = await csrfService.getCsrfToken();
 

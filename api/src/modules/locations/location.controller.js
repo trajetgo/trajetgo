@@ -1,5 +1,6 @@
 const ApiResponse = require("../../utils/ApiResponse");
 const asyncHandler = require("../../utils/asyncHandler");
+const requestMeta = require("../../utils/requestMeta");
 const service = require('./location.service');
 
 class LocationController {
@@ -37,6 +38,20 @@ class LocationController {
             res,
             cities,
             "Villes récupérées avec succès"
+        );
+    });
+
+    create = asyncHandler(async (req, res) => {
+        const location = await service.create(
+            req.body, 
+            req.user,
+            requestMeta(req)
+        );
+
+        return ApiResponse.success(
+            res,
+            location,
+            "Localisation créée avec succès."
         );
     });
 };
