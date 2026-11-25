@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import service from "../services/teams.service";
 
+const VIEW_MODE_STORAGE_KEY = "teams:viewMode";
+const DEFAULT_VIEW_MODE = "list";
+const VALID_VIEW_MODES = ["list", "grid"];
+
 export default function useTeamMembers() {
     const [loading, setLoading] = useState(false);
     const [serverError, setServerError] = useState("");
@@ -13,6 +17,17 @@ export default function useTeamMembers() {
     const [sort, setSort] = useState({
         key: "createdAt",
         direction: "desc",
+    });
+    const [viewMode, setViewMode] = useState(() => {
+        // Lazy initializer : exécuté une seule fois au montage
+        try {
+            const stored = localStorage.getItem(VIEW_MODE_STORAGE_KEY);
+
+            return VALID_VIEW_MODES.includes(stored) ? stored : DEFAULT_VIEW_MODE;
+        } catch {
+            // localStorage indisponible (SSR, navigation privée stricte)
+            return DEFAULT_VIEW_MODE;
+        }
     });
 
     const fetchTeams = useCallback(async () => {
@@ -48,6 +63,18 @@ export default function useTeamMembers() {
     useEffect(() => {
         fetchTeams();
     }, [fetchTeams]);
+
+    const changeViewMode = useCallback((mode) => {
+        if (!VALID_VIEW_MODES.includes(mode)) return;
+
+        setViewMode(mode);
+
+        try {
+            localStorage.setItem(VIEW_MODE_STORAGE_KEY, mode);
+        } catch {
+            // localStorage indisponible : on garde le state en mémoire
+        }
+    }, []);
 
     const filteredTeams = useMemo(() => {
         let data = [...teams];
@@ -226,6 +253,9 @@ export default function useTeamMembers() {
 
         search,
         setSearch,
+
+        viewMode,
+        changeViewMode,
 
         statusFilter,
         setStatusFilter,

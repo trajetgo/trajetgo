@@ -7,6 +7,10 @@ import {
 
 import service from "../services/buses.service";
 
+const VIEW_MODE_STORAGE_KEY = "buses:viewMode";
+const DEFAULT_VIEW_MODE = "list";
+const VALID_VIEW_MODES = ["list", "grid"];
+
 export default function useBuses() {
     const [loading, setLoading] = useState(true);
     const [buses, setBuses] = useState([]);
@@ -18,6 +22,17 @@ export default function useBuses() {
     const [sort, setSort] = useState({
         key: "createdAt",
         direction: "desc",
+    });
+    const [viewMode, setViewMode] = useState(() => {
+        // Lazy initializer : exécuté une seule fois au montage
+        try {
+            const stored = localStorage.getItem(VIEW_MODE_STORAGE_KEY);
+
+            return VALID_VIEW_MODES.includes(stored) ? stored : DEFAULT_VIEW_MODE;
+        } catch {
+            // localStorage indisponible (SSR, navigation privée stricte)
+            return DEFAULT_VIEW_MODE;
+        }
     });
 
     // =====================================================
@@ -58,6 +73,18 @@ export default function useBuses() {
     useEffect(() => {
         fetchBuses();
     }, [fetchBuses]);
+
+    const changeViewMode = useCallback((mode) => {
+        if (!VALID_VIEW_MODES.includes(mode)) return;
+
+        setViewMode(mode);
+
+        try {
+            localStorage.setItem(VIEW_MODE_STORAGE_KEY, mode);
+        } catch {
+            // localStorage indisponible : on garde le state en mémoire
+        }
+    }, []);
 
     // =====================================================
     // Filtres + recherche + tri
@@ -208,7 +235,7 @@ export default function useBuses() {
             key,
             direction:
                 previous.key === key &&
-                previous.direction === "asc"
+                    previous.direction === "asc"
                     ? "desc"
                     : "asc",
         }));
@@ -273,6 +300,9 @@ export default function useBuses() {
 
         sort,
         handleSort,
+
+        viewMode,
+        changeViewMode,
 
         updateStatus,
 

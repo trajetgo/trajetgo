@@ -18,6 +18,10 @@ const SORT_ACCESSORS = {
     price: (s) => s.price ?? 0,
 };
 
+const VIEW_MODE_STORAGE_KEY = "schedules:viewMode";
+const DEFAULT_VIEW_MODE = "list";
+const VALID_VIEW_MODES = ["list", "grid"];
+
 /* ------------------------------------------------------------------ */
 
 export default function useSchedules() {
@@ -32,6 +36,17 @@ export default function useSchedules() {
         direction: "asc",
     });
 
+    const [viewMode, setViewMode] = useState(() => {
+        // Lazy initializer : exécuté une seule fois au montage
+        try {
+            const stored = localStorage.getItem(VIEW_MODE_STORAGE_KEY);
+
+            return VALID_VIEW_MODES.includes(stored) ? stored : DEFAULT_VIEW_MODE;
+        } catch {
+            // localStorage indisponible (SSR, navigation privée stricte)
+            return DEFAULT_VIEW_MODE;
+        }
+    });
     const [page, setPage] = useState(1);
 
     /* ---------- Fetch ---------- */
@@ -71,6 +86,18 @@ export default function useSchedules() {
     useEffect(() => {
         fetchSchedules();
     }, [fetchSchedules]);
+
+    const changeViewMode = useCallback((mode) => {
+        if (!VALID_VIEW_MODES.includes(mode)) return;
+
+        setViewMode(mode);
+
+        try {
+            localStorage.setItem(VIEW_MODE_STORAGE_KEY, mode);
+        } catch {
+            // localStorage indisponible : on garde le state en mémoire
+        }
+    }, []);
 
     /* ---------- Tri ---------- */
 
@@ -205,6 +232,9 @@ export default function useSchedules() {
 
         sort,
         handleSort,
+
+        viewMode,
+        changeViewMode,
 
         pagination,
         changePage,

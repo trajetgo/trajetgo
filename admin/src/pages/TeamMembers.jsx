@@ -4,19 +4,19 @@ import { Plus, Search, Users, X, AlertTriangle } from "lucide-react";
 import Loading from "@shared/components/Loading";
 import Pagination from "@shared/components/ui/Pagination";
 
-import useUsers from "../../hooks/useUsers";
-import UserTable from "../../components/user/UserTable";
-import InviteTeamMemberModal from "../../components/user/InviteTeamMemberModal";
-import UserStatusModal from "../../components/user/UserStatusModal";
-import UserRoleModal from "../../components/user/UserRoleModal";
+import useUsers from "../hooks/useUsers";
+import UserTable from "../components/user/UserTable";
+import InviteTeamMemberModal from "../components/user/InviteTeamMemberModal";
+import UserStatusModal from "../components/user/UserStatusModal";
+import UserRoleModal from "../components/user/UserRoleModal";
 
 import {
     USER_ROLE_FILTERS,
     USER_STATUS_FILTERS,
-} from "../../utils/user.utils";
+} from "../utils/user.utils";
 
-import UserDetailsModal from "../../components/user/UserDetailsModal";
-import "../../styles/pages/admin/TeamMembers.scss";
+import UserDetailsModal from "../components/user/UserDetailsModal";
+import "../styles/pages/admin/TeamMembers.scss";
 
 /* ------------------------------------------------------------------ */
 

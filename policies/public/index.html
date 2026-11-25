@@ -1,48 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#002e74" />
+  <meta name="theme-color" content="#0b3b60" />
+
+  <!-- SEO principal -->
+  <title>Documents légaux — Trajet Go</title>
   <meta name="description"
-    content=" Une plateforme simple et moderne pour rechercher, réserver et gérer vos trajets interurbains en toute sérénité." />
+    content="Politique de confidentialité, conditions générales d'utilisation et mentions légales de Trajet Go. Consultez les documents officiels régissant l'utilisation de la plateforme." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://policies.trajetgo.org/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Trajet Go" />
+  <meta property="og:title" content="Documents légaux — Trajet Go" />
+  <meta property="og:description" content="Politique de confidentialité, CGU et mentions légales de Trajet Go." />
+  <meta property="og:url" content="https://policies.trajetgo.org/" />
+  <meta property="og:image" content="https://policies.trajetgo.org/og-policies.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="fr_CI" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Documents légaux — Trajet Go" />
+  <meta name="twitter:description" content="Politique de confidentialité, CGU et mentions légales de Trajet Go." />
+  <meta name="twitter:image" content="https://policies.trajetgo.org/og-policies.png" />
+
+  <!-- Favicons -->
   <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="shortcut icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <meta name="apple-mobile-web-app-title" content="Trajet Go" />
-  <link rel="manifest" href="/site.webmanifest" />
-  <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-  <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-  <title>Trajet GO | Politique de confidentialité et conditions d'utilisation</title>
+  <!-- PWA -->
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="apple-mobile-web-app-title" content="Trajet Go Légal" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+  <!-- Préconnexion polices -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 </head>
 
 <body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <noscript>
+    <div
+      style="max-width: 720px; margin: 40px auto; padding: 24px; font-family: Arial, sans-serif; line-height: 1.6; color: #111827;">
+      <h1 style="margin: 0 0 16px; font-size: 24px; color: #0b3b60;">
+        Documents légaux — Trajet Go
+      </h1>
+
+      <p>
+        JavaScript est nécessaire pour afficher cette page dans son format complet.
+        Vous pouvez néanmoins consulter nos documents légaux aux adresses suivantes :
+      </p>
+
+      <ul style="padding-left: 20px;">
+        <li style="margin-bottom: 8px;">
+          <a href="/privacy" style="color: #0b3b60;">Politique de confidentialité</a>
+        </li>
+        <li style="margin-bottom: 8px;">
+          <a href="/terms" style="color: #0b3b60;">Conditions générales d'utilisation</a>
+        </li>
+        <li style="margin-bottom: 8px;">
+          <a href="/legal" style="color: #0b3b60;">Mentions légales</a>
+        </li>
+        <li style="margin-bottom: 8px;">
+          <a href="/cookies" style="color: #0b3b60;">Politique de cookies</a>
+        </li>
+      </ul>
+
+      <p style="margin-top: 24px;">
+        Pour toute question, contactez-nous à
+        <a href="mailto:legal@trajetgo.org" style="color: #0b3b60;">legal@trajetgo.org</a>.
+      </p>
+    </div>
+  </noscript>
+
   <div id="root"></div>
-  <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
 </body>
 
 </html>

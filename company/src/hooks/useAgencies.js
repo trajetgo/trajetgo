@@ -27,6 +27,10 @@ const SORT_ACCESSORS = {
     createdAt: (a) => new Date(a.createdAt ?? 0).getTime(),
 };
 
+const VIEW_MODE_STORAGE_KEY = "agencies:viewMode";
+const DEFAULT_VIEW_MODE = "list";
+const VALID_VIEW_MODES = ["list", "grid"];
+
 /* ------------------------------------------------------------------ */
 
 export default function useAgencies() {
@@ -40,7 +44,17 @@ export default function useAgencies() {
         key: "createdAt",
         direction: "desc",
     });
-    const [viewMode, setViewMode] = useState("list"); // list | grid
+    const [viewMode, setViewMode] = useState(() => {
+        // Lazy initializer : exécuté une seule fois au montage
+        try {
+            const stored = localStorage.getItem(VIEW_MODE_STORAGE_KEY);
+
+            return VALID_VIEW_MODES.includes(stored) ? stored : DEFAULT_VIEW_MODE;
+        } catch {
+            // localStorage indisponible (SSR, navigation privée stricte)
+            return DEFAULT_VIEW_MODE;
+        }
+    });
 
     /* ---------- Chargement ---------- */
 
@@ -75,9 +89,17 @@ export default function useAgencies() {
     }, [loadAgencies]);
 
 
-    const changeViewMode = (mode) => {
-        setViewMode(mode)
-    }
+    const changeViewMode = useCallback((mode) => {
+        if (!VALID_VIEW_MODES.includes(mode)) return;
+
+        setViewMode(mode);
+
+        try {
+            localStorage.setItem(VIEW_MODE_STORAGE_KEY, mode);
+        } catch {
+            // localStorage indisponible : on garde le state en mémoire
+        }
+    }, []);
 
     /* ---------- Tri ---------- */
 

@@ -90,6 +90,11 @@ router.use(
 );
 
 router.use(
+    "/knowledge",
+    require("../modules/knowledge/knowledge.routes")
+);
+
+router.use(
     "/tgtl",
     require("../modules/tgtl/tgtl.routes")
 );

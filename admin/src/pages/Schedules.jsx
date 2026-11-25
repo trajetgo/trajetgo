@@ -9,12 +9,12 @@ import {
 import Loading from "@shared/components/Loading";
 import Pagination from "@shared/components/ui/Pagination";
 
-import useSchedules from "../../hooks/useSchedules";
-import ScheduleFilters from "../../components/schedule/ScheduleFilters";
-import ScheduleTable from "../../components/schedule/ScheduleTable";
-import CreateScheduleModal from "../../components/schedule/CreateScheduleModal";
+import useSchedules from "../hooks/useSchedules";
+import ScheduleFilters from "../components/schedule/ScheduleFilters";
+import ScheduleTable from "../components/schedule/ScheduleTable";
+import CreateScheduleModal from "../components/schedule/CreateScheduleModal";
 
-import "../../styles/pages/admin/Schedules.scss";
+import "../styles/pages/admin/Schedules.scss";
 
 /* ------------------------------------------------------------------ */
 

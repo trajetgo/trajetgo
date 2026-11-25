@@ -75,8 +75,6 @@ class AuthService {
             throw error;
         }
 
-        console.log("Who am I ", result)
-
         return result;
     };
 };

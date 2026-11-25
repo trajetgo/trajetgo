@@ -46,3 +46,7 @@ export const AMENITIES = {
         icon: Luggage,
     },
 };
+
+export function getAmenityConfig(amenity) {
+    return AMENITIES[amenity] || { icon: null, label: amenity }
+}

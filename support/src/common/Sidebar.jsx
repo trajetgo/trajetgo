@@ -50,7 +50,7 @@ export default function Sidebar({
 
                 <div className="sidebar__brand-content">
                     <strong>Trajet Go</strong>
-                    <span>Administration</span>
+                    <span>Support</span>
                 </div>
             </div>
 

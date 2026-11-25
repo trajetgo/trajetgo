@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { Plus, Search, Users, X } from "lucide-react";
+import { LayoutGrid, List, Plus, Search, Users, X } from "lucide-react";
 
 import Loading from "@shared/components/Loading";
 
-import TeamTable from "../components/team/TeamTable";
 import Empty from "../components/Empty";
 
 import useTeams from "../hooks/useTeamMembers";
 import { ROLE_FILTERS, STATUS_FILTERS } from "../utils/team.utils";
 import InviteTeamMemberModal from "../components/ticket/InviteTeamMemberModal";
+
+import TeamList from "../components/team/TeamList";
+import TeamGrid from "../components/team/TeamGrid";
+
 
 import "../styles/pages/Teams.scss";
 
@@ -26,6 +29,10 @@ export default function Teams() {
         setRoleFilter,
         sort,
         handleSort,
+
+        viewMode,
+        changeViewMode,
+
         updateRole,
         updateStatus,
         refresh,
@@ -155,6 +162,32 @@ export default function Teams() {
                                 ))}
                             </select>
                         </div>
+
+                        <div className="agencies__view-toggle" role="tablist">
+                            <button
+                                type="button"
+                                role="tab"
+                                aria-selected={viewMode === "list"}
+                                className={`agencies__view-btn ${viewMode === "list" ? "agencies__view-btn--active" : ""
+                                    }`}
+                                onClick={() => changeViewMode("list")}
+                                aria-label="Vue liste"
+                            >
+                                <List size={16} />
+                            </button>
+
+                            <button
+                                type="button"
+                                role="tab"
+                                aria-selected={viewMode === "grid"}
+                                className={`agencies__view-btn ${viewMode === "grid" ? "agencies__view-btn--active" : ""
+                                    }`}
+                                onClick={() => changeViewMode("grid")}
+                                aria-label="Vue grille"
+                            >
+                                <LayoutGrid size={16} />
+                            </button>
+                        </div>
                     </section>
 
                     {/* ---------- Résultat filtres ---------- */}
@@ -183,14 +216,37 @@ export default function Teams() {
                         />
                     ) : (
                         <section className="teams__card">
-                            <TeamTable
-                                teams={filteredTeams}
-                                search={search}
-                                sort={sort}
-                                onSort={handleSort}
-                                setSelectedAction={setSelectedAction}
-                                setSelectedMember={setSelectedMember}
-                            />
+                            {viewMode === "list" && (
+                                <TeamList
+                                    teams={filteredTeams}
+                                    search={search}
+                                    sort={sort}
+                                    onSort={handleSort}
+                                    setSelectedAction={
+                                        setSelectedAction
+                                    }
+                                    setSelectedMember={
+                                        setSelectedMember
+                                    }
+                                />
+                            )}
+
+                            {viewMode === "grid" && (
+                                <TeamGrid
+                                    teams={filteredTeams}
+                                    search={search}
+                                    sort={sort}
+                                    onSort={handleSort}
+                                    setSelectedAction={
+                                        setSelectedAction
+                                    }
+                                    setSelectedMember={
+                                        setSelectedMember
+                                    }
+                                />
+
+                            )}
+
                         </section>
                     )}
                 </>

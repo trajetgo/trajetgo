@@ -12,12 +12,12 @@ import {
 
 import Loading from "@shared/components/Loading";
 
-import useLocations from "../../hooks/useLocations";
-import CreateLocationModal from "../../components/locations/CreateLocationModal";
-import LocationTable from "../../components/locations/LocationTable";
+import useLocations from "../hooks/useLocations";
+import CreateLocationModal from "../components/locations/CreateLocationModal";
+import LocationTable from "../components/locations/LocationTable";
 
-import "../../styles/pages/admin/Locations.scss";
-import { LOCATION_TYPES } from "../../constants/location.constants";
+import "../styles/pages/admin/Locations.scss";
+import { LOCATION_TYPES } from "../constants/location.constants";
 
 /* ------------------------------------------------------------------ */
 

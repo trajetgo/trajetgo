@@ -6,6 +6,7 @@ const { validateWorkbook } = require("./import.validators");
 
 const repository = require("./import.repository");
 const tgtlRepository = require("../tgtl.repository");
+const tripGeneratorService = require("../../trips/tripGenerator.service");
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                             */
@@ -125,6 +126,24 @@ function computeDurationMinutes(departureTime, arrivalTime) {
     return diff;
 }
 
+function parseExcelBoolean(value, fallback = false) {
+    if (typeof value === "boolean") return value;
+
+    if (typeof value === "number") {
+        if (value === 1) return true;
+        if (value === 0) return false;
+    }
+
+    if (typeof value === "string") {
+        const normalized = value.trim().toUpperCase();
+
+        if (["TRUE", "1", "YES", "OUI"].includes(normalized)) return true;
+        if (["FALSE", "0", "NO", "NON"].includes(normalized)) return false;
+    }
+
+    return fallback;
+}
+
 /* ------------------------------------------------------------------ */
 
 class TgtlImportService {
@@ -188,6 +207,7 @@ class TgtlImportService {
                 buses: { created: 0, updated: 0 },
                 seatLayouts: { created: 0, updated: 0 },
                 seats: { created: 0, updated: 0 },
+                trips: { created: 0, updated: 0, skipped: 0 },
                 routes: { created: 0, updated: 0 },
                 drivers: { created: 0, updated: 0 },
                 schedules: { created: 0, updated: 0 },
@@ -559,64 +579,80 @@ class TgtlImportService {
             }
 
             /* =================================================
-               3.6 — Programmations + Départs
-            ================================================= */
+    3.6 — Programmations + Départs
+ ================================================= */
 
             for (const { data: row } of sheets.Programmations?.data ?? []) {
-                const extId = String(row.external_id).trim().toUpperCase();
-                const routeId = prismaRouteId.get(
-                    String(row.route_external_id).trim().toUpperCase()
-                );
-                const departureAgencyId = prismaAgencyId.get(
-                    String(row.departure_agency_external_id).trim().toUpperCase()
-                );
-                const arrivalAgencyId = prismaAgencyId.get(
-                    String(row.arrival_agency_external_id).trim().toUpperCase()
-                );
+                const extId = String(row.external_id ?? "").trim().toUpperCase();
+
+                const routeExtId = String(row.route_external_id ?? "").trim().toUpperCase();
+                const departureAgencyExtId = String(
+                    row.departure_agency_external_id ?? ""
+                ).trim().toUpperCase();
+                const arrivalAgencyExtId = String(
+                    row.arrival_agency_external_id ?? ""
+                ).trim().toUpperCase();
+
+                const routeId = prismaRouteId.get(routeExtId);
+                const departureAgencyId = prismaAgencyId.get(departureAgencyExtId);
+                const arrivalAgencyId = prismaAgencyId.get(arrivalAgencyExtId);
 
                 if (!routeId || !departureAgencyId || !arrivalAgencyId) {
                     throw new ApiError(
                         422,
-                        `Programmation "${extId}" : références introuvables.`
+                        `Programmation "${extId}" : référence de ligne ou d'agence introuvable.`
                     );
                 }
 
-                const durationMinutes = computeDurationMinutes(
-                    row.departure_time,
-                    row.arrival_time
-                );
+                /* ---------- Données de la programmation ---------- */
 
                 const startDate = toDate(row.start_date);
 
-                const existing = await tx.schedule.findUnique({
-                    where: {
-                        companyId_routeId_departureAgencyId_arrivalAgencyId_startDate: {
-                            companyId,
-                            routeId,
-                            departureAgencyId,
-                            arrivalAgencyId,
-                            startDate,
-                        },
+                if (!startDate || Number.isNaN(startDate.getTime())) {
+                    throw new ApiError(
+                        422,
+                        `Programmation "${extId}" : date de début invalide.`
+                    );
+                }
+
+                // Facultatif : le TripGenerator utilisera Route.durationMin
+                // si Schedule.durationMinutes est null.
+                const durationMinutes = toInt(row.duration_minutes);
+
+                const daysOfWeek = splitList(row.days_of_week)
+                    .map((day) => String(day).trim().toUpperCase())
+                    .filter(Boolean);
+
+                const scheduleActive =
+                    String(row.schedule_status ?? "ACTIVE").trim().toUpperCase() === "ACTIVE";
+
+                // Important : ne pas activer automatiquement la génération
+                // si la cellule est vide ou invalide.
+                const autoGenerate = parseExcelBoolean(row.auto_generate, false);
+
+                const scheduleWhere = {
+                    companyId_routeId_departureAgencyId_arrivalAgencyId_startDate: {
+                        companyId,
+                        routeId,
+                        departureAgencyId,
+                        arrivalAgencyId,
+                        startDate,
                     },
+                };
+
+                const existingSchedule = await tx.schedule.findUnique({
+                    where: scheduleWhere,
                 });
 
                 const schedule = await tx.schedule.upsert({
-                    where: {
-                        companyId_routeId_departureAgencyId_arrivalAgencyId_startDate: {
-                            companyId,
-                            routeId,
-                            departureAgencyId,
-                            arrivalAgencyId,
-                            startDate,
-                        },
-                    },
+                    where: scheduleWhere,
                     update: {
                         price: toInt(row.price) ?? 0,
-                        durationMinutes: durationMinutes,
-                        daysOfWeek: splitList(row.days_of_week).map((d) => d.toUpperCase()),
+                        durationMinutes,
+                        daysOfWeek,
                         endDate: toDate(row.end_date),
-                        active: toBool(row.active) ?? true,
-                        autoGenerate: toBool(row.auto_generate) ?? true,
+                        active: scheduleActive,
+                        autoGenerate,
                     },
                     create: {
                         companyId,
@@ -624,122 +660,97 @@ class TgtlImportService {
                         departureAgencyId,
                         arrivalAgencyId,
                         price: toInt(row.price) ?? 0,
-                        durationMinutes: durationMinutes,
-                        daysOfWeek: splitList(row.days_of_week).map((d) => d.toUpperCase()),
+                        durationMinutes,
+                        daysOfWeek,
                         startDate,
                         endDate: toDate(row.end_date),
-                        active: toBool(row.active) ?? true,
-                        autoGenerate: toBool(row.auto_generate) ?? true,
+                        active: scheduleActive,
+                        autoGenerate,
                     },
                 });
 
-                if (existing) stats.schedules.updated++;
+                if (existingSchedule) stats.schedules.updated++;
                 else stats.schedules.created++;
 
                 scheduleRowById.set(extId, schedule.id);
 
-                /* ---------- Départ intégré (format V1) ---------- */
+                /* ---------- Départ associé à la programmation ---------- */
 
-                const busExtId = String(row.bus_external_id ?? "").trim().toUpperCase();
+                const busExtId = String(row.bus_external_id ?? "")
+                    .trim()
+                    .toUpperCase();
+
+                if (!busExtId) {
+                    throw new ApiError(
+                        422,
+                        `Programmation "${extId}" : aucun bus externe renseigné.`
+                    );
+                }
+
                 const busId = prismaBusId.get(busExtId);
 
-                if (busId && row.departure_time) {
-                    const departureTime = normalizeTime(row.departure_time);
-
-                    const existingDeparture = await tx.scheduleDeparture.findUnique({
-                        where: {
-                            scheduleId_departureTime_busId: {
-                                scheduleId: schedule.id,
-                                departureTime,
-                                busId,
-                            },
-                        },
-                    });
-
-                    /* ---------- Résolution du chauffeur ---------- */
-
-                    const driverExtId = String(row.driver_external_id ?? "").trim().toUpperCase();
-                    const driverId = driverExtId ? prismaDriverId.get(driverExtId) : null;
-
-                    if (driverExtId && !driverId) {
-                        throw new ApiError(
-                            422,
-                            `Programmation "${extId}" : chauffeur "${driverExtId}" introuvable.`
-                        );
-                    }
-
-                    await tx.scheduleDeparture.upsert({
-                        where: {
-                            scheduleId_departureTime_busId: {
-                                scheduleId: schedule.id,
-                                departureTime,
-                                busId,
-                            },
-                        },
-                        update: {
-                            active: toBool(row.status === "ACTIVE") ?? true,
-                            driverId,                         // ← ajout
-                        },
-                        create: {
-                            scheduleId: schedule.id,
-                            busId,
-                            departureTime,
-                            active: toBool(row.status === "ACTIVE") ?? true,
-                            driverId,                         // ← ajout
-                        },
-                    });
-
-                    if (existingDeparture) stats.departures.updated++;
-                    else stats.departures.created++;
-                } else if (busExtId) {
-                    // Le bus est référencé mais introuvable → erreur explicite
+                if (!busId) {
                     throw new ApiError(
                         422,
                         `Programmation "${extId}" : bus "${busExtId}" introuvable.`
                     );
                 }
-            }
 
-            for (const { data: row } of sheets.Departs?.data ?? []) {
-                const scheduleId = scheduleRowById.get(
-                    String(row.schedule_external_id).trim().toUpperCase()
-                );
-                const busId = prismaBusId.get(
-                    String(row.bus_external_id).trim().toUpperCase()
-                );
-
-                if (!scheduleId || !busId) continue;
+                if (!row.departure_time) {
+                    throw new ApiError(
+                        422,
+                        `Programmation "${extId}" : heure de départ manquante.`
+                    );
+                }
 
                 const departureTime = normalizeTime(row.departure_time);
 
-                const existing = await tx.scheduleDeparture.findUnique({
-                    where: {
-                        scheduleId_departureTime_busId: {
-                            scheduleId,
-                            departureTime,
-                            busId,
-                        },
+                const driverExtId = String(row.driver_external_id ?? "")
+                    .trim()
+                    .toUpperCase();
+
+                const driverId = driverExtId
+                    ? prismaDriverId.get(driverExtId)
+                    : null;
+
+                if (driverExtId && !driverId) {
+                    throw new ApiError(
+                        422,
+                        `Programmation "${extId}" : chauffeur "${driverExtId}" introuvable.`
+                    );
+                }
+
+                const departureActive =
+                    String(row.departure_status ?? "ACTIVE").trim().toUpperCase() === "ACTIVE";
+
+                const departureWhere = {
+                    scheduleId_departureTime_busId: {
+                        scheduleId: schedule.id,
+                        departureTime,
+                        busId,
                     },
+                };
+
+                const existingDeparture = await tx.scheduleDeparture.findUnique({
+                    where: departureWhere,
                 });
 
                 await tx.scheduleDeparture.upsert({
-                    where: {
-                        scheduleId_departureTime_busId: {
-                            scheduleId,
-                            departureTime,
-                            busId,
-                        },
+                    where: departureWhere,
+                    update: {
+                        active: departureActive,
+                        driverId,
                     },
-                    update: { active: toBool(row.active) ?? true },
                     create: {
-                        scheduleId,
+                        scheduleId: schedule.id,
                         busId,
                         departureTime,
-                        active: toBool(row.active) ?? true,
+                        active: departureActive,
+                        driverId,
                     },
                 });
 
-                if (existing) stats.departures.updated++;
+                if (existingDeparture) stats.departures.updated++;
                 else stats.departures.created++;
             }
 
@@ -804,6 +815,41 @@ class TgtlImportService {
 
         const { stats, totals } = result;
 
+        const from = new Date();
+        const to = new Date(from);
+
+        to.setDate(to.getDate() + 30);
+
+        const scheduleIds = [...new Set(scheduleRowById.values())];
+
+        const generationErrors = [];
+
+        for (const scheduleId of scheduleIds) {
+            try {
+                const tripStats =
+                    await tripGeneratorService.generateTripsForSchedule(
+                        scheduleId,
+                        from,
+                        to
+                    );
+
+                stats.trips.created += tripStats.created;
+                stats.trips.updated += tripStats.updated;
+                stats.trips.skipped += tripStats.skipped;
+
+            } catch (error) {
+                console.error(
+                    `[TGTL] Trip generation failed for schedule ${scheduleId}:`,
+                    error
+                );
+
+                generationErrors.push({
+                    scheduleId,
+                    message: error.message,
+                });
+            }
+        }
+
         await tgtlRepository.upsert(companyId, {
             lastSyncAt: new Date(),
             lastSyncType: "import",
@@ -827,6 +873,15 @@ class TgtlImportService {
             companyId,
             stats,
             totals,
+            generation: {
+                period: {
+                    from,
+                    to,
+                },
+                schedulesProcessed: scheduleIds.length,
+                errors: generationErrors,
+                status: generationErrors.length > 0 ? "PARTIAL" : "SUCCESS",
+            },
             file: {
                 originalName: file.originalname,
                 size: file.size,

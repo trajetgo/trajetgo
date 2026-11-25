@@ -16,7 +16,7 @@ const generateTripsJob = require("./src/jobs/generateTrips.job");
 const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 5000;
-const APP_BASE_URL = process.env.APP_BASE_URL || 'http://localhost' 
+const APP_BASE_URL = process.env.APP_BASE_URL || 'http://localhost'
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const isProduction = NODE_ENV === 'production';
 
@@ -35,6 +35,61 @@ console.log(`🔐 Protocol: ${PROTOCOL}`);
 // ========================
 // MIDDLEWARE DE SÉCURITÉ (Production seulement)
 // ========================
+app.disable("x-powered-by");
+
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+
+                scriptSrc: ["'self'"],
+                scriptSrcAttr: ["'none'"],
+
+                styleSrc: [
+                    "'self'",
+                    "'unsafe-inline'",
+                ],
+
+                imgSrc: [
+                    "'self'",
+                    "data:",
+                    "blob:",
+                    "https:",
+                ],
+
+                fontSrc: [
+                    "'self'",
+                    "data:",
+                    "https:",
+                ],
+
+                connectSrc: [
+                    "'self'",
+                    "https://trajetgo.org",
+                    "https://api.trajetgo.org",
+                    "https://passenger.trajetgo.org",
+                    "https://admin.trajetgo.org",
+                    "https://company.trajetgo.org",
+                    "https://agency.trajetgo.org",
+                    "https://controller.trajetgo.org",
+                    "https://checkout.trajetgo.org",
+                    "https://policies.trajetgo.org",
+                    "https://support.trajetgo.org",
+                ],
+
+                objectSrc: ["'none'"],
+                baseUri: ["'self'"],
+                formAction: ["'self'"],
+                frameAncestors: ["'none'"],
+
+                upgradeInsecureRequests: isProduction ? [] : null,
+            },
+        },
+
+        crossOriginEmbedderPolicy: false,
+    })
+);
 
 if (isProduction) {
     app.use(helmet({

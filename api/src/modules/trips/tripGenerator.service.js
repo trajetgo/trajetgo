@@ -38,7 +38,7 @@ function resolveDuration(schedule) {
     }
 
     return duration;
-} 
+}
 
 class TripGeneratorService {
     /**
@@ -69,6 +69,8 @@ class TripGeneratorService {
 
         const stats = { created: 0, updated: 0, skipped: 0 };
 
+        const durationMinutes = resolveDuration(schedule);
+
         const periodStart = new Date(Math.max(from.getTime(), schedule.startDate.getTime()));
         const periodEnd = schedule.endDate
             ? new Date(Math.min(to.getTime(), schedule.endDate.getTime()))
@@ -94,7 +96,7 @@ class TripGeneratorService {
                 if (!departure.active) continue;
 
                 const departureAt = combineDateAndTime(cursor, departure.departureTime);
-                const arrivalAt = computeArrival(departureAt, schedule.durationMinutes);
+                const arrivalAt = computeArrival(departureAt, durationMinutes);
 
                 // Ignore les départs déjà passés
                 if (departureAt < new Date()) {

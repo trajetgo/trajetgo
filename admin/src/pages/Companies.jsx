@@ -11,16 +11,16 @@ import {
 import Loading from "@shared/components/Loading";
 import Pagination from "@shared/components/ui/Pagination";
 
-import useCompanies from "../../hooks/useCompanies";
+import useCompanies from "../hooks/useCompanies";
 
-import { STATUS_FILTERS } from "../../utils/company.utils";
+import { STATUS_FILTERS } from "../utils/company.utils";
 
-import CreateCompanyModal from "../../components/company/CreateCompanyModal";
-import CompanyGrid from "../../components/company/CompanyGrid";
+import CreateCompanyModal from "../components/company/CreateCompanyModal";
+import CompanyGrid from "../components/company/CompanyGrid";
 
-import "../../styles/pages/admin/Companies.scss";
-import CompanyList from "../../components/company/CompanyList";
-import CompanyDetailsModal from "../../components/company/CompanyDetailsModal";
+import "../styles/pages/admin/Companies.scss";
+import CompanyList from "../components/company/CompanyList";
+import CompanyDetailsModal from "../components/company/CompanyDetailsModal";
 
 export default function Companies() {
     const {

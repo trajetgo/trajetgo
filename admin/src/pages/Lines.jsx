@@ -3,13 +3,13 @@ import { Plus, Route as RouteIcon, Search, X, AlertTriangle } from "lucide-react
 
 import Loading from "@shared/components/Loading";
 
-import useRoutes from "../../hooks/useRoutes";
-import RouteTable from "../../components/route/RouteTable";
-import CreateRouteModal from "../../components/route/CreateRouteModal";
+import useRoutes from "../hooks/useRoutes";
+import RouteTable from "../components/route/RouteTable";
+import CreateRouteModal from "../components/route/CreateRouteModal";
 
-import { ROUTE_STATUS_FILTERS } from "../../utils/route.utils";
+import { ROUTE_STATUS_FILTERS } from "../utils/route.utils";
 
-import "../../styles/pages/admin/Routes.scss";
+import "../styles/pages/admin/Routes.scss";
 
 /* ------------------------------------------------------------------ */
 

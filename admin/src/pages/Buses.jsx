@@ -3,18 +3,18 @@ import { BusFront, Plus, Search, X } from "lucide-react";
 
 import Loading from "@shared/components/Loading"; 
 
-import useBuses from "../../hooks/useBuses";
-import BusTable from "../../components/bus/BusTable";
+import useBuses from "../hooks/useBuses";
+import BusTable from "../components/bus/BusTable";
 
-import CreateBusModal from "../../components/bus/CreateBusModal";
-import EditBusModal from "../../components/bus/EditBusModal";
-import BusDetailsModal from "../../components/bus/BusDetailsModal";
-import BusStatusModal from "../../components/bus/BusStatusModal";
-import SeatLayoutModal from "../../components/bus/SeatLayoutModal";
+import CreateBusModal from "../components/bus/CreateBusModal";
+import EditBusModal from "../components/bus/EditBusModal";
+import BusDetailsModal from "../components/bus/BusDetailsModal";
+import BusStatusModal from "../components/bus/BusStatusModal";
+import SeatLayoutModal from "../components/bus/SeatLayoutModal";
 
-import { BUS_STATUS_FILTERS } from "../../utils/bus.utils";
+import { BUS_STATUS_FILTERS } from "../utils/bus.utils";
 
-import "../../styles/pages/admin/Buses.scss";
+import "../styles/pages/admin/Buses.scss";
 
 /* ------------------------------------------------------------------ */
 

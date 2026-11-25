@@ -12,15 +12,15 @@ import Loading from "@shared/components/Loading";
 
 import useAgencies from "../hooks/useAgencies";
 import CreateAgencyModal from "../components/agency/CreateAgencyModal";
-import AgencyTable from "../components/agency/AgencyTable";
 import AgencyDetailsModal from "../components/agency/AgencyDetailsModal";
 import AgencyStatusModal from "../components/agency/AgencyStatusModal";
 
 import { STATUS_FILTERS } from "../utils/agency.utils";
 
-import "../styles/pages/Agencies.scss";
 import AgencyList from "../components/agency/AgencyList";
 import AgencyGrid from "../components/agency/AgencyGrid";
+
+import "../styles/pages/Agencies.scss";
 
 export default function Agencies() {
     const {

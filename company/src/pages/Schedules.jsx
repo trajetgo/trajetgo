@@ -4,15 +4,23 @@ import {
     Plus,
     Search,
     AlertTriangle,
+    LayoutGrid,
+    List,
+    X,
 } from "lucide-react";
 
 import Loading from "@shared/components/Loading";
 import Pagination from "@shared/components/ui/Pagination";
+import Empty from "@shared/components/feedback/Empty";
 
 import useSchedules from "../hooks/useSchedules";
-import ScheduleFilters from "../components/schedule/ScheduleFilters";
 import ScheduleTable from "../components/schedule/ScheduleTable";
+import ScheduleList from "../components/schedule/ScheduleList";
+import ScheduleGrid from "../components/schedule/ScheduleGrid";
 import CreateScheduleModal from "../components/schedule/CreateScheduleModal";
+
+import { STATUS_FILTERS } from "../constants/schedule.constants";
+
 
 import "../styles/pages/Schedules.scss";
 
@@ -39,6 +47,9 @@ export default function Schedules() {
 
         sort,
         handleSort,
+
+        viewMode,
+        changeViewMode,
 
         pagination,
         changePage,
@@ -101,27 +112,96 @@ export default function Schedules() {
             {/* ---------- Contenu ---------- */}
 
             {isEmpty ? (
-                <section className="schedules__empty">
-                    <CalendarClock size={42} aria-hidden="true" />
-
-                    <h2>Aucune programmation</h2>
-
-                    <p>
-                        Commencez par ajouter une programmation pour
-                        vos voyages récurrents.
-                    </p>
-                </section>
+                <Empty
+                    icon={CalendarClock}
+                    title="Aucune programmation"
+                    text="Commencez par ajouter une programmation pour vos voyages récurrents."
+                />
             ) : (
                 <>
                     {/* ---------- Filtres ---------- */}
 
-                    <ScheduleFilters
-                        search={search}
-                        onSearchChange={setSearch}
-                        statusFilter={statusFilter}
-                        onStatusFilterChange={setStatusFilter}
-                        counts={counts}
-                    />
+                    <section className="schedules__toolbar">
+                        {/* ---------- Recherche ---------- */}
+
+                        <div className="schedules__search">
+                            <Search size={16} aria-hidden="true" />
+
+                            <input
+                                type="search"
+                                placeholder="Rechercher une programmation..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                aria-label="Rechercher une programmation"
+                            />
+
+                            {search && (
+                                <button
+                                    type="button"
+                                    className="schedule-filters__search-clear"
+                                    onClick={() => setSearch("")}
+                                    aria-label="Effacer la recherche"
+                                >
+                                    <X size={14} />
+                                </button>
+                            )}
+                        </div>
+
+                        {/* ---------- Filtre statut ---------- */}
+
+                        <div
+                            className="schedules__filter"
+                            role="tablist"
+                            aria-label="Filtrer par statut"
+                        >
+                            <select
+                                value={statusFilter}
+                                onChange={(e) =>
+                                    setStatusFilter(
+                                        e.target.value
+                                    )
+                                }
+                                aria-label="Filtrer les agences par statut"
+                            >
+                                {STATUS_FILTERS.map(
+                                    (filter) => (
+                                        <option
+                                            key={filter.value}
+                                            value={filter.value}
+                                        >
+                                            {filter.label}
+                                        </option>
+                                    )
+                                )}
+                            </select>
+                        </div>
+
+                        <div className="agencies__view-toggle" role="tablist">
+                            <button
+                                type="button"
+                                role="tab"
+                                aria-selected={viewMode === "list"}
+                                className={`agencies__view-btn ${viewMode === "list" ? "agencies__view-btn--active" : ""
+                                    }`}
+                                onClick={() => changeViewMode("list")}
+                                aria-label="Vue liste"
+                            >
+                                <List size={16} />
+                            </button>
+
+                            <button
+                                type="button"
+                                role="tab"
+                                aria-selected={viewMode === "grid"}
+                                className={`agencies__view-btn ${viewMode === "grid" ? "agencies__view-btn--active" : ""
+                                    }`}
+                                onClick={() => changeViewMode("grid")}
+                                aria-label="Vue grille"
+                            >
+                                <LayoutGrid size={16} />
+                            </button>
+                        </div>
+                    </section>
 
                     {/* ---------- Résultat filtres ---------- */}
 
@@ -157,14 +237,36 @@ export default function Schedules() {
                         </section>
                     ) : (
                         <section className="schedules__card">
-                            <ScheduleTable
-                                schedules={paginatedSchedules}
-                                search={search}
-                                sort={sort}
-                                onSort={handleSort}
-                                setSelectedSchedule={setSelectedSchedule}
-                                setSelectedAction={setSelectedAction}
-                            />
+                            {viewMode === "list" && (
+                                <ScheduleList
+                                    schedules={filteredSchedules}
+                                    search={search}
+                                    sort={sort}
+                                    onSort={handleSort}
+                                    setSelectedAction={
+                                        setSelectedAction
+                                    }
+                                    setSelectedSchedule={
+                                        setSelectedSchedule
+                                    }
+                                />
+                            )}
+
+                            {viewMode === "grid" && (
+                                <ScheduleGrid
+                                    schedules={filteredSchedules}
+                                    search={search}
+                                    sort={sort}
+                                    onSort={handleSort}
+                                    setSelectedAction={
+                                        setSelectedAction
+                                    }
+                                    setSelectedSchedule={
+                                        setSelectedSchedule
+                                    }
+                                />
+
+                            )}
 
                             <Pagination
                                 pagination={pagination}

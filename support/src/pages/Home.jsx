@@ -9,7 +9,7 @@ import {
     ArrowRight,
 } from "lucide-react";
 
-// import "../styles/pages/Home.scss";
+import "../styles/pages/Home.scss";
 
 /* ------------------------------------------------------------------ */
 /* Données — à remplacer par un fetch API                              */

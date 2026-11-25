@@ -74,8 +74,6 @@ class CompaniesService {
             throw error;
         }
 
-        console.log("Companies ", result)
-
         return result;
     };
 

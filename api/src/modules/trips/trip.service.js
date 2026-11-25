@@ -5,6 +5,7 @@ const agencyRepository = require('../agencies/agency.repository');
 const ensureCompanyAccess = require('../../utils/ensureCompanyAccess');
 const formatDuration = require('../../utils/trip.utils');
 const { getDayRange } = require('../../utils/dateRange');
+const cacheService = require('../../services/cache.service');
 
 const VALID_STATUSES = [
     'SCHEDULED',
@@ -22,38 +23,49 @@ class TripService {
 
     getTrips = async (filters, user) => {
         if (!user) {
-            throw new ApiError(
-                401,
-                "Authentification requise"
-            );
+            throw new ApiError(401, "Authentification requise");
         }
+
+        /* ---------- 1. Résolution du périmètre ---------- */
 
         let companyId = null;
         let agencyId = null;
 
         if (user.role === "SUPER_ADMIN") {
-            companyId = filters.companyId || undefined;
+            companyId = filters.companyId || null;
         } else {
             if (!user.companyId) {
-                throw new ApiError(
-                    403,
-                    "Aucune compagnie associée à cet utilisateur"
-                );
+                throw new ApiError(403, "Aucune compagnie associée à cet utilisateur");
             }
-
             companyId = user.companyId;
         }
 
         if (user.role === "AGENCY_AGENT") {
             if (!user.agencyId) {
-                throw new ApiError(
-                    403,
-                    "Aucune agence associée à cet utilisateur"
-                );
+                throw new ApiError(403, "Aucune agence associée à cet utilisateur");
             }
-
             agencyId = user.agencyId;
         }
+
+        /* ---------- 2. Clé de cache complète ---------- */
+
+        const key = [
+            "trips",
+            companyId ?? "all",
+            agencyId ?? "all",
+            filters.routeId ?? "all",
+            filters.busId ?? "all",
+            filters.status ?? "all",
+            filters.date ?? "all",
+        ].join(":");
+
+        const cached = cacheService.get(key);
+
+        if (cached) {
+            return cached;
+        }
+
+        /* ---------- 3. Fetch ---------- */
 
         const trips = await repository.findMany({
             companyId,
@@ -64,59 +76,53 @@ class TripService {
             date: filters.date,
         });
 
-        return trips.map((trip) => {
-            const booked = trip._count.bookings;
+        /* ---------- 4. DTO ---------- */
+
+        const mapped = trips.map((trip) => {
+            const booked = trip._count?.bookings ?? 0;
             const total = trip.bus?.capacity ?? 0;
 
             return {
                 id: trip.id,
 
                 departure: {
-                    agency: trip.departureAgency.name,
-                    city: trip.departureAgency?.city?.name || null,
+                    agency: trip.departureAgency?.name ?? null,
+                    city: trip.departureAgency?.city?.name ?? null,
                     time: trip.departureAt,
                 },
 
                 arrival: {
-                    agency: trip.arrivalAgency.name,
-                    city: trip.arrivalAgency?.city?.name || null,
+                    agency: trip.arrivalAgency?.name ?? null,
+                    city: trip.arrivalAgency?.city?.name ?? null,
                     time: trip.arrivalAt,
                 },
 
-                duration: trip.route.durationMin,
-
-                // duration: trip.arrivalAt
-                //     ? formatDuration(
-                //         trip.departureAt,
-                //         trip.arrivalAt
-                //     )
-                //     : null,
-
+                duration: trip.route?.durationMin ?? null,
                 date: trip.departureAt,
 
                 bus: {
-                    id: trip.bus?.id || null,
-                    name: trip.bus?.name || null,
+                    id: trip.bus?.id ?? null,
+                    name: trip.bus?.name ?? null,
                     capacity: total,
                 },
 
                 seats: {
                     booked,
                     total,
-                    available: Math.max(
-                        0,
-                        total - booked
-                    ),
-                    occupancyRate:
-                        total > 0
-                            ? booked / total
-                            : 0,
+                    available: Math.max(0, total - booked),
+                    occupancyRate: total > 0 ? booked / total : 0,
                 },
 
-                price: trip.route.basePrice,
+                price: trip.price,
                 status: trip.status,
             };
         });
+
+        /* ---------- 5. Cache du résultat mappé ---------- */
+
+        cacheService.set(key, mapped, 300);   // 5 min, pas 1 h
+
+        return mapped;
     };
 
     getSeatsForTrip = async (id, user) => {

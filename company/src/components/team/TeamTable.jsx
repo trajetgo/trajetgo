@@ -5,31 +5,12 @@ import { formatDate } from "@shared/utils/date.utils";
 
 import TeamActions from "./TeamActions";
 
+import { formatRole, formatStatus } from "../../constants/team.constants";
+
 import "../../styles/components/team/TeamTable.scss";
 
-const ROLE_LABELS = {
-    COMPANY_ADMIN: "Administrateur",
-    AGENCY_AGENT: "Chef de gare",
-    CONTROLLER: "Contrôleur",
-};
 
-const ROLE_CLASSES = {
-    COMPANY_ADMIN: "admin",
-    AGENCY_AGENT: "agent",
-    CONTROLLER: "controller",
-};
-
-const STATUS_LABELS = {
-    ACTIVE: "Actif",
-    INACTIVE: "Inactif",
-    SUSPENDED: "Suspendu",
-};
-
-const STATUS_CLASSES = {
-    ACTIVE: "active",
-    INACTIVE: "inactive",
-    SUSPENDED: "suspended",
-};
+/* ------------------------------------------------------------------ */
 
 export default function TeamTable({
     teams,
@@ -68,21 +49,24 @@ export default function TeamTable({
                         )}
                     </div>
                 </div>
-            )
+            ),
         },
 
         {
             key: "role",
             label: "Rôle",
             sortable: true,
-            render: (_, member) => (
-                <span
-                    className={`team-table__badge team-table__badge--role team-table__badge--role-${ROLE_CLASSES[member.role] || "unknown"
-                        }`}
-                >
-                    {ROLE_LABELS[member.role] || member.role || "—"}
-                </span>
-            ),
+            render: (_, member) => {
+                const config = formatRole(member.role);
+
+                return (
+                    <span
+                        className={`team-table__badge team-table__badge--role team-table__badge--role-${config.class}`}
+                    >
+                        {config.label}
+                    </span>
+                );
+            },
         },
 
         {
@@ -91,22 +75,13 @@ export default function TeamTable({
             sortable: true,
             render: (_, member) => {
                 if (!member.agency) {
-                    return (
-                        <span className="team-table__muted">
-                            Compagnie
-                        </span>
-                    );
+                    return <span className="team-table__muted">Compagnie</span>;
                 }
 
                 return (
                     <div className="team-table__agency">
                         <span>{member.agency.name}</span>
-
-                        {member.agency.code && (
-                            <small>
-                                {member.agency.code}
-                            </small>
-                        )}
+                        {member.agency.code && <small>{member.agency.code}</small>}
                     </div>
                 );
             },
@@ -120,7 +95,7 @@ export default function TeamTable({
                 <span>
                     <HighlightText
                         text={member.phone || "—"}
-                        highlight={search}
+                        search={search}          // ← corrigé : "search" pas "highlight"
                     />
                 </span>
             ),
@@ -130,16 +105,17 @@ export default function TeamTable({
             key: "status",
             label: "Statut",
             sortable: true,
-            render: (_, member) => (
-                <span
-                    className={`team-table__badge team-table__badge--status ${`team-table__badge--status-${STATUS_CLASSES[member.status] || "unknown"}`
-                        }`}
-                >
-                    {STATUS_LABELS[member.status] ||
-                        member.status ||
-                        "—"}
-                </span>
-            ),
+            render: (_, member) => {
+                const config = formatStatus(member.status);
+
+                return (
+                    <span
+                        className={`team-table__badge team-table__badge--status team-table__badge--status-${config.class}`}
+                    >
+                        {config.label}
+                    </span>
+                );
+            },
         },
 
         {
@@ -148,7 +124,7 @@ export default function TeamTable({
             sortable: true,
             render: (_, member) => (
                 <span className="team-table__date">
-                    {formatDate(member.createdAt, 'EEEE dd MMMM yyyy à HH:mm ')}
+                    {formatDate(member.createdAt, "dd MMM yyyy · HH:mm")}
                 </span>
             ),
         },

@@ -3,14 +3,14 @@ import { Plus, Search, X, BusFront } from "lucide-react";
 
 import Loading from "@shared/components/Loading";
 
-import useTrips from "../../hooks/useTrips";
-import CreateTripModal from "../../components/trip/CreateTripModal";
-import TripTable from "../../components/trip/TripTable";
-import TripDetailsModal from "../../components/trip/TripDetailsModal";
-import TripStatusModal from "../../components/trip/TripStatusModal";
-import { STATUS_FILTERS } from "../../utils/trip.utils";
+import useTrips from "../hooks/useTrips";
+import CreateTripModal from "../components/trip/CreateTripModal";
+import TripTable from "../components/trip/TripTable";
+import TripDetailsModal from "../components/trip/TripDetailsModal";
+import TripStatusModal from "../components/trip/TripStatusModal";
+import { STATUS_FILTERS } from "../utils/trip.utils";
 
-import "../../styles/pages/admin/Trips.scss";
+import "../styles/pages/admin/Trips.scss";
 
 export default function Trips() {
     const {

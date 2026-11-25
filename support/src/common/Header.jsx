@@ -47,33 +47,17 @@ export default function Header({
                         src={trajetGo}
                         alt="Trajet Go"
                     />
-                    {/* <span className="app-header__brand-name">Trajet</span> */}
-                    {/* <span className="app-header__brand-accent">Go</span> */}
+
+                    <div className="sidebar__brand-content">
+                        <strong>Trajet Go</strong>
+                        <span>Support</span>
+                    </div>
                 </Link>
 
                 <nav
                     className="app-header__nav"
                     aria-label="Navigation principale"
                 >
-                    {NAV_ITEMS.map((item) => {
-                        const Icon = item.icon;
-
-                        return (
-                            <NavLink
-                                key={item.path}
-                                to={item.path}
-                                end={item.path === "/"}
-                                title={item.label}
-                                className={({ isActive }) =>
-                                    `sidebar__link ${isActive ? "sidebar__link--active" : ""
-                                    }`
-                                }
-                            >
-                                <Icon size={19} />
-                                <span> {item.label} </span>
-                            </NavLink>
-                        );
-                    })}
                 </nav>
 
                 <div className="app-header__actions">

@@ -4,15 +4,16 @@ import { Routes, Route } from "react-router-dom";
 import AppLayout from "../layouts/app.layout";
 
 // Pages
-import Dashboard from "../pages/admin/Dashboard";
-import Companies from "../pages/admin/Companies";
-import Agencies from "../pages/admin/Agencies";
-import Buses from "../pages/admin/Buses";
-import Locations from "../pages/admin/Locations";
-import TeamMembers from "../pages/admin/TeamMembers";
-import Lines from "../pages/admin/Lines";
-import Schedules from "../pages/admin/Schedules";
-import Trips from "../pages/admin/Trips";
+import Dashboard from "../pages/Dashboard";
+import Companies from "../pages/Companies";
+import Agencies from "../pages/Agencies";
+import Buses from "../pages/Buses";
+import Locations from "../pages/Locations";
+import TeamMembers from "../pages/TeamMembers";
+import Lines from "../pages/Lines";
+import Schedules from "../pages/Schedules";
+import Trips from "../pages/Trips";
+import Knowledge from "../pages/Knowledge";
 
 export default function AdminRouter() {
     return (
@@ -27,6 +28,7 @@ export default function AdminRouter() {
                 <Route path="/routes" element={<Lines />} />
                 <Route path="/schedules" element={<Schedules />} />
                 <Route path="/locations" element={<Locations />} />
+                <Route path="/knowledge" element={<Knowledge />} />
             </Route>
         </Routes>
     )

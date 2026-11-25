@@ -8,9 +8,7 @@ export default function AgencyList({
     setSelectedAction,
     setSelectedAgency
 }) {
-    if (!agencies || agencies.length === 0) {
-        return null;
-    }
+    if (!agencies || agencies.length === 0) return null;
 
     return (
         <AgencyTable

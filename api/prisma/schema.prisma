@@ -157,6 +157,8 @@ model User {
   sentInvitations CompanyInvitation[]
   controlledBoardings Boarding[] @relation("BoardingController")
 
+  knowledgeArticles KnowledgeArticle[]
+
   lastLoginAt DateTime?  
   createdAt   DateTime   @default(now()) 
   updatedAt   DateTime   @updatedAt 
@@ -1252,6 +1254,78 @@ model ExternalReference {
   @@unique([companyId, source, entityType, entityId])
   @@index([companyId, entityType, entityId])
   @@map("external_references")
+}
+
+// ----------------------------------------
+// Support Trajetgo
+// ----------------------------------------
+model KnowledgeCategory {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String?
+  icon        String?          // "ticket", "credit-card", "bus", "user"
+  position    Int      @default(0)
+
+  articles    KnowledgeArticle[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@map("knowledge_categories")
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model KnowledgeArticle {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  excerpt     String?
+  content     String   @db.Text   // Markdown
+  status      ArticleStatus @default(DRAFT)
+
+  categoryId  String
+  category    KnowledgeCategory @relation(fields: [categoryId], references: [id])
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+
+  // Stats
+  views       Int      @default(0)
+  helpful     Int      @default(0)
+  notHelpful  Int      @default(0)
+
+  // Auteur
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([status])
+  @@index([publishedAt])
+  @@map("knowledge_articles")
+}
+
+model KnowledgeSearchLog {
+  id        String   @id @default(cuid())
+  query     String
+  results   Int
+  createdAt DateTime @default(now())
+
+  @@index([query])
+  @@index([createdAt])
+  @@map("knowledge_search_logs")
 }
 
 // ----------------------------------------------------------------------------

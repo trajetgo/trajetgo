@@ -1,4 +1,5 @@
 const prisma = require('../../config/database');
+const cacheService = require('../../services/cache.service');
 const ApiError = require('../../utils/ApiError');
 const { hashPassword, CURRENT_ALGORITHM } = require('../../utils/password');
 const companyRepository = require('../companies/company.repository');
@@ -17,7 +18,24 @@ class AgencyService {
             query.companyId = user.companyId;
         }
 
-        return repository.findMany(query);
+        const key = [
+            "agencies",
+            filters.companyId ?? "all",
+            filters.cityId ?? "all",
+            filters.status ?? "all",
+        ].join(":");
+
+        const cached = cacheService.get(key);
+
+        if (cached) {
+            return cached;
+        }
+
+        const agencies = await repository.findMany(query);
+
+        cacheService.set(key, agencies, 3600);
+
+        return agencies;
     };
 
     getAgencyById = async (id, user) => {

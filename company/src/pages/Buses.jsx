@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { BusFront, Plus, Search, X } from "lucide-react";
+import { BusFront, LayoutGrid, List, Plus, Search, X } from "lucide-react";
 
 import Loading from "@shared/components/Loading";
 
 import useBuses from "../hooks/useBuses";
-import BusTable from "../components/bus/BusTable";
 
 import CreateBusModal from "../components/bus/CreateBusModal";
 import EditBusModal from "../components/bus/EditBusModal";
 import BusDetailsModal from "../components/bus/BusDetailsModal";
 import BusStatusModal from "../components/bus/BusStatusModal";
 import SeatLayoutModal from "../components/bus/SeatLayoutModal";
+
+import BusList from "../components/bus/BusList";
+import BusGrid from "../components/bus/BusGrid";
+
 
 import { BUS_STATUS_FILTERS } from "../utils/bus.utils";
 
@@ -24,12 +27,19 @@ export default function Buses() {
         buses,
         filteredBuses,
         serverError,
+
         search,
         setSearch,
+
         statusFilter,
         setStatusFilter,
+
         sort,
         handleSort,
+
+        viewMode,
+        changeViewMode,
+
         updateStatus,
         refresh,
     } = useBuses();
@@ -59,12 +69,6 @@ export default function Buses() {
     const closeAllModals = () => {
         setSelectedBus(null);
         setSelectedAction(null);
-    };
-
-    const handleView = (bus) => {
-        setSelectedBus(bus);
-        setSelectedAction(null);
-        // ouvre BusDetailsModal via selectedBus
     };
 
     const handleConfirmStatus = async () => {
@@ -161,6 +165,32 @@ export default function Buses() {
                                 ))}
                             </select>
                         </div>
+
+                        <div className="buses__view-toggle" role="tablist">
+                            <button
+                                type="button"
+                                role="tab"
+                                aria-selected={viewMode === "list"}
+                                className={`agencies__view-btn ${viewMode === "list" ? "buses__view-btn--active" : ""
+                                    }`}
+                                onClick={() => changeViewMode("list")}
+                                aria-label="Vue liste"
+                            >
+                                <List size={16} />
+                            </button>
+
+                            <button
+                                type="button"
+                                role="tab"
+                                aria-selected={viewMode === "grid"}
+                                className={`buses__view-btn ${viewMode === "grid" ? "buses__view-btn--active" : ""
+                                    }`}
+                                onClick={() => changeViewMode("grid")}
+                                aria-label="Vue grille"
+                            >
+                                <LayoutGrid size={16} />
+                            </button>
+                        </div>
                     </section>
 
                     {/* ---------- Résultat filtres ---------- */}
@@ -194,15 +224,36 @@ export default function Buses() {
                         </section>
                     ) : (
                         <div className="buses__card">
-                            <BusTable
-                                buses={filteredBuses}
-                                search={search}
-                                sort={sort}
-                                onSort={handleSort}
-                                onView={handleView}
-                                setSelectedAction={setSelectedAction}
-                                setSelectedBus={setSelectedBus}
-                            />
+                            {viewMode === "list" && (
+                                <BusList
+                                    buses={filteredBuses}
+                                    search={search}
+                                    sort={sort}
+                                    onSort={handleSort}
+                                    setSelectedAction={
+                                        setSelectedAction
+                                    }
+                                    setSelectedBus={
+                                        setSelectedBus
+                                    }
+                                />
+                            )}
+
+                            {viewMode === "grid" && (
+                                <BusGrid
+                                    buses={filteredBuses}
+                                    search={search}
+                                    sort={sort}
+                                    onSort={handleSort}
+                                    setSelectedAction={
+                                        setSelectedAction
+                                    }
+                                    setSelectedBus={
+                                        setSelectedBus
+                                    }
+                                />
+
+                            )}
                         </div>
                     )}
                 </>

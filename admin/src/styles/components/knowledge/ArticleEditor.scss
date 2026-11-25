@@ -1,0 +1,98 @@
+@import "@shared/styles/abstracts/colors";
+@import "@shared/styles/abstracts/fonts";
+
+
+.article-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    // ---------- Champs ----------
+
+    &__fields {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    &__row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+
+        @media (max-width: 560px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    // ---------- Contenu ----------
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    &__label {
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    &__md {
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #d1d5db;
+
+        // MDEditor applique son propre border-radius ; on aligne
+        .w-md-editor {
+            border-radius: 10px;
+            border: none;
+            box-shadow: none;
+        }
+
+        .w-md-editor-toolbar {
+            border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+
+        .w-md-editor-text {
+            font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        // Hauteur responsive
+        @media (max-width: 640px) {
+            .w-md-editor {
+                height: 360px !important;
+            }
+        }
+    }
+
+    // ---------- Erreurs ----------
+
+    &__error {
+        font-size: 0.74rem;
+        color: #ef4444;
+    }
+
+    &__server-error {
+        padding: 10px 12px;
+        border-radius: 9px;
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #b91c1c;
+        font-size: 0.82rem;
+    }
+
+    // ---------- Actions ----------
+
+    &__actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding-top: 12px;
+        border-top: 1px solid #f3f4f6;
+    }
+}

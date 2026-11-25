@@ -1,0 +1,185 @@
+@import "@shared/styles/abstracts/colors";
+@import "@shared/styles/abstracts/fonts";
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    &__item {
+        display: flex;
+    }
+}
+
+.team-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+        border-color: rgba(11, 59, 96, 0.3);
+        box-shadow: 0 6px 20px -8px rgba(11, 59, 96, 0.15);
+    }
+
+    // ---------- En-tête ----------
+
+    &__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    &__status {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 9px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        white-space: nowrap;
+
+        &--active {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+        }
+
+        &--inactive {
+            background: rgba(107, 114, 128, 0.12);
+            color: #4b5563;
+        }
+
+        &--suspended {
+            background: rgba(239, 68, 68, 0.12);
+            color: #b91c1c;
+        }
+
+        &--invited {
+            background: rgba(59, 130, 246, 0.12);
+            color: #1d4ed8;
+        }
+    }
+
+    // ---------- Identité ----------
+
+    &__identity {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+    }
+
+    &__name {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--tg-text, #111827);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__role {
+        align-self: flex-start;
+        display: inline-flex;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 0.72rem;
+        font-weight: 600;
+
+        &--admin {
+            background: rgba(139, 92, 246, 0.12);
+            color: #6d28d9;
+        }
+
+        &--agent {
+            background: rgba(11, 59, 96, 0.1);
+            color: #0b3b60;
+        }
+
+        &--controller {
+            background: rgba(245, 158, 11, 0.12);
+            color: #b45309;
+        }
+
+        &--unknown {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+    }
+
+    // ---------- Contact ----------
+
+    &__meta {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        li {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.8rem;
+            color: #4b5563;
+            min-width: 0;
+
+            svg {
+                flex-shrink: 0;
+                color: #9ca3af;
+            }
+
+            span {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+    }
+
+    // ---------- Actions ----------
+
+    &__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: auto;
+        padding-top: 12px;
+        border-top: 1px solid #f3f4f6;
+    }
+
+    &__view {
+        padding: 7px 12px;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        background: transparent;
+        color: #374151;
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease;
+
+        &:hover {
+            background: rgba(11, 59, 96, 0.06);
+            border-color: rgba(11, 59, 96, 0.3);
+            color: var(--tg-primary, #0b3b60);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--tg-primary, #0b3b60);
+            outline-offset: 2px;
+        }
+    }
+}
