@@ -2,23 +2,38 @@
   "name": "dossier-parent",
   "private": true,
   "scripts": {
-    "install:all": "concurrently \"cd passenger && npm install\" \"cd auth && npm install\" \"cd checkout && npm install\" \"cd admin && npm install\" \"cd company && npm install\" \"cd agency && npm install\" \"cd controller && npm install\" \"cd policies && npm install\" \"cd support && npm install\" \"cd my && npm install\" \"cd api && npm install --legacy-peer-deps\"",
+    "install:passenger":"cd passenger && npm install",
+    "install:auth":"cd auth && npm install",
+    "install:checkout":"cd checkout && npm install",
+    "install:admin":"cd admin && npm install",
+    "install:company":"cd company && npm install",
 
-     "build:passenger": "dotenv -e .env -- npm --prefix passenger run build",
+    "install:agency":"cd agency && npm install",
+    "install:controller":"cd controller && npm install",
+    "install:policies":"cd policies && npm install",
+    "install:support":"cd support && npm install",
+    "install:my":"cd my && npm install",
+
+    "install:all": "concurrently \"cd passenger && npm install\" \"cd auth && npm install\" \"cd checkout && npm install\" \"cd admin && npm install\" \"cd company && npm install\" \"cd agency && npm install\" \"cd controller && npm install\" \"cd policies && npm install\" \"cd support && npm install\" \"cd my && npm install\" \"cd api && npm install --legacy-peer-deps\"",
+    
+    "install": "npm run install:all",
+
+    "build:passenger": "dotenv -e .env -- npm --prefix passenger run build",
     "build:auth": "dotenv -e .env -- npm --prefix auth run build",
     "build:checkout": "dotenv -e .env -- npm --prefix checkout run build",
     "build:admin": "dotenv -e .env -- npm --prefix admin run build",
     "build:company": "dotenv -e .env -- npm --prefix company run build",
+   
     "build:agency": "dotenv -e .env -- npm --prefix agency run build",
     "build:controller": "dotenv -e .env -- npm --prefix controller run build",
     "build:policies": "dotenv -e .env -- npm --prefix policies run build",
     "build:support": "dotenv -e .env -- npm --prefix support run build",
     "build:my": "dotenv -e .env -- npm --prefix my run build",
-
+   
     "build:all": "concurrently \"npm run build:passenger\" \"npm run build:auth\" \"npm run build:checkout\" \"npm run build:admin\" \"npm run build:company\" \"npm run build:agency\" \"npm run build:controller\" \"npm run build:policies\" \"npm run build:support\" \"npm run build:my\"",
-
+   
     "build": "npm run build:all",
-
+    
     "start:passenger": "dotenv -e .env -- cmd /c \"cd passenger && set PORT=3000 && npm start\"",
     "start:auth": "dotenv -e .env -- cmd /c \"cd auth && set PORT=3001 && npm start\"",
     "start:checkout": "dotenv -e .env -- cmd /c \"cd checkout && set PORT=3002 && npm start\"",
@@ -30,10 +45,8 @@
     "start:support": "dotenv -e .env -- cmd /c \"cd support && set PORT=3008 && npm start\"",
     "start:my": "dotenv -e .env -- cmd /c \"cd my && set PORT=3009 && npm start\"",
     "start:all": "concurrently \"npm run start:passenger\" \"npm run start:auth\" \"npm run start:checkout\" \"npm run start:admin\" \"npm run start:company\" \"npm run start:agency\" \"npm run start:controller\" \"npm run start:policy\" \"npm run start:support\" \"npm run start:my\"",
-
     "start:prisma-studio": "cd api && npx prisma studio",
     "dev:api": "cd api && nodemon server.js",
-
     "dev": "concurrently \"npm run start:passenger\" \"npm run start:auth\" \"npm run start:checkout\" \"npm run start:admin\" \"npm run start:company\" \"npm run start:agency\" \"npm run start:controller\" \"npm run start:policy\" \"npm run start:support\" \"npm run start:my\" \"npm run dev:api\" \"npm run start:prisma-studio\""
   },
   "devDependencies": {
