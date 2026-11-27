@@ -4,3 +4,6 @@ node_modules
 .env.*
 
 /generated/prisma
+
+!/api/prisma/migrations/
+!/api/prisma/migrations/**

@@ -62,3 +62,8 @@ temp/
 # Local uploads
 uploads/
 storage/
+
+/generated/prisma
+
+!/api/prisma/migrations/
+!/api/prisma/migrations/**
